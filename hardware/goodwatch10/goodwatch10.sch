@@ -84,7 +84,7 @@ F 3 "" H 6050 3550 60  0001 C CNN
 	1    0    0    1   
 $EndComp
 Text Notes 7500 1050 0    60   ~ 0
-NOTE WELL:\n1. Both LCD and Keypad pin 1 must be on the West of the board.\n2. Some LCD segments can't be mapped due to pin limits.  Sorry.\n3. P1.5 and P1.6 double as a UART for the BSL. (!RST and TST also required.)
+NOTE WELL:\n1. Both LCD and Keypad pin 1 must be on the West of the board.\n2. Some LCD segments can't be mapped due to pin limits.  Sorry.\n3. P1.5 and P1.6 double as a UART for the BSL. (!RST and TST also required.)\n4. Radio support is missing from this revision.
 $Comp
 L CA53BOARD BRD1
 U 1 1 58F257A1
@@ -213,16 +213,16 @@ NoConn ~ 2250 2250
 $Comp
 L VCC #PWR04
 U 1 1 58F27AAC
-P 4100 2750
-F 0 "#PWR04" H 4100 2600 50  0001 C CNN
-F 1 "VCC" H 4100 2900 50  0000 C CNN
-F 2 "" H 4100 2750 50  0000 C CNN
-F 3 "" H 4100 2750 50  0000 C CNN
-	1    4100 2750
+P 4100 2450
+F 0 "#PWR04" H 4100 2300 50  0001 C CNN
+F 1 "VCC" H 4100 2600 50  0000 C CNN
+F 2 "" H 4100 2450 50  0000 C CNN
+F 3 "" H 4100 2450 50  0000 C CNN
+	1    4100 2450
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4100 2750 4100 2800
+	4100 2450 4100 2800
 $Comp
 L VCC #PWR05
 U 1 1 58F27BEB
@@ -247,7 +247,7 @@ U 1 1 58F27D93
 P 6150 4550
 F 0 "R1" V 6230 4550 50  0000 C CNN
 F 1 "47K" V 6150 4550 50  0000 C CNN
-F 2 "" V 6080 4550 50  0000 C CNN
+F 2 "Resistors_SMD:R_0201" H 6250 5000 50  0000 C CNN
 F 3 "" H 6150 4550 50  0000 C CNN
 	1    6150 4550
 	0    1    1    0   
@@ -268,8 +268,8 @@ L Crystal_Small Y1
 U 1 1 58F2817E
 P 5700 4150
 F 0 "Y1" H 5550 4200 50  0000 C CNN
-F 1 "32kHz" H 5900 4200 50  0000 C CNN
-F 2 "" H 5700 4150 50  0000 C CNN
+F 1 "32.768kHz" H 5900 4200 50  0000 C CNN
+F 2 "Crystals:Crystal_SMD_3215-2pin_3.2x1.5mm" V 6700 4100 50  0000 C CNN
 F 3 "" H 5700 4150 50  0000 C CNN
 	1    5700 4150
 	1    0    0    -1  
@@ -397,11 +397,11 @@ Wire Wire Line
 Wire Wire Line
 	3050 2850 2250 2850
 Wire Wire Line
-	4300 2800 4300 2500
+	4300 2800 4300 2200
 Wire Wire Line
-	4300 2500 3000 2500
+	4300 2200 3000 2200
 Wire Wire Line
-	3000 2500 3000 2750
+	3000 2200 3000 2750
 Wire Wire Line
 	3000 2750 2250 2750
 Wire Wire Line
@@ -420,7 +420,7 @@ U 1 1 58F295CB
 P 7200 3200
 F 0 "C1" H 7225 3300 50  0000 L CNN
 F 1 "47uF" H 7225 3100 50  0000 L CNN
-F 2 "" H 7238 3050 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0201" V 7950 2900 50  0000 C CNN
 F 3 "" H 7200 3200 50  0000 C CNN
 	1    7200 3200
 	1    0    0    -1  
@@ -431,7 +431,7 @@ U 1 1 58F297AD
 P 7450 3200
 F 0 "C2" H 7475 3300 50  0000 L CNN
 F 1 "47uF" H 7475 3100 50  0000 L CNN
-F 2 "" H 7488 3050 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0201" V 8050 2900 50  0000 C CNN
 F 3 "" H 7450 3200 50  0000 C CNN
 	1    7450 3200
 	1    0    0    -1  
@@ -442,16 +442,16 @@ U 1 1 58F297DF
 P 7700 3200
 F 0 "C3" H 7725 3300 50  0000 L CNN
 F 1 "47uF" H 7725 3100 50  0000 L CNN
-F 2 "" H 7738 3050 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0201" V 8150 2900 50  0000 C CNN
 F 3 "" H 7700 3200 50  0000 C CNN
 	1    7700 3200
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR?
+L VCC #PWR08
 U 1 1 58F2986E
 P 7450 2900
-F 0 "#PWR?" H 7450 2750 50  0001 C CNN
+F 0 "#PWR08" H 7450 2750 50  0001 C CNN
 F 1 "VCC" H 7450 3050 50  0000 C CNN
 F 2 "" H 7450 2900 50  0000 C CNN
 F 3 "" H 7450 2900 50  0000 C CNN
@@ -459,10 +459,10 @@ F 3 "" H 7450 2900 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L GND #PWR09
 U 1 1 58F29894
 P 7450 3500
-F 0 "#PWR?" H 7450 3250 50  0001 C CNN
+F 0 "#PWR09" H 7450 3250 50  0001 C CNN
 F 1 "GND" H 7450 3350 50  0000 C CNN
 F 2 "" H 7450 3500 50  0000 C CNN
 F 3 "" H 7450 3500 50  0000 C CNN
@@ -495,4 +495,38 @@ Wire Wire Line
 	4600 2800 4600 2450
 Wire Wire Line
 	4500 2800 4500 2450
+NoConn ~ 3900 5200
+NoConn ~ 4000 5200
+NoConn ~ 4100 5200
+NoConn ~ 4200 5200
+NoConn ~ 4300 5200
+NoConn ~ 4400 5200
+NoConn ~ 4500 5200
+NoConn ~ 4600 5200
+NoConn ~ 4700 5200
+NoConn ~ 4800 5200
+Text Notes 3900 5350 0    60   ~ 0
+Coming in Next Rev
+Wire Wire Line
+	2250 5250 2700 5250
+Wire Wire Line
+	2250 5350 2700 5350
+Wire Wire Line
+	2250 5450 2700 5450
+Text Label 2350 5250 0    60   ~ 0
+COM2
+Text Label 2350 5350 0    60   ~ 0
+COM1
+Text Label 2350 5450 0    60   ~ 0
+COM0
+Text Label 4500 2750 1    60   ~ 0
+COM2
+Text Label 4600 2750 1    60   ~ 0
+COM1
+Text Label 4700 2750 1    60   ~ 0
+COM0
+Wire Wire Line
+	4200 2800 4200 2550
+Text Label 4400 2750 1    60   ~ 0
+VCORE
 $EndSCHEMATC

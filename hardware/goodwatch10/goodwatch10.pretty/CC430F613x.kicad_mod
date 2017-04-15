@@ -1,8 +1,8 @@
-(module CC430F613x (layer F.Cu) (tedit 58F262B5)
-  (fp_text reference REF** (at 0 -6.075) (layer F.SilkS)
+(module CC430F613x (layer F.Cu) (tedit 58F28FB5)
+  (fp_text reference REF** (at 0 -6.075) (layer F.SilkS) hide
     (effects (font (size 1.2 1.2) (thickness 0.15)))
   )
-  (fp_text value CC430F613x (at 0 6.075) (layer F.Fab)
+  (fp_text value CC430F613x (at 0 6.075) (layer F.Fab) hide
     (effects (font (size 1.2 1.2) (thickness 0.15)))
   )
   (fp_line (start -4.9 -4.25) (end -4.25 -4.9) (layer F.SilkS) (width 0.15))

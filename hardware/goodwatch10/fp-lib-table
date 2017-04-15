@@ -1,3 +1,5 @@
 (fp_lib_table
   (lib (name AAgoodwatch10)(type KiCad)(uri "$(KIPRJMOD)/goodwatch10.pretty")(options "")(descr ""))
+  (lib (name Capacitors_SMD)(type KiCad)(uri "$(KIPRJMOD)/Capacitors_SMD.pretty")(options "")(descr ""))
+  (lib (name Resistors_SMD)(type KiCad)(uri "$(KIPRJMOD)/Resistors_SMD.pretty")(options "")(descr ""))
 )
