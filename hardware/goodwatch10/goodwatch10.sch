@@ -45,7 +45,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text Notes 7350 7500 0    60   ~ 0
-GoodWatch
+GoodWatch Rev 10
 Text Notes 10600 7650 0    60   ~ 0
 10 (WIP)
 Text Notes 7000 6750 0    60   ~ 0
@@ -56,7 +56,7 @@ U 1 1 58F11D4F
 P 1350 4000
 F 0 "LCD1" H 1150 5800 60  0000 C CNN
 F 1 "CA53LCD" H 1350 4150 60  0000 C CNN
-F 2 "" H 1350 4000 60  0001 C CNN
+F 2 "AAgoodwatch10:ca53lcd" H 1350 4000 60  0001 C CNN
 F 3 "" H 1350 4000 60  0001 C CNN
 	1    1350 4000
 	-1   0    0    1   
@@ -218,4 +218,58 @@ Wire Wire Line
 	3250 5300 3800 5300
 Wire Wire Line
 	3800 5300 3800 5200
+$Comp
+L CA53KEYPAD KPD1
+U 1 1 58F233A6
+P 6050 3550
+F 0 "KPD1" H 6200 3150 60  0000 C CNN
+F 1 "CA53KEYPAD" V 6200 3650 60  0000 C CNN
+F 2 "AAgoodwatch10:ca53keypad" H 6050 3550 60  0001 C CNN
+F 3 "" H 6050 3550 60  0001 C CNN
+	1    6050 3550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5400 3950 5850 3950
+Wire Wire Line
+	5400 3850 5850 3850
+Wire Wire Line
+	5850 3750 5400 3750
+Wire Wire Line
+	5400 3650 5850 3650
+Wire Wire Line
+	5850 3550 5400 3550
+Wire Wire Line
+	5400 3450 5850 3450
+Wire Wire Line
+	5850 3350 5400 3350
+Wire Wire Line
+	5850 3250 5400 3250
+Wire Wire Line
+	5850 3150 5300 3150
+Wire Wire Line
+	5300 3150 5300 2800
+Wire Wire Line
+	5300 2800 5100 2800
+Text Notes 7500 1050 0    60   ~ 0
+NOTE WELL:\n1. Both LCD and Keypad pin 1 must be on the West of the board.\n2. Some LCD segments can't be mapped due to pin limits.  Sorry.\n3. P1.5 and P1.6 double as a UART for the BSL. (!RST and TST also required.)
+$Comp
+L CA53BOARD BRD1
+U 1 1 58F257A1
+P 5100 2500
+F 0 "BRD1" H 5600 2550 60  0000 C CNN
+F 1 "CA53BOARD" H 5550 3200 60  0000 C CNN
+F 2 "AAgoodwatch10:ca53board" H 5100 2500 60  0001 C CNN
+F 3 "" H 5100 2500 60  0001 C CNN
+	1    5100 2500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5000 2800 5000 2300
+Wire Wire Line
+	5000 2300 5250 2300
+Wire Wire Line
+	4900 2800 4900 2200
+Wire Wire Line
+	4900 2200 5250 2200
 $EndSCHEMATC
