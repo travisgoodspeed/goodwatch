@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:goodwatch10-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -52,14 +51,171 @@ Text Notes 10600 7650 0    60   ~ 0
 Text Notes 7000 6750 0    60   ~ 0
 Replacement PCB for the Casio CA53W built around the CC430F6137.\nby Travis Goodspeed
 $Comp
-L CA53LCD LCD?
+L CA53LCD LCD1
 U 1 1 58F11D4F
-P 4150 1350
-F 0 "LCD?" H 3950 3150 60  0000 C CNN
-F 1 "CA53LCD" H 4150 1500 60  0000 C CNN
-F 2 "" H 4150 1350 60  0001 C CNN
-F 3 "" H 4150 1350 60  0001 C CNN
-	1    4150 1350
-	0    -1   -1   0   
+P 1350 4000
+F 0 "LCD1" H 1150 5800 60  0000 C CNN
+F 1 "CA53LCD" H 1350 4150 60  0000 C CNN
+F 2 "" H 1350 4000 60  0001 C CNN
+F 3 "" H 1350 4000 60  0001 C CNN
+	1    1350 4000
+	-1   0    0    1   
 $EndComp
+$Comp
+L CC430F613x U1
+U 1 1 58F17607
+P 4350 4000
+F 0 "U1" H 3900 3650 60  0000 C CNN
+F 1 "CC430F613x" H 4000 4350 60  0000 C CNN
+F 2 "" H 4350 4000 60  0001 C CNN
+F 3 "" H 4350 4000 60  0001 C CNN
+	1    4350 4000
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2250 2250 4300 2250
+Wire Wire Line
+	4300 2250 4300 2800
+Wire Wire Line
+	2250 2350 4000 2350
+Wire Wire Line
+	4000 2350 4000 2800
+Wire Wire Line
+	2250 2450 3900 2450
+Wire Wire Line
+	3900 2450 3900 2800
+Wire Wire Line
+	2250 2550 3800 2550
+Wire Wire Line
+	3800 2550 3800 2800
+Wire Wire Line
+	2250 2650 3700 2650
+Wire Wire Line
+	3700 2650 3700 2800
+Wire Wire Line
+	2250 2750 3600 2750
+Wire Wire Line
+	3600 2750 3600 2800
+Wire Wire Line
+	2250 2850 3300 2850
+Wire Wire Line
+	3300 2850 3300 3250
+Wire Wire Line
+	2250 2950 3250 2950
+Wire Wire Line
+	3250 2950 3250 3350
+Wire Wire Line
+	3250 3350 3300 3350
+Wire Wire Line
+	2250 3050 3200 3050
+Wire Wire Line
+	3200 3050 3200 3450
+Wire Wire Line
+	3200 3450 3300 3450
+Wire Wire Line
+	2250 3150 3150 3150
+Wire Wire Line
+	3150 3150 3150 3550
+Wire Wire Line
+	3150 3550 3300 3550
+Wire Wire Line
+	2250 3250 3100 3250
+Wire Wire Line
+	3100 3250 3100 3650
+Wire Wire Line
+	3100 3650 3300 3650
+Wire Wire Line
+	2250 3350 3050 3350
+Wire Wire Line
+	3050 3350 3050 3750
+Wire Wire Line
+	3050 3750 3300 3750
+Wire Wire Line
+	2250 3450 3000 3450
+Wire Wire Line
+	3000 3450 3000 3850
+Wire Wire Line
+	3000 3850 3300 3850
+Wire Wire Line
+	2250 3550 2950 3550
+Wire Wire Line
+	2950 3550 2950 3950
+Wire Wire Line
+	2950 3950 3300 3950
+Wire Wire Line
+	2250 3650 2900 3650
+Wire Wire Line
+	2900 3650 2900 4150
+Wire Wire Line
+	2900 4150 3300 4150
+Wire Wire Line
+	2250 3750 2850 3750
+Wire Wire Line
+	2850 3750 2850 4250
+Wire Wire Line
+	2850 4250 3300 4250
+Wire Wire Line
+	2250 3850 2800 3850
+Wire Wire Line
+	2800 3850 2800 4350
+Wire Wire Line
+	2800 4350 3300 4350
+Wire Wire Line
+	2250 3950 2750 3950
+Wire Wire Line
+	2750 3950 2750 4450
+Wire Wire Line
+	2750 4450 3300 4450
+Wire Wire Line
+	2250 4050 2700 4050
+Wire Wire Line
+	2700 4050 2700 4550
+Wire Wire Line
+	2700 4550 3300 4550
+Wire Wire Line
+	2250 4150 2650 4150
+Wire Wire Line
+	2650 4150 2650 4650
+Wire Wire Line
+	2650 4650 3300 4650
+Wire Wire Line
+	2250 4250 2600 4250
+Wire Wire Line
+	2600 4250 2600 4750
+Wire Wire Line
+	2600 4750 3300 4750
+Wire Wire Line
+	2250 4350 2550 4350
+Wire Wire Line
+	2550 4350 2550 4800
+Wire Wire Line
+	2550 4800 3350 4800
+Wire Wire Line
+	3350 4800 3350 5200
+Wire Wire Line
+	3350 5200 3600 5200
+Wire Wire Line
+	2250 4450 2500 4450
+Wire Wire Line
+	2500 4450 2500 4850
+Wire Wire Line
+	2500 4850 3300 4850
+Wire Wire Line
+	3300 4850 3300 5250
+Wire Wire Line
+	3300 5250 3700 5250
+Wire Wire Line
+	3700 5250 3700 5200
+Wire Wire Line
+	2250 4550 2450 4550
+Wire Wire Line
+	2450 4550 2450 4900
+Wire Wire Line
+	2450 4900 3250 4900
+Wire Wire Line
+	3250 4900 3250 5300
+Wire Wire Line
+	3250 5300 3800 5300
+Wire Wire Line
+	3800 5300 3800 5200
 $EndSCHEMATC
