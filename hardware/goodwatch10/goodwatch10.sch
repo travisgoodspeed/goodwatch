@@ -29,6 +29,7 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:goodwatch10
+LIBS:goodwatch10-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -82,13 +83,13 @@ F 3 "" H 6050 3550 60  0001 C CNN
 	1    6050 3550
 	1    0    0    1   
 $EndComp
-Text Notes 7500 1050 0    60   ~ 0
-NOTE WELL:\n1. Both LCD and Keypad pin 1 must be on the West of the board.\n2. Some LCD segments can't be mapped due to pin limits.  Sorry.\n3. P1.5 and P1.6 double as a UART for the BSL. (!RST and TST also required.)\n4. Radio support is missing from this revision.
+Text Notes 6500 1750 0    60   ~ 0
+NOTE WELL:\n1. Both LCD and Keypad pin 1 must be on the West of the board.\n2. Some LCD segments can't be mapped due to pin limits.  Sorry.\n3. P1.5 and P1.6 double as a UART for the BSL. (!RST and TST also required.)\n4. Radio support is missing from this revision.\n5. Some traces might be too long or awkwardly routed in this revision.
 $Comp
 L CA53BOARD BRD1
 U 1 1 58F257A1
 P 5100 2500
-F 0 "BRD1" H 5600 2550 60  0000 C CNN
+F 0 "BRD1" H 5600 2250 60  0000 C CNN
 F 1 "CA53BOARD" H 5550 3200 60  0000 C CNN
 F 2 "AAgoodwatch10:ca53board" H 5100 2500 60  0001 C CNN
 F 3 "" H 5100 2500 60  0001 C CNN
@@ -586,4 +587,12 @@ Text Label 9050 3100 1    60   ~ 0
 VCORE
 Text Label 4200 2750 1    60   ~ 0
 VCORE
+Wire Wire Line
+	5250 2400 5050 2400
+Wire Wire Line
+	5050 2500 5250 2500
+Text Label 5050 2400 0    60   ~ 0
+TST
+Text Label 5050 2500 0    60   ~ 0
+!RST
 $EndSCHEMATC
