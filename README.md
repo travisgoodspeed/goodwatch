@@ -2,8 +2,10 @@ Howdy y'all,
 
 This is a side project of mine to build a replacement circuit board
 for the Casio 3208 module, used in the Casio CA-53W and related
-calculator watches.  As a side project, it has no warranty whatsoever
-and you shouldn't use it for anything.
+calculator watches.  It is probably not compatible with the 3228
+module used in the Databank watches, which have four external buttons
+instead of two.  As a side project, it has no warranty whatsoever and
+you shouldn't use it for anything.
 
 In the rare case that you find this project to be useful, you owe me a
 pint of good, hoppy pale ale.  All license to use this project is
