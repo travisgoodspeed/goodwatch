@@ -18,3 +18,15 @@ Y1      ABS07-120-32.768KHZ-T   535-11937-1-ND      SMDXTAL  1     32.768kHz6pF
 
 
 
+
+Mouser.de has all the components except for C1, so sourcing an equivalent part:
+
+        MfgrPartNo              Mouser                  Pkg      Qty   Cmt
+U1      CC430F6137IRGCR         595-CC430F6137IRGCR     VQFN64   1     CPU
+R1      RC0201FR-0775KL         603-RC0201FR-0775KL     0201     1     75K
+C1      GRM188R60J476ME5D       81-GRM188R60J476ME5D    0603     1     47uF
+C2, C3  02016D104KAT2A          581-02016D104KAT2A      0201     2     0.1uF
+C4      GRJ155R60J106ME11D      81-GRJ155R60J106ME1D    0402     1     10uF
+C5      GRM033R60J474KE90D      81-GRM33R60J474KE90D    0201     1     0.47uF
+Y1      ABS07-120-32.768KHZ-T   815-ABS0712032.768KT    SMDXTAL  1     32.768kHz6pF
+
