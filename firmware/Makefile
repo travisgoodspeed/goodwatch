@@ -4,7 +4,7 @@ CC = msp430-gcc -mmcu=cc430f6137
 
 modules=main.o lcd.o
 
-all: goodwatch
+all: goodwatch.hex
 
 goodwatch: $(modules)
 	$(CC) -o goodwatch $(modules)

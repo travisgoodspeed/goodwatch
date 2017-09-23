@@ -6,13 +6,13 @@
 ## bad checksums.  It is free for any use, provided you tip your
 ## bartender.
 
-import serial, time, sys;
+import serial, time, sys, argparse;
 
 
 class BSL:
     def __init__(self, port):
         print("Opening %s" % port);
-        self.serial=serial.Serial("/dev/ttyUSB0",
+        self.serial=serial.Serial(port,
                                   baudrate=9600,
                                   parity=serial.PARITY_EVEN,
                                   stopbits=serial.STOPBITS_ONE,
@@ -216,18 +216,35 @@ def writetest(bsl):
     assert(readmsg==msg);
 
 if __name__=='__main__':
-    bsl=BSL("/dev/ttyUSB0");
+    parser = argparse.ArgumentParser(description='CC430F6137 BSL Client')
+    parser.add_argument('-e','--erase', help='Mass Erase',action='count');
+    parser.add_argument('-p','--port', help='Serial Port',default='/dev/ttyUSB0');
+    parser.add_argument('-f','--file', help='Flash File');
+    parser.add_argument('-P','--password', help='Password File or Hex');
+    parser.add_argument('-d','--dump', help='Produce a core dump.',action='count');
+    
+    
+    args = parser.parse_args()
 
-    print "Testing the BSL library:"
+    bsl=BSL(args.port);
+    
+    if args.erase!=None:
+        bsl.masserase();
+    if args.dump!=None:
+        coredump(bsl);
+    
+    # bsl=BSL("/dev/ttyUSB0");
 
-    bsl.enter_bsl();
+    # print "Testing the BSL library:"
 
-    if not bsl.unlock():
-        print "Unable to unlock BSL.  Try a bulk erase."
-        sys.exit(1);
+    # bsl.enter_bsl();
 
-    bsl.version();
-    coredump(bsl);
-    writetest(bsl);
+    # if not bsl.unlock():
+    #     print "Unable to unlock BSL.  Try a bulk erase."
+    #     sys.exit(1);
+
+    # bsl.version();
+    # coredump(bsl);
+    # writetest(bsl);
     
     
