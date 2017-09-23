@@ -222,29 +222,21 @@ if __name__=='__main__':
     parser.add_argument('-f','--file', help='Flash File');
     parser.add_argument('-P','--password', help='Password File or Hex');
     parser.add_argument('-d','--dump', help='Produce a core dump.',action='count');
-    
+    parser.add_argument('-u','--unlock',help='Unlock BSL.',action='count');
     
     args = parser.parse_args()
 
     bsl=BSL(args.port);
-    
+    bsl.enter_bsl();
+    #bsl.unlock();
+
+    if args.unlock!=None:
+        print "Unlocking."
+        bsl.unlock();
     if args.erase!=None:
+        print "Mass erasing."
         bsl.masserase();
     if args.dump!=None:
         coredump(bsl);
-    
-    # bsl=BSL("/dev/ttyUSB0");
-
-    # print "Testing the BSL library:"
-
-    # bsl.enter_bsl();
-
-    # if not bsl.unlock():
-    #     print "Unable to unlock BSL.  Try a bulk erase."
-    #     sys.exit(1);
-
-    # bsl.version();
-    # coredump(bsl);
-    # writetest(bsl);
     
     
