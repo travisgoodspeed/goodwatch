@@ -24,9 +24,9 @@ int get_second(){
 
 void draw_time(){
   static int i=0;
-  int hour=get_hour();
-  int min=get_minute();
-  int sec=get_second();
+  unsigned int hour=get_hour();
+  unsigned int min=get_minute();
+  unsigned int sec=get_second();
   
   lcd_zero();
   lcd_digit(7,hour/10);
@@ -37,6 +37,9 @@ void draw_time(){
   //space
   lcd_digit(1,sec/10);
   lcd_digit(0,sec%10);
+
+  setam(hour<12);
+  setpm(hour>=12);
 }
 
 //! Initializes the clock with the timestamp from memory.
@@ -52,7 +55,7 @@ void rtc_init(){
 
   //Default clock comes from flash.
   //RTC will fix any corruption.
-  RTCHOUR = *((unsigned char*) 0xFF00)   %12;
+  RTCHOUR = *((unsigned char*) 0xFF00)   %24;
   RTCMIN =  *((unsigned char*) 0xFF01)   %60;
   RTCSEC =  *((unsigned char*) 0xFF02)   %60;
  
