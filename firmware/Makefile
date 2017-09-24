@@ -19,5 +19,7 @@ clean:
 
 erase:
 	$(BSL) -e
+flash: goodwatch.hex
+	$(BSL) -ef goodwatch.hex
 
 

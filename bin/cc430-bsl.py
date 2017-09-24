@@ -107,8 +107,8 @@ class BSL:
         code=ord(resp[1]);
     
         if code==0x05:
-            print "Error, incorrect password."
-            return False;
+            print "Incorrect password.  Flash was erased."
+            return self.unlock();
         elif code==0x00:
             #success
             return True;
@@ -118,7 +118,6 @@ class BSL:
         
     def version(self):
         """Gets the BSL version and related bytes."""
-        #self.serial.write("\x80\x01\x00\x19"+self.crc("\x80\x01\x00\x19"));
         resp=self.transact("\x19");
         assert(len(resp)==5);
         
@@ -141,6 +140,10 @@ class BSL:
         ll=chr(length&0xFF)
         lh=chr((length>>8)&0xFF)
         resp=self.transact("\x18"+al+am+ah+ll+lh)
+        if resp[0]=="\x3b":
+            print "Error: You need to unlock before reading."
+        assert(resp[0]=="\x3a");
+        
         return resp[1:]
     def write(self,adr,data=""):
         """Writes memory to the given address."""
@@ -173,8 +176,22 @@ class BSL:
         #assert(i==adr+length);
         return True;
 
+    def writeihexline(self,line):
+        """Writes one line of an Intel Hex file.  (Langsec sin!)"""
+        assert(line[0]==':');
+        length=int(line[1:3],16);
+        adr=int(line[3:7],16);
+        verb=int(line[7:9],16);
+        
+        data=line[9:(9+length*2)].decode('hex');
+        if verb==0: #Data
+            self.write(adr,data);
 
-
+    def writeihexfile(self,filename):
+        """Writes an Intel Hex file to the CC430."""
+        f=open(filename,'r');
+        for l in f:
+            self.writeihexline(l.strip());
 
 def coredump(bsl):
     """Prints all of memory."""
@@ -228,14 +245,17 @@ if __name__=='__main__':
 
     bsl=BSL(args.port);
     bsl.enter_bsl();
-    #bsl.unlock();
 
-    if args.unlock!=None:
-        print "Unlocking."
-        bsl.unlock();
     if args.erase!=None:
         print "Mass erasing."
         bsl.masserase();
+        bsl.unlock();
+    if args.unlock!=None:
+        print "Unlocking."
+        bsl.unlock();
+    if args.file!=None:
+        print "Writing %s as Intel hex." % args.file
+        bsl.writeihexfile(args.file);
     if args.dump!=None:
         coredump(bsl);
     
