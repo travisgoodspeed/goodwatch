@@ -52,10 +52,10 @@ class BSL:
     def reset(self):
         """Exits the BSL by resetting the chip."""
         self.setTST(True)
-        self.setRST(True);
-        time.sleep(0.25);
-        self.setRST(False);
         
+        self.setRST(True);
+        self.setRST(False);
+        self.setRST(True);
             
     def crc(self,msg):
         """Returns a two-byte string of the checksum of a message."""

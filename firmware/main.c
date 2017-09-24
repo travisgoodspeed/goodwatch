@@ -12,7 +12,7 @@ int main(void) {
   
   lcd_init();
 
-  // Setup and enable WDT 250ms, ACLK, interval timer
+  // Setup and enable WDT 1000ms, ACLK, interval timer
   WDTCTL = WDT_ADLY_1000;
   SFRIE1 |= WDTIE;
   
