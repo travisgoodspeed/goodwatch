@@ -1,4 +1,5 @@
 #include "lcd.h"
+#include "lcdtext.h"
 
 /* Digits look like this, and we index them with 0 being the
    leftmost.
@@ -50,9 +51,10 @@ int numfont[]={
 
 #define DRAWPOINT(todraw) lcdm[todraw>>8]|=todraw&0xFF
 #define DRAWPOINTB(todraw) lcdbm[todraw>>8]|=todraw&0xFF
+//! Draws one LCD digit.
 void lcd_digit(int pos, int digit){
   int segments=numfont[digit];
-  int bit, todraw;
+  int bit;
   for(bit=0;bit<8;bit++){
     if(segments&(1<<bit)){
       DRAWPOINT(map[pos][bit]);
@@ -92,7 +94,7 @@ void lcd_hex(long num){
 
 
 //! Activates the colon.  2 for invert.
-int setcolon(int on){
+void setcolon(int on){
   if(on==2)          //Blink
     lcdm[3]^=0x20;
   else if(on==1)     //On
@@ -102,7 +104,7 @@ int setcolon(int on){
 }
 
 //! Activates the am.  2 for invert.
-int setam(int on){
+void setam(int on){
   if(on==2)          //Blink
     lcdm[0]^=0x04;
   else if(on==1)     //On
@@ -112,7 +114,7 @@ int setam(int on){
 }
 
 //! Activates the pm.  2 for invert.
-int setpm(int on){
+void setpm(int on){
   if(on==2)          //Blink
     lcdm[1]^=0x40;
   else if(on==1)     //On
@@ -122,7 +124,7 @@ int setpm(int on){
 }
 
 //! Activates the mult sign. 2 for invert.
-int setmult(int on){
+void setmult(int on){
   if(on==2)          //Blink
     lcdm[4]^=0x40;
   else if(on==1)     //On
@@ -132,7 +134,7 @@ int setmult(int on){
 }
 
 //! Activates the minus sign. 2 for invert.
-int setminus(int on){
+void setminus(int on){
   if(on==2)          //Blink
     lcdm[6]^=0x04;
   else if(on==1)     //On
@@ -142,7 +144,7 @@ int setminus(int on){
 }
 
 //! Activates the plus sign. 2 for invert.
-int setplus(int on){
+void setplus(int on){
   if(on==2)          //Blink
     lcdm[7]^=0x40;
   else if(on==1)     //On
@@ -152,7 +154,7 @@ int setplus(int on){
 }
 
 //! Activates the divide sign. 2 for invert.
-int setdivide(int on){
+void setdivide(int on){
   if(on==2)          //Blink
     lcdm[0xc]^=0x04;
   else if(on==1)     //On

@@ -1,6 +1,6 @@
 
 #Standard Debian gcc-msp430 and msp430mcu packages.
-CC = msp430-gcc -mmcu=cc430f6137
+CC = msp430-gcc -mmcu=cc430f6137 -Wall
 
 BSL = ../bin/cc430-bsl.py
 

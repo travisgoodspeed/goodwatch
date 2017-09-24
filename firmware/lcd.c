@@ -4,11 +4,13 @@
 
 #include <msp430.h>
 
-char *lcdm=&LCDM1;
-char *lcdbm=&LCDBM1;
+#include "lcdtext.h"
+
+volatile unsigned char *lcdm=&LCDM1;
+volatile unsigned char *lcdbm=&LCDBM1;
 
 //! Clears the LCD memory and blink memory.
-int lcd_zero(){
+void lcd_zero(){
   int i=0;
   
   for(i=0; i<=13; i++){
@@ -20,7 +22,7 @@ int lcd_zero(){
 
 
 //! Initialize the LCD memory and populate it with sample text.
-int lcd_init() {
+void lcd_init() {
   int i;
   
   // Select LCD COM pins
@@ -54,17 +56,14 @@ int lcd_init() {
 
   //Beyond the range.
   //lcdm[0x0c]|=0x10;
-
 }
 
 //! LCD callback when the CPU wakes.
 void lcd_wdt(){
-  static int i=0, j=0;
-  
   //LCDBMEMCTL ^= LCDDISP; // Enable blink memory
-
     
   lcd_zero();
   //lcd_hex(0xdeadbeef);
-  lcd_hex(0xcafebabe);
+  //lcd_hex(0xcafebabe);
+  lcd_number(12345678);
 }

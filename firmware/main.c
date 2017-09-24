@@ -17,6 +17,7 @@ int main(void) {
   SFRIE1 |= WDTIE;
   
   __bis_SR_register(LPM0_bits + GIE);		// Enter LPM3 w/interrupt
+  while(1);
 }
 
 // Watchdog Timer interrupt service routine, calls back to handler functions.
