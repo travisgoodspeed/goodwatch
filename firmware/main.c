@@ -11,9 +11,10 @@ int main(void) {
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
   
   lcd_init();
+  rtc_init();
 
   // Setup and enable WDT 1000ms, ACLK, interval timer
-  WDTCTL = WDT_ADLY_1000;
+  WDTCTL = WDT_ADLY_250;
   SFRIE1 |= WDTIE;
   
   __bis_SR_register(LPM0_bits + GIE);		// Enter LPM3 w/interrupt
@@ -22,5 +23,9 @@ int main(void) {
 
 // Watchdog Timer interrupt service routine, calls back to handler functions.
 void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
-  lcd_wdt();
+  //lcd_wdt();
+  //draw_time();
+
+  //Blink the colon faster than the RTC.
+  setcolon(3);
 }

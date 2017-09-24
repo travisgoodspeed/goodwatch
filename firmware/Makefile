@@ -5,7 +5,7 @@ CC = msp430-gcc -mmcu=cc430f6137 -Wall
 BSL = ../bin/cc430-bsl.py
 
 
-modules=main.o lcd.o lcdtext.o
+modules=main.o lcd.o lcdtext.o rtc.o
 
 all: goodwatch.hex
 
