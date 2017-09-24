@@ -6,6 +6,7 @@
 #include <msp430.h>
 
 #include "lcd.h"
+#include "rtc.h"
 
 int main(void) {
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
@@ -24,8 +25,5 @@ int main(void) {
 // Watchdog Timer interrupt service routine, calls back to handler functions.
 void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
   //lcd_wdt();
-  //draw_time();
-
-  //Blink the colon faster than the RTC.
-  setcolon(3);
+  draw_time();
 }

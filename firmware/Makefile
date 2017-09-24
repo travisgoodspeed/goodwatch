@@ -20,6 +20,6 @@ clean:
 erase:
 	$(BSL) -e
 flash: goodwatch.hex
-	$(BSL) -ef goodwatch.hex
+	$(BSL) -etf goodwatch.hex
 
 

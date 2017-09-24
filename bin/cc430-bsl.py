@@ -247,6 +247,7 @@ if __name__=='__main__':
     parser.add_argument('-P','--password', help='Password File or Hex');
     parser.add_argument('-d','--dump', help='Produce a core dump.',action='count');
     parser.add_argument('-u','--unlock',help='Unlock BSL.',action='count');
+    parser.add_argument('-t','--time',help='Set the Time.',action='count');
     
     args = parser.parse_args()
 
@@ -263,6 +264,10 @@ if __name__=='__main__':
     if args.file!=None:
         print "Writing %s as Intel hex." % args.file
         bsl.writeihexfile(args.file);
+    if args.time!=None:
+        lt=time.localtime()
+        timestr=chr(lt.tm_hour)+chr(lt.tm_min)+chr(lt.tm_sec)
+        bsl.write(0xFF00,timestr);
     if args.dump!=None:
         coredump(bsl);
     bsl.reset();
