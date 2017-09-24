@@ -49,7 +49,14 @@ class BSL:
         self.setTST(False)
         time.sleep(0.250)
         self.serial.flushInput();
-
+    def reset(self):
+        """Exits the BSL by resetting the chip."""
+        self.setTST(True)
+        self.setRST(True);
+        time.sleep(0.25);
+        self.setRST(False);
+        
+            
     def crc(self,msg):
         """Returns a two-byte string of the checksum of a message."""
         crc=0xFFFF
@@ -258,5 +265,5 @@ if __name__=='__main__':
         bsl.writeihexfile(args.file);
     if args.dump!=None:
         coredump(bsl);
-    
+    bsl.reset();
     
