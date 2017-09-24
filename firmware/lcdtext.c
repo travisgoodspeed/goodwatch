@@ -61,6 +61,17 @@ void lcd_digit(int pos, int digit){
   }
 }
 
+//! Draws a decimal number on the screen.
+void lcd_number(long num){
+  long bcd=0;
+  int i;
+  for(i=0;i<8;i++){
+    bcd|=((num%10)<<(4*i));
+    num/=10;
+  }
+  lcd_hex(bcd);
+}
+
 //! Draws hex on the screen.
 void lcd_hex(long num){
   /* So in an ideal world, we'd have characters arranged nicely into
