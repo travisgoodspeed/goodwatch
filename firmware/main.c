@@ -4,6 +4,7 @@
 */
 
 #include <msp430.h>
+#include <string.h>
 
 #include "lcd.h"
 #include "rtc.h"
@@ -14,7 +15,7 @@ int main(void) {
   lcd_init();
   rtc_init();
 
-  // Setup and enable WDT 1000ms, ACLK, interval timer
+  // Setup and enable WDT 250ms, ACLK, interval timer
   WDTCTL = WDT_ADLY_250;
   SFRIE1 |= WDTIE;
   
@@ -24,6 +25,5 @@ int main(void) {
 
 // Watchdog Timer interrupt service routine, calls back to handler functions.
 void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
-  //lcd_wdt();
-  draw_time();
+  lcd_wdt();
 }

@@ -3,8 +3,10 @@
    modified to fit.  */
 
 #include <msp430.h>
+#include <string.h>
 
 #include "lcdtext.h"
+#include "rtc.h"
 
 volatile unsigned char *lcdm=&LCDM1;
 volatile unsigned char *lcdbm=&LCDBM1;
@@ -15,7 +17,6 @@ void lcd_zero(){
   
   for(i=0; i<=13; i++){
     lcdm[i]=0;
-    lcdbm[i]=0;
   }
 }
 
@@ -58,12 +59,22 @@ void lcd_init() {
   //lcdm[0x0c]|=0x10;
 }
 
+//! Moved the LCD memory to the blink memory, then displays the backup.
+void lcd_predraw(){
+  //Copy the LCD memory to the blink memory, then display blink memory.
+  memcpy((char*) lcdbm,(char*) lcdm,13);
+  LCDBMEMCTL &= ~LCDDISP; // Enable blink memory
+}
+
+//! Reverts to the main display.
+void lcd_postdraw(){
+  //Now swap back the buffer.
+  LCDBMEMCTL |= LCDDISP; // Enable blink memory
+}
+
 //! LCD callback when the CPU wakes.
 void lcd_wdt(){
-  //LCDBMEMCTL ^= LCDDISP; // Enable blink memory
-    
-  lcd_zero();
-  //lcd_hex(0xdeadbeef);
-  //lcd_hex(0xcafebabe);
-  lcd_number(12345678);
+  lcd_predraw();
+  draw_time();
+  lcd_postdraw();
 }
