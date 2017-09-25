@@ -63,13 +63,13 @@ void lcd_init() {
 void lcd_predraw(){
   //Copy the LCD memory to the blink memory, then display blink memory.
   memcpy((char*) lcdbm,(char*) lcdm,13);
-  LCDBMEMCTL &= ~LCDDISP; // Enable blink memory
+  LCDBMEMCTL |= LCDDISP; // Enable blink memory
 }
 
 //! Reverts to the main display.
 void lcd_postdraw(){
   //Now swap back the buffer.
-  LCDBMEMCTL |= LCDDISP; // Enable blink memory
+  LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.
 }
 
 //! LCD callback when the CPU wakes.
