@@ -266,7 +266,13 @@ if __name__=='__main__':
         bsl.writeihexfile(args.file);
     if args.time!=None:
         lt=time.localtime()
-        timestr=chr(lt.tm_hour)+chr(lt.tm_min)+chr(lt.tm_sec)
+        #See firmware/rtc.c for the format.
+        timestr=(
+            #Hour, Minute, Second first.
+            chr(lt.tm_hour)+chr(lt.tm_min)+chr(lt.tm_sec)+"\xFF"+
+            #u16 Year, u8 Month, u8 Day
+            chr(lt.tm_year&0xFF)+chr(lt.tm_year>>8)+chr(lt.tm_mon)+chr(lt.tm_mday)
+            );
         bsl.write(0xFF00,timestr);
     if args.dump!=None:
         coredump(bsl);

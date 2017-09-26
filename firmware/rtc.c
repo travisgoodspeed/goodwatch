@@ -22,6 +22,7 @@ int get_second(){
   return RTCSEC;
 }
 
+//! Draws the time.
 void draw_time(){
   static int i=0;
   unsigned int hour=get_hour();
@@ -41,6 +42,26 @@ void draw_time(){
   setpm(hour>=12);
 }
 
+//! Draws the date as yyyy.mm.dd
+void draw_date(){
+  unsigned int year=RTCYEAR;
+  unsigned int month=RTCMON;
+  unsigned int day=RTCDAY;
+
+  lcd_digit(7,(year/1000)%10);
+  lcd_digit(6,(year/100)%10);
+  lcd_digit(5,(year/10)%10);
+  lcd_digit(4,year%10);
+  setcolon(0);
+  lcd_digit(3,month/10);
+  lcd_digit(2,month%10);
+  lcd_digit(1,day/10);
+  lcd_digit(0,day%10);
+
+  setam(0);
+  setpm(0);
+}
+
 //! Initializes the clock with the timestamp from memory.
 void rtc_init(){
   // Setup RTC Timer
@@ -57,8 +78,10 @@ void rtc_init(){
   RTCHOUR = *((unsigned char*) 0xFF00)   %24;
   RTCMIN =  *((unsigned char*) 0xFF01)   %60;
   RTCSEC =  *((unsigned char*) 0xFF02)   %60;
- 
-  //__bis_SR_register(LPM3_bits + GIE);
+  RTCYEAR = *((unsigned int*) 0xFF04) % 4096;
+  RTCMON = *((unsigned char*) 0xFF06);
+  RTCDAY = *((unsigned char*) 0xFF07);  //Not sure why, but we have to set
+  RTCDAY = *((unsigned char*) 0xFF07);  //the day twice.  RTC Errata?
 }
 
 void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){

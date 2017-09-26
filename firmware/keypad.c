@@ -88,20 +88,12 @@ unsigned int key_scan(){
     return 0;
 }
 
-/* //! Map of presses to buttons. */
-/* const int keymap[4][4]={ */
-/*   //Lowest row has highest bitmask, so it comes first. */
-/*   {0, '.', '=', '+'}, */
-/*   {1, 2, 3, '-'}, */
-/*   {4, 5, 6, '*'}, */
-/*   {7, 8, 9, '%'} */
-/* }; */
 
 //! Map of presses to buttons.
 const unsigned int keymap[]={
   /* Upper nybble is the scan code, lower nybble is the byte in ASCII.
    */
-  0x1837, 0x1438,     0x1239,     0x1100|'%',
+  0x1837, 0x1438,     0x1239,     0x1100|'/',
   0x2834, 0x2435,     0x2236,     0x2100|'*',
   0x4831, 0x4432,     0x4233,     0x4100|'-',
   0x8830, 0x8400|'.', 0x8200|'=', 0x8100|'+',

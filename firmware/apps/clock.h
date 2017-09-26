@@ -1,0 +1,1 @@
+void clock_draw();

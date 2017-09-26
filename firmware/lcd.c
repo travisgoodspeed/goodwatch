@@ -7,6 +7,7 @@
 
 #include "lcdtext.h"
 #include "rtc.h"
+#include "apps.h"
 
 volatile unsigned char *lcdm=&LCDM1;
 volatile unsigned char *lcdbm=&LCDBM1;
@@ -65,9 +66,12 @@ void lcd_postdraw(){
 //! LCD callback when the CPU wakes.
 void lcd_wdt(){
   lcd_predraw();
-  
-  //lcd_zero();
-  draw_time();
+
+  /* The applet is drawn four times per second.  We handle
+     double-buffering, so that incomplete drawings won't be shown to
+     the user, but everything else is the app's responsibility. */
+
+  draw_app();
 
   lcd_postdraw();
 }
