@@ -28,7 +28,6 @@ void draw_time(){
   unsigned int min=get_minute();
   unsigned int sec=get_second();
   
-  lcd_zero();
   lcd_digit(7,hour/10);
   lcd_digit(6,hour%10);
   setcolon(i++&1);

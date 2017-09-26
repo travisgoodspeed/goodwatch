@@ -54,14 +54,18 @@ const int numfont[]={
 };
 
 #define DRAWPOINT(todraw) lcdm[todraw>>8]|=todraw&0xFF
+#define CLEARPOINT(todraw) lcdm[todraw>>8]&=~(todraw&0xFF)
+
 //! Draws one LCD digit.
 void lcd_digit(int pos, int digit){
   int segments=numfont[digit];
   int bit;
   for(bit=0;bit<8;bit++){
-    if(segments&(1<<bit)){
+    if(segments&(1<<bit))
       DRAWPOINT(lcdmap[pos][bit]);
-    }
+    else
+      CLEARPOINT(lcdmap[pos][bit]);
+    
   }
 }
 
