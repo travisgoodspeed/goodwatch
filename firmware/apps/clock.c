@@ -28,9 +28,6 @@ void clock_draw(){
   case '7':
     lcd_hex(0xdeadbeef);
     break;
-  case '+':
-    app_next();
-    break;
 
 
     /* For now, we set the time by the 1,2,3 buttons and date by 4,5,6

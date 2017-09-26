@@ -96,8 +96,9 @@ void rpn_draw(){
       else
 	rpn_push(rpn_peek());
       break;
-    case '.': //Move to the next app.
-      app_next();
+    case '.':
+      //What should this do?
+      //It's out only free button.
       break;
     case '+':
       rpn_pushbuffer();

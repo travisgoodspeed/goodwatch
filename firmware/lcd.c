@@ -59,17 +59,12 @@ void lcd_postdraw(){
   //Mark some flags no matter what the mode.
   if((UCSCTL4&SELM_7)!=SELM_0)
     setmult(1);  //Mult indicates main clock is not from XT1
-  if(key_pressed())
-    setdivide(1);
-  if(sidebutton_mode())
-    setplus(1);
   
   //Now swap back the buffer.
   LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.
 
   //Copy to blink memory for the next round.
   memcpy((char*) lcdbm,(char*) lcdm,13);
-
 
   /* Uncomment this for a sort of CPU monitor, which will darken one
      piece of the day-of-week characters only while the rest of the

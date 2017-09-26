@@ -59,5 +59,14 @@ int main(void) {
 
 // Watchdog Timer interrupt service routine, calls back to handler functions.
 void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
+  static int latch=0;
+  
+  if(sidebutton_mode()){
+    lcd_zero();
+    if(!(latch++))
+      app_next();
+  }else{
+    latch=0;
+  }
   lcd_wdt();
 }
