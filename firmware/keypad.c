@@ -14,7 +14,7 @@ void key_init(){
   P2SEL=0x00;  //All of port 2 are IO.
   P2DIR=BIT2|BIT1|BIT0;  //Rows are input, columns are  output.
   P2REN|=0xFF; //All resistor.
-  P2OUT=0x00; //Pull all of them down.
+  P2OUT=BIT2|BIT1|BIT0; //Pull all of them down.
 
   P1SEL&=~0x80; //P1.7 is IO.
   P1DIR|=0x80; //P1.7 is output.
@@ -24,7 +24,7 @@ void key_init(){
 
 //! Quickly checks to see if a key is pressed.
 int key_pressed(){
-  return P2IN&(BIT3|BIT4|BIT5|BIT6);
+  return (P2IN&(BIT3|BIT4|BIT5|BIT6));
 }
 
 //! Bitfields indicate pressed rows.
@@ -38,10 +38,7 @@ int key_row(){
   //We'll return this result, but after cleaning up.
   row=(P2IN>>3)&0x0F;
   
-  P1DIR&=~0x80; //All input.
-  P2DIR=0x00; 
-  P1OUT&=~0x80; //All down.
-  P2OUT=0x00; 
+  key_init();
   
   return row;
 }
@@ -57,16 +54,14 @@ int key_col(){
   //We'll return this result, but after cleaning up.
   col=((P2IN&0x7)<<1) | ((P2IN&0x80)>>7);
 
-  P1DIR&=~0x80; //All input.
-  P2DIR=0x00; 
-  P1OUT&=~0x80; //All down.
-  P2OUT=0x00;
 
   //Temporary workaround for what I think is hardware damage in my
   //prototype.
   if(col&~1)
     return col&0xFE;
 
+  key_init();
+  
   return col;
 }
 

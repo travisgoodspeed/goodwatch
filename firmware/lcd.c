@@ -59,9 +59,9 @@ void lcd_postdraw(){
   //Mark some flags no matter what the mode.
   if((UCSCTL4&SELM_7)!=SELM_0)
     setmult(1);  //Mult indicates main clock is not from XT1
-  if(sidebutton_mode())
+  if(key_pressed())
     setdivide(1);
-  if(sidebutton_set())
+  if(sidebutton_mode())
     setplus(1);
   
   //Now swap back the buffer.
