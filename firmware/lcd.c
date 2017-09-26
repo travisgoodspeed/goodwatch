@@ -55,11 +55,30 @@ void lcd_predraw(){
 
 //! Reverts to the main display.
 void lcd_postdraw(){
+  //Mark some flags no matter what the mode.
+  if((UCSCTL4&SELA_7)!=SELA_0)
+    setmult(1);  //Mult indicates clock is not from XT1
+  if((UCSCTL4&SELM_7)!=SELM_0)
+    setdivide(1);  //Divsion indicates main clock is not from XT1.
+  if((UCSCTL4&SELS_7)!=SELS_0)
+    setdivide(1);  //Divsion indicates SM clock is not from XT1.
+  //TODO:
+  
+  
   //Now swap back the buffer.
   LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.
 
   //Copy to blink memory for the next round.
   memcpy((char*) lcdbm,(char*) lcdm,13);
+
+
+  /* Uncomment this for a sort of CPU monitor, which will darken one
+     piece of the day-of-week characters only while the rest of the
+     screen is being drawn.  If the segment is very dark, you might be
+     taking more than your fair share of cycles.  If it is very light,
+     you are either not redrawing the screen, or you have plenty of
+     cycles to spare.
+   */
   //lcdbm[0x0c]|=0x01; //Set a segment to visualize delay times.
 }
 
