@@ -8,6 +8,7 @@
 
 #include "lcd.h"
 #include "rtc.h"
+#include "keypad.h"
 
 //Initialize the XT1 crystal, and stabilize it.
 void xtal_init(){
@@ -34,6 +35,7 @@ int main(void) {
   lcd_init();
   xtal_init();
   rtc_init();
+  key_init();
 
   // Setup and enable WDT 250ms, ACLK, interval timer
   WDTCTL = WDT_ADLY_250;

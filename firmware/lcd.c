@@ -47,34 +47,27 @@ void lcd_init() {
   lcd_zero();
   for(i=0;i<13;i++)
     lcdbm[i]=0xFF;
-
-  //Seems unwired?
-  lcdm[2]^=0x40;
-  //Weird top-right thingys.
-  //lcdm[9]|=0x04;
-  //lcdm[0x0a]|=0x40;
-  //lcdm[0x0c]|=0x01;
-
-  //Beyond the range.
-  //lcdm[0x0c]|=0x10;
 }
 
 //! Moved the LCD memory to the blink memory, then displays the backup.
 void lcd_predraw(){
-  //Copy the LCD memory to the blink memory, then display blink memory.
-  memcpy((char*) lcdbm,(char*) lcdm,13);
+  //Switch to the backup of the previous frame.
   LCDBMEMCTL |= LCDDISP; // Enable blink memory
 }
 
 //! Reverts to the main display.
 void lcd_postdraw(){
-  //Now swap back the buffer.
+  //Now swap back the buffer and copy it to blink memory for the next round.
   LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.
+  memcpy((char*) lcdbm,(char*) lcdm,13);
 }
 
 //! LCD callback when the CPU wakes.
 void lcd_wdt(){
   lcd_predraw();
+  
+  //lcd_zero();
   draw_time();
+
   lcd_postdraw();
 }

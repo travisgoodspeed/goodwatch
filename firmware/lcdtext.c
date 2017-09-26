@@ -18,7 +18,7 @@
 
 //This maps the segments of each digit.
 // A,      B,      C,      D,      E,      F,      G,     dp         digit
-const int map[10][8]={
+const int lcdmap[10][8]={
   {0x0b04, 0x0b40, 0x0b20, 0x0b01, 0x0a10, 0x0a20, 0x0b02, 0x0b10}, //0
   {0x0940, 0x0a04, 0x0a02, 0x0910, 0x0901, 0x0902, 0x0920, 0x0a01}, //1
   {0x0804, 0x0840, 0x0820, 0x0801, 0x0710, 0x0720, 0x0802, 0x0810}, //2
@@ -29,7 +29,11 @@ const int map[10][8]={
   {0x0040, 0x0104, 0x0102, 0x0010, 0x0001, 0x0002, 0x0020, 0x0201}, //7
 };
 
-enum mappos {A=1, B=2, C=4, D=8, E=0x10, F=0x20, G=0x40, DP=0x80};
+//These are the fragments of the day of the week: 0x0904, 0x0a40, 0x0c01
+//0x0c10 is beyond the screen.
+//0x0240 seems not to be wired to any visible segment.
+
+enum lcdmappos {A=1, B=2, C=4, D=8, E=0x10, F=0x20, G=0x40, DP=0x80};
 const int numfont[]={
   A|B|C|D|E|F,   //0
   B|C,           //1
@@ -50,15 +54,13 @@ const int numfont[]={
 };
 
 #define DRAWPOINT(todraw) lcdm[todraw>>8]|=todraw&0xFF
-#define DRAWPOINTB(todraw) lcdbm[todraw>>8]|=todraw&0xFF
 //! Draws one LCD digit.
 void lcd_digit(int pos, int digit){
   int segments=numfont[digit];
   int bit;
   for(bit=0;bit<8;bit++){
     if(segments&(1<<bit)){
-      DRAWPOINT(map[pos][bit]);
-      //DRAWPOINTB(map[pos][bit]);
+      DRAWPOINT(lcdmap[pos][bit]);
     }
   }
 }

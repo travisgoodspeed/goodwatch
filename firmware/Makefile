@@ -5,14 +5,14 @@ CC = msp430-gcc -mmcu=cc430f6137 -Wall
 BSL = ../bin/cc430-bsl.py
 
 
-modules=main.o lcd.o lcdtext.o rtc.o
+modules=main.o lcd.o lcdtext.o rtc.o keypad.o
 
 all: goodwatch.hex
 
 goodwatch: $(modules)
 	$(CC) -o goodwatch $(modules)
 goodwatch.hex: goodwatch
-	 msp430-objcopy -O ihex goodwatch goodwatch.hex
+	msp430-objcopy -O ihex goodwatch goodwatch.hex
 
 clean:
 	rm -f *~ *.hex *.elf *.o goodwatch

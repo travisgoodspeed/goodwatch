@@ -64,9 +64,9 @@ void rtc_init(){
 
 void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
   //Display the hex value if we ever drop here.
-  lcd_hex(0xC1000000|RTCIV);
+  //lcd_hex(0xC1000000|RTCIV);
   
-  //switch(__even_in_range(RTCIV,16))
+  //We don't really handly these, but might want to in the future.
   switch(RTCIV&~1){
     case 0: break;                          // No interrupts
     case 2: break;                          // RTCRDYIFG
