@@ -2,21 +2,29 @@
 
 #include "apps.h"
 
-//Initializes the keypad pin directions.
+//! Initializes the keypad pin directions.
 void key_init(){
   /* The keypad uses P1.7 and all of Port 2.  Pins are bridged
      together by rows and columns, which requires active scanning for
      a read but can allow for an initial wakeup on an interrupt. */
 
+  /* Columns 2.2, 2.1, 2.0, and 1.7 are set to output mode pulled
+     high, so that any low row indicates a button press. */
+
   P2SEL=0x00;  //All of port 2 are IO.
-  P2DIR=0x00;  //All are input.
+  P2DIR=BIT2|BIT1|BIT0;  //Rows are input, columns are  output.
   P2REN|=0xFF; //All resistor.
   P2OUT=0x00; //Pull all of them down.
 
   P1SEL&=~0x80; //P1.7 is IO.
-  P1DIR&=~0x80; //P1.7 is input.
+  P1DIR|=0x80; //P1.7 is output.
   P1REN|=0x80;
-  P1OUT&=~0x80;  //Output low.
+  P1OUT|=0x80;  //Output high.
+}
+
+//! Quickly checks to see if a key is pressed.
+int key_pressed(){
+  return P2IN&(BIT3|BIT4|BIT5|BIT6);
 }
 
 //! Bitfields indicate pressed rows.
@@ -29,7 +37,6 @@ int key_row(){
 
   //We'll return this result, but after cleaning up.
   row=(P2IN>>3)&0x0F;
-
   
   P1DIR&=~0x80; //All input.
   P2DIR=0x00; 
@@ -82,7 +89,17 @@ unsigned int key_scan(){
       08   04   02   01
   */
 
-  unsigned int scan=(key_row()<<4)|key_col();
+  unsigned int scan;
+
+  //When no buttons are pressed, we need to shortcut the scan to avoid
+  //wasting I/O and energy.
+  if(!key_pressed())
+    return 0;
+  
+  //Some button is pressed, so do an active scan to figure out which
+  //one.
+  scan=(key_row()<<4)|key_col();
+  key_init();
 
   if(scan&0xF0)
     return scan;

@@ -10,6 +10,7 @@
 #include "rtc.h"
 #include "keypad.h"
 #include "apps.h"
+#include "sidebutton.h"
 
 //Initialize the XT1 crystal, and stabilize it.
 void xtal_init(){
@@ -32,11 +33,13 @@ void xtal_init(){
 
 int main(void) {
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
-  
+
+  //Initialize the various modules.
   lcd_init();
   xtal_init();
   rtc_init();
   key_init();
+  sidebutton_init();
   app_init();
 
   // Setup and enable WDT 250ms, ACLK, interval timer

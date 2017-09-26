@@ -8,6 +8,7 @@
 #include "lcdtext.h"
 #include "rtc.h"
 #include "apps.h"
+#include "sidebutton.h"
 
 volatile unsigned char *lcdm=&LCDM1;
 volatile unsigned char *lcdbm=&LCDBM1;
@@ -56,14 +57,12 @@ void lcd_predraw(){
 //! Reverts to the main display.
 void lcd_postdraw(){
   //Mark some flags no matter what the mode.
-  if((UCSCTL4&SELA_7)!=SELA_0)
-    setmult(1);  //Mult indicates clock is not from XT1
   if((UCSCTL4&SELM_7)!=SELM_0)
-    setdivide(1);  //Divsion indicates main clock is not from XT1.
-  if((UCSCTL4&SELS_7)!=SELS_0)
-    setdivide(1);  //Divsion indicates SM clock is not from XT1.
-  //TODO:
-  
+    setmult(1);  //Mult indicates main clock is not from XT1
+  if(sidebutton_mode())
+    setdivide(1);
+  if(sidebutton_set())
+    setplus(1);
   
   //Now swap back the buffer.
   LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.
