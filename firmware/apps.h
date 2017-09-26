@@ -16,4 +16,7 @@ struct app {
 
 
 
-void draw_app();
+void app_draw();
+void app_init();
+void app_next();
+

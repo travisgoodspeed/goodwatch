@@ -71,12 +71,26 @@ void lcd_digit(int pos, int digit){
 
 //! Draws a decimal number on the screen.
 void lcd_number(long num){
-  long bcd=0;
+  static long bcd=0;
+  static long oldnum=0;
   int i;
-  for(i=0;i<8;i++){
+  
+  /* This conversion takes too long at 32kHz, so we cache the last
+     value for rendering. */
+  if(oldnum==num){
+    lcd_hex(bcd);
+    return;
+  }
+
+  /* Otherwise we convert it with expensive divisions. */
+  bcd=0;
+  for(i=0;i<8 && num;i++){
     bcd|=((num%10)<<(4*i));
     num/=10;
   }
+
+  //Then cache the result and display it.
+  oldnum=num;
   lcd_hex(bcd);
 }
 

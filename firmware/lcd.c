@@ -71,7 +71,7 @@ void lcd_wdt(){
      double-buffering, so that incomplete drawings won't be shown to
      the user, but everything else is the app's responsibility. */
 
-  draw_app();
+  app_draw();
 
   lcd_postdraw();
 }

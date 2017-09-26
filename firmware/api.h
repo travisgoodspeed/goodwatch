@@ -7,3 +7,5 @@
 #include "lcdtext.h"
 #include "keypad.h"
 #include "apps.h"
+#include "rtc.h"
+
