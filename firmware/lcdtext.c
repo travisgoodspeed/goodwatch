@@ -106,8 +106,14 @@ void lcd_hex(long num){
    */
   int i;
 
+  
+  /* There is some weird bug where a segment in the second digit can
+     be dropped when drawn left to right.  I don't understand it, but
+     this works around it. --Travis
+  */
 
-  for(i=0;i<8;i++)
+  //for(i=0;i<8;i++)
+  for(i=7;i>=0;i--)
     lcd_digit(i,(num>>(4*i))&0xf);
   
 }

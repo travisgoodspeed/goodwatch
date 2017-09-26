@@ -10,3 +10,8 @@ ftp-lib-table
 
 # for external tools
 *.dsn
+
+# C objects
+*.o
+*.hex
+firmware/goodwatch

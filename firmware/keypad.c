@@ -1,5 +1,7 @@
 #include <msp430.h>
 
+#include "apps.h"
+
 //Initializes the keypad pin directions.
 void key_init(){
   /* The keypad uses P1.7 and all of Port 2.  Pins are bridged
@@ -115,5 +117,9 @@ unsigned int key_chr(code){
 
 //! Gets a character as ASCII.
 char getchar(){
-  return key_chr(key_scan());
+  char c=key_chr(key_scan());
+  if(c)
+    //Clear the app timer when a button is pressed.
+    app_cleartimer();
+  return c;
 }

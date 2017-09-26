@@ -96,8 +96,8 @@ void rpn_draw(){
       else
 	rpn_push(rpn_peek());
       break;
-    case '.':
-      rpn_push(0x1);
+    case '.': //Move to the next app.
+      app_next();
       break;
     case '+':
       rpn_pushbuffer();
