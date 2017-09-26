@@ -4,6 +4,8 @@
    such as the date or the voltage.
 */
 
+#include <msp430.h>
+
 #include "api.h"
 
 //! Entry to the clock app.
@@ -26,12 +28,48 @@ void clock_draw(){
   case '7':
     lcd_hex(0xdeadbeef);
     break;
-  case '4':
-    lcd_hex(0xcafebabe);
-    break;
   case '+':
     app_next();
     break;
+
+
+    /* For now, we set the time by the 1,2,3 buttons and date by 4,5,6
+       buttons. */
+  case '1':
+    if(oldch!=ch)
+      RTCHOUR=(RTCHOUR+1)%24;
+    draw_time();
+    break;
+  case '2':
+    if(oldch!=ch)
+      RTCMIN=(RTCMIN+1)%60;
+    draw_time();
+    break;
+  case '3':
+    if(oldch!=ch)
+      RTCSEC=0;
+    draw_time();
+    break;
+  case '4':
+    if(RTCYEAR<2016)
+      RTCYEAR=2016;
+    if(oldch!=ch)
+      RTCYEAR=(RTCYEAR+1)%2020;
+    draw_date();
+    break;
+  case '5':
+    if(oldch!=ch)
+      RTCMON=(RTCMON+1)%13;
+    draw_date();
+    break;
+  case '6':
+    if(oldch!=ch)
+      RTCDAY=(RTCDAY+1)%32;
+    draw_date();
+    break;
+
+
+    
   case 0:
     draw_time();
     break;
