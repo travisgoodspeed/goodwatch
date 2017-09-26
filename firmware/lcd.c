@@ -14,11 +14,7 @@ volatile unsigned char *lcdbm=&LCDBM1;
 
 //! Clears the LCD memory and blink memory.
 void lcd_zero(){
-  int i=0;
-  
-  for(i=0; i<=13; i++){
-    lcdm[i]=0;
-  }
+  LCDBMEMCTL|=LCDCLRM;
 }
 
 
@@ -54,13 +50,17 @@ void lcd_init() {
 void lcd_predraw(){
   //Switch to the backup of the previous frame.
   LCDBMEMCTL |= LCDDISP; // Enable blink memory
+  
 }
 
 //! Reverts to the main display.
 void lcd_postdraw(){
-  //Now swap back the buffer and copy it to blink memory for the next round.
+  //Now swap back the buffer.
   LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.
+
+  //Copy to blink memory for the next round.
   memcpy((char*) lcdbm,(char*) lcdm,13);
+  //lcdbm[0x0c]|=0x01; //Set a segment to visualize delay times.
 }
 
 //! LCD callback when the CPU wakes.
