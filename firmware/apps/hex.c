@@ -73,7 +73,26 @@ void hex_draw(){
   }
 
   //And finally we draw the result to the screen.
+
+  
   lcd_zero();
+
+  /* The bootloader range is illegal to read, so we skip it.  In the
+     future, we might bypass this by reflecting our request through
+     the bootloader region, or trying to find the protection flag that
+     is keeping us from accessing it.
+   */
+  if(adr>0x1000 && adr<=0x17FF){
+    lcd_hex(
+	    (((unsigned long)adr)<<16) // Address
+	    | 0xdead //data
+	    );
+    return;
+  }
+  
+  /* Now that the range is legal and the value known, let's fetch the
+     value and display it.
+   */
   lcd_hex(
 	  (((unsigned long)adr)<<16) // Address
 	  | ((unsigned int*)adr)[0] //data
