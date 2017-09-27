@@ -10,7 +10,7 @@
 static unsigned long stack[STACKSIZE];
 static unsigned long buffer=0;
 static int bufferdirty=0;
-static unsigned int stacki;
+static unsigned int stacki=0;
 
 
 
