@@ -4,9 +4,6 @@
 
  */
 
-#include "apps/clock.h"
-#include "apps/rpn.h"
-#include "apps/hex.h"
 
 
 struct app {
