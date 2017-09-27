@@ -84,13 +84,12 @@ void lcd_number(long num){
 
   /* Otherwise we convert it with expensive divisions. */
   bcd=0;
+  oldnum=num;
   for(i=0;i<8 && num;i++){
     bcd|=((num%10)<<(4*i));
     num/=10;
   }
 
-  //Then cache the result and display it.
-  oldnum=num;
   lcd_hex(bcd);
 }
 
@@ -115,7 +114,6 @@ void lcd_hex(long num){
   //for(i=0;i<8;i++)
   for(i=7;i>=0;i--)
     lcd_digit(i,(num>>(4*i))&0xf);
-  
 }
 
 
