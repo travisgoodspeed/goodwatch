@@ -1,6 +1,7 @@
 
 
 void lcd_digit(int pos, int digit);
+void lcd_cleardigit(int pos);
 void lcd_number(long num);
 void lcd_hex(long num);
 

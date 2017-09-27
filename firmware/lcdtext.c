@@ -68,8 +68,7 @@ void lcd_digit(int pos, int digit){
   }
 }
 //! clears one LCD digit.
-void lcd_cleardigit(int pos, int digit){
-  int segments=numfont[digit];
+void lcd_cleardigit(int pos){
   int bit;
   for(bit=0;bit<8;bit++)
       CLEARPOINT(lcdmap[pos][bit]);
