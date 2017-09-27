@@ -65,9 +65,17 @@ void lcd_digit(int pos, int digit){
       DRAWPOINT(lcdmap[pos][bit]);
     else
       CLEARPOINT(lcdmap[pos][bit]);
-    
   }
 }
+//! clears one LCD digit.
+void lcd_cleardigit(int pos, int digit){
+  int segments=numfont[digit];
+  int bit;
+  for(bit=0;bit<8;bit++)
+      CLEARPOINT(lcdmap[pos][bit]);
+  
+}
+
 
 //! Draws a decimal number on the screen.
 void lcd_number(long num){

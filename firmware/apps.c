@@ -27,8 +27,7 @@ void app_draw(){
   }
   if(idlecount>3){
     app_cleartimer();
-    lcd_zero();  //Manually clear the screen because of the switch.
-    appindex=0;
+    app_forcehome();
   }
   
   //Call the cap if it exists, or switch to the clock if we're at the
@@ -42,8 +41,8 @@ void app_draw(){
 
 //! Force return to the home app.
 void app_forcehome(){
-  
   appindex=0;
+  apps[appindex].init();
 }
 
 //! Renders the current app to the screen.

@@ -31,10 +31,11 @@ void draw_time(){
   
   lcd_digit(7,hour/10);
   lcd_digit(6,hour%10);
+  lcd_cleardigit(5); //Space
   setcolon(i++&1);
   lcd_digit(4,min/10);
   lcd_digit(3,min%10);
-  //space
+  lcd_cleardigit(2); //Space
   lcd_digit(1,sec/10);
   lcd_digit(0,sec%10);
 
