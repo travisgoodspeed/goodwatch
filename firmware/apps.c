@@ -1,6 +1,7 @@
 #include <msp430.h>
 
 #include "apps.h"
+#include "lcd.h"
 #include "lcdtext.h"
 
 #include "applist.h"
@@ -26,6 +27,7 @@ void app_draw(){
   }
   if(idlecount>3){
     app_cleartimer();
+    lcd_zero();  //Manually clear the screen because of the switch.
     appindex=0;
   }
   
@@ -34,8 +36,14 @@ void app_draw(){
   if(tocall)
     tocall();
   else
-    appindex=0;
+    app_forcehome();
   return;
+}
+
+//! Force return to the home app.
+void app_forcehome(){
+  
+  appindex=0;
 }
 
 //! Renders the current app to the screen.
@@ -48,15 +56,29 @@ void app_init(){
   return;
 }
 
-//! Move to the next application.
+//! Move to the next application if the current allows it.
 void app_next(){
-  void (*tocall)(void)=apps[++appindex].draw;
+  void (*tocall)(void)=apps[appindex].draw;
   
-  //Clear the 3-minute timer when we switch apps.
+  //Clear the 3-minute timer when we switch apps.  This is also
+  //cleared by keypresses.
   app_cleartimer();
-  
+
+  /* First we ask the current app if it will allow the transaction by
+     calling its exit() routine.  Zero or a null function pointer allow
+     for the transition, but non-zero indicates that the transition has
+     been cancelled.  For example, this is done by the RPN calculator
+     when the item on the stack is not zero.
+  */
+  //Return if there is an exit function and it returns non-zero.
+  if(apps[appindex].exit && apps[appindex].exit())
+    return;
+
+  tocall=apps[++appindex].draw;
   if(!tocall)
     appindex=0;
-  
+
+  //Initialize the new application and return.
+  apps[appindex].init();
   return;
 }

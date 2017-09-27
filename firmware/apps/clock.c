@@ -12,6 +12,10 @@
 void clock_init(){
   lcd_zero();
 }
+//! Exit when the button is pressed.
+int clock_exit(){
+  return 0;
+}
 
 //! Draws the clock face in the main application.
 void clock_draw(){

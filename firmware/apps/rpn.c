@@ -5,7 +5,7 @@
    deep.
 */
 
-#define STACKSIZE 5
+#define STACKSIZE 10
 
 static unsigned long stack[STACKSIZE];
 static unsigned long buffer=0;
@@ -26,6 +26,8 @@ static void rpn_push(long val){
 static long rpn_pop(){
   return stack[(stacki--)%STACKSIZE];
 }
+
+
 
 //! Draws the top of the RPN stack.
 static void rpn_drawstack(){
@@ -72,9 +74,23 @@ static char oldch=0;
 //! Initializes the calculator.
 void rpn_init(){
   int i;
+
+  //Fresh stack when we enter the calculator.
   for(i=0;i<STACKSIZE;i++)
-    rpn_push(i);
+    rpn_push(0);
+  
   oldch=getchar();
+}
+
+//! RPN handler for sidebutton.
+int rpn_exit(){
+  // Exit if zero is the latest number.
+  if(rpn_peek()==0)
+    return 0;
+
+  //Otherwise push a zero and return.
+  rpn_push(0);
+  return 1;
 }
 
 //! Draws the RPN calculator.
@@ -127,7 +143,6 @@ void rpn_draw(){
      */
     if(ch>='0' && ch<='9')
       rpn_updatebuffer(ch&0xf);
-    
   }
   
   oldch=ch;

@@ -7,10 +7,12 @@
 #include <string.h>
 
 #include "lcd.h"
+#include "lcdtext.h"
 #include "rtc.h"
 #include "keypad.h"
 #include "apps.h"
 #include "sidebutton.h"
+
 
 //Initialize the XT1 crystal, and stabilize it.
 void xtal_init(){
@@ -60,11 +62,22 @@ int main(void) {
 // Watchdog Timer interrupt service routine, calls back to handler functions.
 void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
   static int latch=0;
-  
+
+  /* So if the side button is being pressed, we increment the latch
+     and move to the next application.  Some applications, such as the
+     calculator, might hijack the call, so if we are latched for too
+     many poling cycles, we forcibly revert to the clock applicaiton.
+   */
   if(sidebutton_mode()){
     lcd_zero();
+
+    //Politely move to the next app if requested.
     if(!(latch++))
       app_next();
+
+    //Force a shift to the home if held for 4 seconds (16 polls)
+    if(latch>16)
+      app_forcehome();
   }else{
     latch=0;
   }

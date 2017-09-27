@@ -83,7 +83,6 @@ void lcd_wdt(){
   /* The applet is drawn four times per second.  We handle
      double-buffering, so that incomplete drawings won't be shown to
      the user, but everything else is the app's responsibility. */
-
   app_draw();
 
   lcd_postdraw();
