@@ -9,59 +9,6 @@
 
 
 
-//! Get the hour.
-int get_hour(){
-  return RTCHOUR;
-}
-//! Get the minute.
-int get_minute(){
-  return RTCMIN;
-}
-//! Get the second.
-int get_second(){
-  return RTCSEC;
-}
-
-//! Draws the time.
-void draw_time(){
-  static int i=0;
-  unsigned int hour=get_hour();
-  unsigned int min=get_minute();
-  unsigned int sec=get_second();
-  
-  lcd_digit(7,hour/10);
-  lcd_digit(6,hour%10);
-  lcd_cleardigit(5); //Space
-  setcolon(i++&1);
-  lcd_digit(4,min/10);
-  lcd_digit(3,min%10);
-  lcd_cleardigit(2); //Space
-  lcd_digit(1,sec/10);
-  lcd_digit(0,sec%10);
-
-  setam(hour<12);
-  setpm(hour>=12);
-}
-
-//! Draws the date as yyyy.mm.dd
-void draw_date(){
-  unsigned int year=RTCYEAR;
-  unsigned int month=RTCMON;
-  unsigned int day=RTCDAY;
-
-  lcd_digit(7,(year/1000)%10);
-  lcd_digit(6,(year/100)%10);
-  lcd_digit(5,(year/10)%10);
-  lcd_digit(4,year%10);
-  setcolon(0);
-  lcd_digit(3,month/10);
-  lcd_digit(2,month%10);
-  lcd_digit(1,day/10);
-  lcd_digit(0,day%10);
-
-  setam(0);
-  setpm(0);
-}
 
 //! Initializes the clock with the timestamp from memory.
 void rtc_init(){
