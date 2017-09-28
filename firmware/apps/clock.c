@@ -10,7 +10,6 @@
 
 //! Draws the time.
 void draw_time(){
-  static int i=0;
   unsigned int hour=RTCHOUR;
   unsigned int min=RTCMIN;
   unsigned int sec=RTCSEC;
@@ -18,7 +17,7 @@ void draw_time(){
   lcd_digit(7,hour/10);
   lcd_digit(6,hour%10);
   lcd_cleardigit(5); //Space
-  setcolon((++i>>1)&1);
+  setcolon(1);
   lcd_digit(4,min/10);
   lcd_digit(3,min%10);
   lcd_cleardigit(2); //Space
