@@ -70,16 +70,27 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
    */
   if(sidebutton_mode()){
     lcd_zero();
-
+    
     //Politely move to the next app if requested.
     if(!(latch++))
       app_next();
-
+    
     //Force a shift to the home if held for 4 seconds (16 polls)
     if(latch>16)
       app_forcehome();
+    
   }else{
     latch=0;
   }
-  lcd_wdt();
+
+
+  
+  lcd_predraw();
+
+  /* The applet is drawn four times per second.  We handle
+     double-buffering, so that incomplete drawings won't be shown to
+     the user, but everything else is the app's responsibility. */
+  app_draw();
+
+  lcd_postdraw();
 }

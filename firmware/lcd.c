@@ -76,14 +76,3 @@ void lcd_postdraw(){
   //lcdbm[0x0c]|=0x01; //Set a segment to visualize delay times.
 }
 
-//! LCD callback when the CPU wakes.
-void lcd_wdt(){
-  lcd_predraw();
-
-  /* The applet is drawn four times per second.  We handle
-     double-buffering, so that incomplete drawings won't be shown to
-     the user, but everything else is the app's responsibility. */
-  app_draw();
-
-  lcd_postdraw();
-}
