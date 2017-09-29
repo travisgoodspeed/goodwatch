@@ -11,7 +11,7 @@
 /* When this is non-zero, we are in programming mode.  The number
    indicates the field being set.
  */
-static int settingclock=7;
+static int settingclock=0;
 
 
 //! Draws the time.
