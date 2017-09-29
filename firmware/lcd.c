@@ -33,7 +33,8 @@ void lcd_init() {
   // Charge pump generated internally at 3.44V, external bias (V2-V4) generation
   // Internal reference for charge pump
   LCDBCTL0 =  (LCDDIV0 + LCDDIV1 + LCDDIV2 + LCDDIV3 + LCDDIV4)| LCDPRE0 | LCD4MUX | LCDON | LCDSON;
-  LCDBVCTL = LCDCPEN | VLCD_3_44;
+  LCDBVCTL = LCDCPEN | VLCD_3_44 | LCD2B; //Highest contrast, 1/2 BIAS
+  //LCDBVCTL = LCDCPEN | VLCD_2_60 | LCD2B; //Weakest contrast.
   LCDBCTL0 |= LCDON + LCDSON;
   REFCTL0 &= ~REFMSTR;
   
