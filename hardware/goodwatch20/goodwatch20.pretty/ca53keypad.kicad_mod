@@ -1,0 +1,17 @@
+(module ca53keypad (layer F.Cu) (tedit 58F27465)
+  (fp_text reference REF** (at 7.2 2) (layer F.SilkS) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value keypad (at 5.9 -2) (layer F.Fab) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (pad 1 connect rect (at 0.5 0) (size 0.985 1.75) (layers F.Cu F.Mask))
+  (pad 2 connect rect (at 2 0) (size 0.985 1.75) (layers F.Cu F.Mask))
+  (pad 3 connect rect (at 3.5 0) (size 0.985 1.75) (layers F.Cu F.Mask))
+  (pad 4 connect rect (at 5 0) (size 0.985 1.75) (layers F.Cu F.Mask))
+  (pad 5 connect rect (at 6.5 0) (size 0.985 1.75) (layers F.Cu F.Mask))
+  (pad 6 connect rect (at 8 0) (size 0.985 1.75) (layers F.Cu F.Mask))
+  (pad 7 connect rect (at 9.5 0) (size 0.985 1.75) (layers F.Cu F.Mask))
+  (pad 8 connect rect (at 11 0) (size 0.985 1.75) (layers F.Cu F.Mask))
+  (pad 9 connect rect (at 12.5 0) (size 0.985 1.75) (layers F.Cu F.Mask))
+)
