@@ -29,10 +29,11 @@ void lcd_init() {
   P5DIR |= (/*BIT5 |*/ BIT6 | BIT7);
 
   // Configure LCD_B
-  // LCD_FREQ = ACLK/32/4, LCD Mux 4, turn on LCD
+  // LCD_FREQ = ACLK/32/4, LCD Mux 3, turn on LCD
   // Charge pump generated internally at 3.44V, external bias (V2-V4) generation
   // Internal reference for charge pump
-  LCDBCTL0 =  (LCDDIV0 + LCDDIV1 + LCDDIV2 + LCDDIV3 + LCDDIV4)| LCDPRE0 | LCD4MUX | LCDON | LCDSON;
+  LCDBCTL0 =  (LCDDIV0 + LCDDIV1 + LCDDIV2 + LCDDIV3 + LCDDIV4)
+             | LCDPRE0 | LCD3MUX | LCDON | LCDSON;
   LCDBVCTL = LCDCPEN | VLCD_3_44 | LCD2B; //Highest contrast, 1/2 BIAS
   //LCDBVCTL = LCDCPEN | VLCD_2_60 | LCD2B; //Weakest contrast.
   LCDBCTL0 |= LCDON + LCDSON;
