@@ -8,8 +8,14 @@
 
 #include "api.h"
 
+/* When this is non-zero, we are in programming mode.  The number
+   indicates the field being set.
+ */
+static int settingclock=7;
+
+
 //! Draws the time.
-void draw_time(){
+static void draw_time(){
   unsigned int hour=RTCHOUR;
   unsigned int min=RTCMIN;
   unsigned int sec=RTCSEC;
@@ -29,7 +35,7 @@ void draw_time(){
 }
 
 //! Draws the date as yyyy.mm.dd
-void draw_date(){
+static void draw_date(){
   unsigned int year=RTCYEAR;
   unsigned int month=RTCMON;
   unsigned int day=RTCDAY;
@@ -48,14 +54,166 @@ void draw_date(){
   setpm(0);
 }
 
+int flicker=0;
+
+//! Draws whatever is being set
+static void draw_settingtime(char ch){
+  
+  int inputdigit=0;
+
+  flicker^=1;
+
+  //We only handle numbers here.
+  if((ch&0x30)==0x30)
+    inputdigit=ch&0x0F;
+  else
+    ch=0;
+
+  //First we draw the entire thing, then we blink the second being
+  //set.
+  if(settingclock<7)
+    draw_time();
+  else
+    draw_date();
+
+  switch(settingclock){
+  case 1:         //Hour
+    if(flicker)
+      lcd_cleardigit(7);
+    if(ch){
+      RTCHOUR=inputdigit*10+RTCHOUR%10;
+      settingclock++;
+    }
+    break;
+  case 2:
+    if(flicker)
+      lcd_cleardigit(6);
+    if(ch){
+      RTCHOUR=RTCHOUR-RTCHOUR%10+inputdigit;
+      settingclock++;
+    }
+    break;
+  case 3:         //Minute
+    if(flicker)
+      lcd_cleardigit(4);
+    if(ch){
+      RTCMIN=inputdigit*10+RTCMIN%10;
+      settingclock++;
+    }
+    break;
+  case 4:
+    if(flicker)
+      lcd_cleardigit(3);
+    if(ch){
+      RTCMIN=RTCMIN-RTCMIN%10+inputdigit;
+      settingclock++;
+    }
+    break;
+    
+  case 5:        //Second
+    if(flicker)
+      lcd_cleardigit(1);
+    if(ch){
+      RTCSEC=inputdigit*10;
+      settingclock++;
+    }
+    break;
+  case 6:        //Second
+    if(flicker)
+      lcd_cleardigit(0);
+    if(ch){
+      RTCSEC=RTCSEC-RTCSEC%10+inputdigit;
+      settingclock++;
+    }
+    break;
+  case 7:        //Year
+    if(flicker)
+      lcd_cleardigit(7);
+    if(ch){
+      RTCYEAR=inputdigit*1000+RTCYEAR%1000;
+      settingclock++;
+    }
+    break;
+  case 8:
+    if(flicker)
+      lcd_cleardigit(6);
+    if(ch){
+      RTCYEAR=RTCYEAR-RTCYEAR%100+inputdigit*100+RTCYEAR%10;
+      settingclock++;
+    }
+    break;
+  case 9:
+    if(flicker)
+      lcd_cleardigit(5);
+    if(ch){
+      RTCYEAR=RTCYEAR-RTCYEAR%100+inputdigit*10+RTCYEAR%10;
+      settingclock++;
+    }
+    break;
+  case 10:
+    if(flicker)
+      lcd_cleardigit(4);
+    if(ch){
+      RTCYEAR=RTCYEAR-RTCYEAR%10+inputdigit;
+      settingclock++;
+    }
+    break;
+  case 11:        //Month
+    if(flicker)
+      lcd_cleardigit(3);
+    if(ch){
+      RTCMON=inputdigit*10+RTCMON%10;
+      settingclock++;
+    }
+    break;
+  case 12:
+    if(flicker)
+      lcd_cleardigit(2);
+    if(ch){
+      RTCMON=RTCMON-RTCMON%10+inputdigit;
+      settingclock++;
+    }
+    break;
+    
+  case 13:       //Day
+    if(flicker) 
+      lcd_cleardigit(1);
+    if(ch){
+      RTCDAY=inputdigit*10+RTCDAY%10;
+      settingclock++;
+    }
+    break;
+  case 14: //Day
+    if(flicker)
+      lcd_cleardigit(0);
+    if(ch){
+      RTCDAY=RTCDAY-RTCDAY%10+inputdigit;
+      settingclock++;
+    }
+    break;
+  default:
+    /* Once we've exceeded the count, it's time to return to the
+       normal mode.
+     */
+    settingclock=0;
+  }
+}
+
 
 //! Entry to the clock app.
 void clock_init(){
   lcd_zero();
 }
-//! Exit when the button is pressed.
+//! Exit clock when the sidebutton is pressed, unless we are programming.
 int clock_exit(){
-  return 0;
+  if(settingclock){
+    //Setting the time, so jump to next digit.
+    settingclock++;
+    return 1;
+  }else{
+    //Not setting the time, so just move on to next app.
+    return 0;
+  }
 }
 
 //! Draws the clock face in the main application.
@@ -63,61 +221,33 @@ void clock_draw(){
   static char oldch=0;
   char ch=getchar();
 
+
   if(oldch!=ch)
     lcd_zero();
-  
-  switch(ch){
-  case '/':
-    draw_date();
-    break;
-  case '7':
-    lcd_hex(0xdeadbeef);
-    break;
 
-
-    /* For now, we set the time by the 1,2,3 buttons and date by 4,5,6
-       buttons. */
-  case '1':
-    if(oldch!=ch)
-      RTCHOUR=(RTCHOUR+1)%24;
-    draw_time();
-    break;
-  case '2':
-    if(oldch!=ch)
-      RTCMIN=(RTCMIN+1)%60;
-    draw_time();
-    break;
-  case '3':
-    if(oldch!=ch)
-      RTCSEC=0;
-    draw_time();
-    break;
-  case '4':
-    if(RTCYEAR<2016)
-      RTCYEAR=2016;
-    if(oldch!=ch)
-      RTCYEAR=(RTCYEAR+1)%2020;
-    draw_date();
-    break;
-  case '5':
-    if(oldch!=ch)
-      RTCMON=(RTCMON+1)%13;
-    draw_date();
-    break;
-  case '6':
-    if(oldch!=ch)
-      RTCDAY=(RTCDAY+1)%32;
-    draw_date();
-    break;
-
-
-    
-  case 0:
-    draw_time();
-    break;
-  default:
-    lcd_hex(ch);
+  /* The SET button will move us into the programming mode. */
+  if(sidebutton_set()){
+    settingclock=!settingclock;
   }
+
+  if(settingclock)
+    draw_settingtime(ch);
+  else
+    switch(ch){
+    case '/':
+      //Hold / to draw the date.
+      draw_date();
+      break;
+    case '7':
+      lcd_hex(0xdeadbeef);
+      break;
+    case 0:
+      // Draw the time by default.
+      draw_time();
+      break;
+    default:
+      lcd_hex(ch);
+    }
 
   oldch=ch;
 }
