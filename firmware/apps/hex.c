@@ -64,6 +64,9 @@ void hex_draw(){
   case '9':
     adr+=0x0010;
     break;
+  case '=':
+    adr-=0x0010;
+    break;
   case '/':
     adr+=2;
     break;
