@@ -43,10 +43,12 @@ void lcd_init() {
   LCDBPCTL0 = 0xFFFF;
   LCDBPCTL1 = 0xFFFF;
 
-  //LCD Memory
-  lcd_zero();
-  for(i=0;i<13;i++)
+  //Begin by blacking the whole display, for diagnostics if our clocks
+  //fail.
+  for(i=0;i<13;i++){
+    lcdm[i]=0xFF;
     lcdbm[i]=0xFF;
+  }
 }
 
 //! Moved the LCD memory to the blink memory, then displays the backup.
