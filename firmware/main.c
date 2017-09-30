@@ -33,6 +33,24 @@ void xtal_init(){
   UCSCTL4 = SELM_0 + SELS_0 + SELA_0;  //XT1 for everything; very slow CPU.
 }
 
+//! Power On Self Test
+int post(){
+  if(LCDBIV || (LCDBCTL1&LCDNOCAPIFG)){
+    /* When the LCD cap is missing, of the wrong value, or
+       mis-soldered, the charge pump will be disabled out of
+       self-protection.  This looks like a normally dark screen
+       abruptly fading to nothing, but you might still be able to
+       see the response at the right angle.
+    */
+    lcd_hex(0x1cd1cd);
+  }else{
+    /* Return zero if everything is hunky dory.
+     */
+    return 0;
+  }
+  return 1;
+}
+
 int main(void) {
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
 
@@ -53,6 +71,9 @@ int main(void) {
   SVSMHCTL = 0;
   SVSMLCTL = 0;
   PMMCTL0_H = 0x00;
+
+  // Run the POST until it passes.
+  while(post());
 
   __bis_SR_register(LPM3_bits +GIE);         // Enter LPM3
   //__bis_SR_register(LPM0_bits + GIE);	     // Enter LPM0 w/interrupt

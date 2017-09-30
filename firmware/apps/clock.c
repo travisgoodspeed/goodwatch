@@ -239,19 +239,9 @@ void clock_draw(){
       draw_date();
       break;
     case '7':
-      //7 runs a self-test.  Response codes try to roughly describe
-      //the fault.
-      
-      if(LCDBIV || (LCDBCTL1&LCDNOCAPIFG))
-	/* When the LCD cap is missing, of the wrong value, or
-	   mis-soldered, the charge pump will be disabled out of
-	   self-protection.  This looks like a normally dark screen
-	   abruptly fading to nothing, but you might still be able to
-	   see the response at the right angle.
-	 */
-	lcd_hex(0x1cd1cd);
-      else
-	lcd_hex(0);
+      //Hold 7 to run the self-test after startup.  Response codes try to
+      //roughly describe the fault.
+      post();
       break;
     case '8':
       //8 shows 0xdeadbeef.

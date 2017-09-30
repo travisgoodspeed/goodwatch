@@ -9,3 +9,5 @@
 #include "apps.h"
 #include "rtc.h"
 #include "sidebutton.h"
+
+int post();
