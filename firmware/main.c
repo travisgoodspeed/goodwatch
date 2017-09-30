@@ -46,6 +46,7 @@ int post(){
   }else{
     /* Return zero if everything is hunky dory.
      */
+    lcd_hex(0x600d600d);
     return 0;
   }
   return 1;
