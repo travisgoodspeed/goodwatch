@@ -9,14 +9,17 @@ apps= apps/clock.o apps/rpn.o apps/hex.o apps/stopwatch.o
 
 all: goodwatch.hex
 
-goodwatch: $(modules) $(apps)
+*.c: gittag.h
+
+gittag.h:
+	echo "#define GITTAG" 0x`git describe --always` >gittag.h
+goodwatch: $(modules) $(apps) *.h
 	$(CC) -o goodwatch $(modules) $(apps)
 goodwatch.hex: goodwatch
 	msp430-objcopy -O ihex goodwatch goodwatch.hex
 
 clean:
-	rm -f *~ *.hex *.elf *.o goodwatch
-
+	rm -f *~ *.hex *.elf *.o goodwatch gittag.h
 erase:
 	$(BSL) -e
 flash: goodwatch.hex

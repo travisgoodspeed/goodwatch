@@ -247,6 +247,11 @@ void clock_draw(){
       //8 shows 0xdeadbeef.
       lcd_hex(0xdeadbeef);
       break;
+    case '4':
+      //4 shows the git revision.
+      lcd_hex(GITTAG);
+      lcd_cleardigit(7);
+      break;
 
     case 0:
       // Draw the time by default.
