@@ -1,7 +1,7 @@
 /* This is the main clock application, which is seen by default
    whenever the watch has nothing else to do.  In addition to telling
-   the time, holding a button allows you to see additional information,
-   such as the date or the voltage.
+   the time, holding a button allows you to see additional
+   information, such as the date and git revision.
 */
 
 #include <msp430.h>
@@ -69,6 +69,10 @@ static void draw_settingtime(char ch){
   else
     ch=0;
 
+  //Zero the second hand if we're not yet to the date.  ("Hacking.")
+  if(settingclock<7)
+    RTCSEC=0;
+
   //First we draw the entire thing, then we blink the second being
   //set.
   if(settingclock<7)
@@ -111,21 +115,12 @@ static void draw_settingtime(char ch){
     break;
     
   case 5:        //Second
-    if(flicker)
-      lcd_cleardigit(1);
-    if(ch){
-      RTCSEC=inputdigit*10;
-      settingclock++;
-    }
-    break;
-  case 6:        //Second
-    if(flicker)
-      lcd_cleardigit(0);
-    if(ch){
-      RTCSEC=RTCSEC-RTCSEC%10+inputdigit;
-      settingclock++;
-    }
-    break;
+    /* We no longer set the seconds, but rather hold them at zero
+       until the user moves back them into the date.  Mechanical watch
+       experts call this 'hacking.'
+     */
+    settingclock=7;
+    
   case 7:        //Year
     if(flicker)
       lcd_cleardigit(7);
