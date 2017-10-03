@@ -29,6 +29,7 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:goodwatch20
+LIBS:goodwatch20-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -83,7 +84,7 @@ F 3 "" H 6050 3550 60  0001 C CNN
 	1    0    0    1   
 $EndComp
 Text Notes 6500 1750 0    60   ~ 0
-NOTE WELL:\n1. Both LCD and Keypad pin 1 must be on the West of the board.\n2. Some LCD segments can't be mapped due to pin limits.  Sorry.\n3. P1.5 and P1.6 double as a UART for the BSL. (!RST and TST also required.)
+NOTE WELL:\n1. Both LCD and Keypad pin 1 must be on the West of the board.\n2. Some LCD segments can't be mapped due to pin limits.  Sorry.\n3. P1.5 and P1.6 double as a UART for the BSL. (!RST and TST also required.)\n4. See pages 86 and 88 of CC430F6137 datasheet for component values.
 $Comp
 L CA53BOARD BRD1
 U 1 1 58F257A1
@@ -194,8 +195,6 @@ F 3 "" H 3200 4050 50  0000 C CNN
 $EndComp
 NoConn ~ 2250 5550
 NoConn ~ 2250 5150
-NoConn ~ 4900 5200
-NoConn ~ 5000 5200
 NoConn ~ 5100 5200
 NoConn ~ 5400 4750
 $Comp
@@ -253,18 +252,6 @@ F 3 "" H 7450 3500 50  0000 C CNN
 	1    7450 3500
 	1    0    0    -1  
 $EndComp
-NoConn ~ 3900 5200
-NoConn ~ 4000 5200
-NoConn ~ 4100 5200
-NoConn ~ 4200 5200
-NoConn ~ 4300 5200
-NoConn ~ 4400 5200
-NoConn ~ 4500 5200
-NoConn ~ 4600 5200
-NoConn ~ 4700 5200
-NoConn ~ 4800 5200
-Text Notes 3900 5350 0    60   ~ 0
-Coming in Next Rev
 Text Label 2350 5250 0    60   ~ 0
 COM2
 Text Label 2350 5350 0    60   ~ 0
@@ -581,4 +568,117 @@ Text Label 5050 2400 0    60   ~ 0
 TST
 Text Label 5050 2500 0    60   ~ 0
 !RST
+NoConn ~ 5000 5200
+NoConn ~ 4900 5200
+$Comp
+L 0433bm15a0001 U2
+U 1 1 59D2E4F9
+P 10100 6050
+F 0 "U2" H 10050 6450 60  0000 C CNN
+F 1 "0433bm15a0001" H 10050 6350 60  0000 C CNN
+F 2 "GoodWatch20:0433bm15a0001" H 10100 6050 60  0001 C CNN
+F 3 "" H 10100 6050 60  0001 C CNN
+	1    10100 6050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 5200 4300 5600
+Wire Wire Line
+	4400 5200 4400 5600
+Text Label 4300 5600 1    60   ~ 0
+RF_P
+Text Label 4400 5600 1    60   ~ 0
+RF_N
+Wire Wire Line
+	9400 6100 9150 6100
+Wire Wire Line
+	10700 6100 10950 6100
+Text Label 9150 6100 0    60   ~ 0
+RF_P
+Text Label 10750 6100 0    60   ~ 0
+RF_N
+Wire Wire Line
+	10700 5900 10950 5900
+Wire Wire Line
+	10700 6000 10950 6000
+Text Label 10750 5900 0    60   ~ 0
+GND
+Text Label 10750 6000 0    60   ~ 0
+GND
+Wire Wire Line
+	9400 6000 9150 6000
+Wire Wire Line
+	9150 5900 9400 5900
+Wire Wire Line
+	9150 5500 9150 5900
+Text Label 9150 6000 0    60   ~ 0
+GND
+$Comp
+L YageoS432 A?
+U 1 1 59D2F54A
+P 9150 5250
+F 0 "A?" H 9150 5650 60  0000 C CNN
+F 1 "YageoS432" V 9000 5350 60  0000 C CNN
+F 2 "" H 9150 5250 60  0001 C CNN
+F 3 "" H 9150 5250 60  0001 C CNN
+	1    9150 5250
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R2
+U 1 1 59D2FA2B
+P 4700 5600
+F 0 "R2" V 4600 5600 50  0000 C CNN
+F 1 "56k" V 4700 5600 50  0000 C CNN
+F 2 "" V 4630 5600 50  0000 C CNN
+F 3 "" H 4700 5600 50  0000 C CNN
+	1    4700 5600
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 59D2FD8F
+P 4700 5800
+F 0 "#PWR?" H 4700 5550 50  0001 C CNN
+F 1 "GND" H 4700 5650 50  0000 C CNN
+F 2 "" H 4700 5800 50  0000 C CNN
+F 3 "" H 4700 5800 50  0000 C CNN
+	1    4700 5800
+	1    0    0    -1  
+$EndComp
+Text Notes 4850 5650 1    60   ~ 0
+1%
+Wire Wire Line
+	4700 5200 4700 5450
+Wire Wire Line
+	4700 5800 4700 5750
+Wire Wire Line
+	4100 5200 4100 5250
+Wire Wire Line
+	5500 5250 4100 5250
+Wire Wire Line
+	4200 5200 4200 5250
+Connection ~ 4200 5250
+Wire Wire Line
+	4500 5200 4500 5250
+Connection ~ 4500 5250
+Wire Wire Line
+	4600 5200 4600 5250
+Connection ~ 4600 5250
+Wire Wire Line
+	4800 5200 4800 5250
+Connection ~ 4800 5250
+Wire Wire Line
+	5500 5050 5500 5250
+$Comp
+L VCC #PWR?
+U 1 1 59D30A8B
+P 5500 5050
+F 0 "#PWR?" H 5500 4900 50  0001 C CNN
+F 1 "VCC" H 5500 5200 50  0000 C CNN
+F 2 "" H 5500 5050 50  0000 C CNN
+F 3 "" H 5500 5050 50  0000 C CNN
+	1    5500 5050
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
