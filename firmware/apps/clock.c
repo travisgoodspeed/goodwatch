@@ -252,7 +252,12 @@ void clock_draw(){
       lcd_hex(GITTAG);
       lcd_cleardigit(7);
       break;
-
+    case '0':
+      //0 shows the alphabet test.
+      lcd_string("abcdefgh");
+      
+      break;
+      
     case 0:
       // Draw the time by default.
       draw_time();

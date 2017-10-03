@@ -55,6 +55,37 @@ const int numfont[]={
   A|F|E|G|D,     //E
   A|G|F|E        //F
 };
+const int letterfont[]={
+  /* This font begins at 0x41 hex in the ASCII table, rendering
+     letters as best they can be on the 7-segment display.
+  */
+  A|F|B|G|E|C,   //A
+  F|E|G|C|D,     //B
+  A|F|E|D,       //C
+  E|G|C|D|B,     //D
+  A|F|E|G|D,     //E
+  A|G|F|E,       //F
+  A|F|G|E|C|D,   //G, looks like a six.
+  F|G|E|C,       //h
+  F|E,           //I, distinguished from a 1 by being on the left side.
+  E|B|C|D,       //J
+  F|E|B|C|G|DP,  //K, distinguished from an X by the DP.
+  F|E|D,         //L
+  F|G|B|C,       //M  (Think mu.)
+  E|G|C,         //n
+  A|B|C|D|E|F,   //O
+  F|A|B|G|E,     //P
+  F|A|B|C|D|E|DP,//Q
+  F|A|B|G|E,     //R  (Same as P, pretend it's Rho.)
+  A|F|G|C|D,     //S  (Looks like a 5.)
+  F|E|G,         //T
+  F|E|D|C|B,     //U
+  F|E|D|C|B,     //V  (Same as U.  Blame Rome.)
+  F|E|D|C|B,     //W  (Same as U and V.  Blame Germany.)
+  F|G|E|B|C,     //X
+  F|G|B|E,       //Y
+  A|B|G|E|D      //Z
+};
 
 #define DRAWPOINT(todraw) lcdm[todraw>>8]|=todraw&0xFF
 #define CLEARPOINT(todraw) lcdm[todraw>>8]&=~(todraw&0xFF)
@@ -71,6 +102,28 @@ void lcd_digit(int pos, int digit){
       CLEARPOINT(lcdmap[pos][bit]);
   }
 }
+//! Draws one LCD character
+void lcd_char(int pos, char c){
+  int segments;//=numfont[digit];
+  int bit;
+
+  //Numbers handled by another function until we unify the font.
+  if(c>='0' && c<='9'){
+    lcd_digit(pos, c&0x0F);
+    return;
+  }
+
+  c&=~0x20;
+  segments=letterfont[c-'A'];
+    
+  for(bit=0;bit<8;bit++){
+    if(segments&(1<<bit))
+      DRAWPOINT(lcdmap[pos][bit]);
+    else
+      CLEARPOINT(lcdmap[pos][bit]);
+  }
+}
+
 //! clears one LCD digit.
 void lcd_cleardigit(int pos){
   int bit;
@@ -79,6 +132,13 @@ void lcd_cleardigit(int pos){
   
 }
 
+//! Draws a string to the LCD.
+void lcd_string(char *str){
+  int i=7;//LCD position.
+  while(i>=0 && *str){
+    lcd_char(i--, *str++);
+  }
+}
 
 //! Draws a decimal number on the screen.
 void lcd_number(long num){
