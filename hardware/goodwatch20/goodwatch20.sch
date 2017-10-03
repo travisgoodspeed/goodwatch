@@ -681,4 +681,39 @@ F 3 "" H 5500 5050 50  0000 C CNN
 	1    5500 5050
 	1    0    0    -1  
 $EndComp
+$Comp
+L FA128 X2
+U 1 1 59D3CB4A
+P 2150 1000
+F 0 "X2" H 2150 800 60  0000 C CNN
+F 1 "FA128" H 2150 1150 60  0000 C CNN
+F 2 "GoodWatch20:FA128" H 2150 1000 60  0001 C CNN
+F 3 "" H 2150 1000 60  0001 C CNN
+	1    2150 1000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1750 950  1600 950 
+Wire Wire Line
+	2550 1100 2750 1100
+Text Label 1600 950  0    60   ~ 0
+GND
+Text Label 2550 1100 0    60   ~ 0
+GND
+Wire Wire Line
+	3900 5200 3900 5600
+Wire Wire Line
+	4000 5200 4000 5600
+Text Label 3900 5600 1    60   ~ 0
+RF_XIN
+Text Label 4000 5600 1    60   ~ 0
+RF_XOUT
+Wire Wire Line
+	2550 950  2950 950 
+Wire Wire Line
+	1750 1100 1400 1100
+Text Label 2550 950  0    60   ~ 0
+RF_XIN
+Text Label 1400 1100 0    60   ~ 0
+RF_XOUT
 $EndSCHEMATC
