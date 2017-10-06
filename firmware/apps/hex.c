@@ -3,6 +3,8 @@
    should be easy to fork for other purposes.
 */
 
+//MSP430 functions for the SFRIE.
+#include <msp430.h>
 
 //Include all standard GoodWatch functions.
 #include "api.h"
@@ -55,8 +57,7 @@ void hex_draw(){
      being drawn.
    */
   
-  //static int adr=0x8000; //Beginning of Flash.
-  static int adr=0x1000; //Beginning of BSL.
+  static int adr=0x8000; //Beginning of Flash.
   char ch=getchar();
 
   //Do nothing if no key is pressed.
