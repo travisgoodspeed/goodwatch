@@ -34,16 +34,11 @@ class BSL:
         self.setTST(False)
         time.sleep(0.250)
         self.setRST(True)
-
+        
         #Minimum two rising edges are required, but it helps to have three or more.
-        self.setTST(False)
-        self.setTST(True)
-        self.setTST(False)
-        self.setTST(True)
-        self.setTST(False)
-        self.setTST(True)
-        self.setTST(False)
-        self.setTST(True)
+        for i in range(4):
+            self.setTST(False)
+            self.setTST(True)
         
         self.setRST(False)
         self.setTST(False)
