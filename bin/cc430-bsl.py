@@ -95,8 +95,7 @@ class BSL:
             #Not sure whether data is coming, so grab a chunk just in case.
             self.serial.read(10);
     
-    def unlock(self,
-               password="\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff"):
+    def unlock(self, password="\xff" * 32):
         """Unlocks the bootloader, optionally with a password."""
 
         #Password must be 32 bytes.
