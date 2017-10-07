@@ -239,30 +239,30 @@ def writetest(bsl):
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='CC430F6137 BSL Client')
-    parser.add_argument('-e','--erase', help='Mass Erase',action='count')
-    parser.add_argument('-p','--port', help='Serial Port',default='/dev/ttyUSB0')
+    parser.add_argument('-e','--erase', help='Mass Erase', action='store_true')
+    parser.add_argument('-p','--port', help='Serial Port', default='/dev/ttyUSB0')
     parser.add_argument('-f','--file', help='Flash File')
     parser.add_argument('-P','--password', help='Password File or Hex')
-    parser.add_argument('-d','--dump', help='Produce a core dump.',action='count')
-    parser.add_argument('-u','--unlock',help='Unlock BSL.',action='count')
-    parser.add_argument('-t','--time',help='Set the Time.',action='count')
+    parser.add_argument('-d','--dump', help='Produce a core dump.', action='store_true')
+    parser.add_argument('-u','--unlock', help='Unlock BSL.', action='store_true')
+    parser.add_argument('-t','--time', help='Set the Time.', action='store_true')
     
     args = parser.parse_args()
 
     bsl=BSL(args.port)
     bsl.enter_bsl()
 
-    if args.erase!=None:
+    if args.erase:
         print "Mass erasing."
         bsl.masserase()
         bsl.unlock()
-    if args.unlock!=None:
+    if args.unlock:
         print "Unlocking."
         bsl.unlock()
-    if args.file!=None:
+    if args.file:
         print "Writing %s as Intel hex." % args.file
         bsl.writeihexfile(args.file)
-    if args.time!=None:
+    if args.time:
         lt=time.localtime()
         #See firmware/rtc.c for the format.
         timestr=(
@@ -272,6 +272,6 @@ if __name__=='__main__':
             chr(lt.tm_year&0xFF)+chr(lt.tm_year>>8)+chr(lt.tm_mon)+chr(lt.tm_mday)
             )
         bsl.write(0xFF00,timestr)
-    if args.dump!=None:
+    if args.dump:
         coredump(bsl)
     bsl.reset()
