@@ -6,8 +6,7 @@
 ## bad checksums.  It is free for any use, provided you tip your
 ## bartender.
 
-import serial, time, sys, argparse
-
+import serial, time, sys, argparse, string
 
 class BSL:
     def __init__(self, port):
@@ -237,6 +236,157 @@ def writetest(bsl):
     assert(readmsg==msg)
 
 
+# BSLException, Segment, and Memory are from goodfet.bsl
+class BSLException(Exception):
+    pass
+
+class Segment:
+    """store a string with memory contents along with its startaddress"""
+    def __init__(self, startaddress = 0, data=None):
+        if data is None:
+            self.data = ''
+        else:
+            self.data = data
+        self.startaddress = startaddress
+
+    def __getitem__(self, index):
+        return self.data[index]
+
+    def __len__(self):
+        return len(self.data)
+
+    def __repr__(self):
+        return "Segment(startaddress = 0x%04x, data=%r)" % (self.startaddress, self.data)
+
+class Memory:
+    """represent memory contents. with functions to load files"""
+    def __init__(self, filename=None):
+        self.segments = []
+        if filename:
+            self.filename = filename
+            self.loadFile(filename)
+
+    def append(self, seg):
+        self.segments.append(seg)
+
+    def __getitem__(self, index):
+        return self.segments[index]
+
+    def __len__(self):
+        return len(self.segments)
+
+    def loadIHex(self, file):
+        """load data from a (opened) file in Intel-HEX format"""
+        segmentdata = []
+        currentAddr = 0
+        startAddr   = 0
+        lines = file.readlines()
+        for l in lines:
+            if l[0] != ':': raise BSLException("File Format Error\n")
+            l = l.strip()       #fix CR-LF issues...
+            length  = int(l[1:3],16)
+            address = int(l[3:7],16)
+            type    = int(l[7:9],16)
+            check   = int(l[-2:],16)
+            if type == 0x00:
+                if currentAddr != address:
+                    if segmentdata:
+                        self.segments.append( Segment(startAddr, string.join(segmentdata,'')) )
+                    startAddr = currentAddr = address
+                    segmentdata = []
+                for i in range(length):
+                    segmentdata.append( chr(int(l[9+2*i:11+2*i],16)) )
+                currentAddr = length + currentAddr
+            elif type in (0x01, 0x02, 0x03, 0x04, 0x05):
+                pass
+            else:
+                sys.stderr.write("Ignored unknown field (type 0x%02x) in ihex file.\n" % type)
+        if segmentdata:
+            self.segments.append( Segment(startAddr, string.join(segmentdata,'')) )
+
+    def loadTIText(self, file):
+        """load data from a (opened) file in TI-Text format"""
+        next        = 1
+        startAddr   = 0
+        segmentdata = []
+        #Convert data for MSP430, TXT-File is parsed line by line
+        while next >= 1:
+            #Read one line
+            l = file.readline()
+            if not l: break #EOF
+            l = l.strip()
+            if l[0] == 'q': break
+            elif l[0] == '@':        #if @ => new address => send frame and set new addr.
+                #create a new segment
+                if segmentdata:
+                    self.segments.append( Segment(startAddr, string.join(segmentdata,'')) )
+                startAddr = int(l[1:],16)
+                segmentdata = []
+            else:
+                for i in string.split(l):
+                    segmentdata.append(chr(int(i,16)))
+        if segmentdata:
+            self.segments.append( Segment(startAddr, string.join(segmentdata,'')) )
+
+    def loadELF(self, file):
+        """load data from a (opened) file in ELF object format.
+        File must be seekable"""
+        import elf
+        obj = elf.ELFObject()
+        obj.fromFile(file)
+        if obj.e_type != elf.ELFObject.ET_EXEC:
+            raise Exception("No executable")
+        for section in obj.getSections():
+            if DEBUG:
+                sys.stderr.write("ELF section %s at 0x%04x %d bytes\n" % (section.name, section.lma, len(section.data)))
+            if len(section.data):
+                self.segments.append( Segment(section.lma, section.data) )
+
+    def loadString(self, startAddr=0, string=None):
+        """fill memory with the contents of a binary chunk of data."""
+        self.segments.append(Segment(startAddr, string))
+
+    def loadFile(self, filename):
+        """fill memory with the contents of a file. file type is determined from extension"""
+        #TODO: do a contents based detection
+        if filename[-4:].lower() == '.txt':
+            self.loadTIText(open(filename, "rb"))
+        elif filename[-4:].lower() in ('.a43', '.hex'):
+            self.loadIHex(open(filename, "rb"))
+        else:
+            self.loadELF(open(filename, "rb"))
+
+    def getMemrange(self, fromadr, toadr):
+        """get a range of bytes from the memory. unavailable values are filled with 0xff."""
+        res = ''
+        toadr = toadr + 1   #python indxes are excluding end, so include it
+        while fromadr < toadr:
+            #print "fromto: %04x %04x" % (fromadr, toadr)
+            for seg in self.segments:
+                #print seg
+                segend = seg.startaddress + len(seg.data)
+                if seg.startaddress <= fromadr and fromadr < segend:
+                    #print "startok 0x%04x %d" % (seg.startaddress, len(seg.data))
+                    #print ("0x%04x "*3) % (segend, fromadr, toadr)
+                    if toadr > segend:   #not all data in segment
+                        #print "out of segment"
+                        catchlength = segend-fromadr
+                    else:
+                        catchlength = toadr-fromadr
+                    #print toadr-fromadr
+                    #print catchlength
+                    res = res + seg.data[fromadr-seg.startaddress : fromadr-seg.startaddress+catchlength]
+                    fromadr = fromadr + catchlength    #adjust start
+                    if len(res) >= toadr-fromadr:
+                        break#return res
+            else:
+                    res = res + chr(255)
+                    fromadr = fromadr + 1 #adjust start
+                    #print "fill FF"
+        #print "res: %r" % res
+        return res
+
+
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='CC430F6137 BSL Client')
     parser.add_argument('-e','--erase', help='Mass Erase', action='store_true')
@@ -258,7 +408,23 @@ if __name__=='__main__':
         bsl.unlock()
     if args.unlock:
         print "Unlocking."
-        bsl.unlock()
+        if args.password:
+            password_is_file = False
+            try:
+                password = args.password.decode('hex')
+                if len(password) != 32:
+                    print "Password is not 32 bytes long, assuming file path"
+                    password_is_file = True
+            except TypeError:
+                print "Non-hexadecimal digit in password, assuming file path"
+                password_is_file = True
+                
+            if password_is_file:
+                password = Memory(args.password).getMemrange(0xffe0, 0xffff)
+                
+            bsl.unlock(password)
+        else:
+            bsl.unlock()
     if args.file:
         print "Writing %s as Intel hex." % args.file
         bsl.writeihexfile(args.file)
