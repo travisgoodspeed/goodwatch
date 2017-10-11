@@ -133,7 +133,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(6);
     if(ch){
-      RTCYEAR=RTCYEAR-RTCYEAR%100+inputdigit*100+RTCYEAR%10;
+      RTCYEAR=RTCYEAR-RTCYEAR%1000+inputdigit*100+RTCYEAR%100;
       settingclock++;
     }
     break;
