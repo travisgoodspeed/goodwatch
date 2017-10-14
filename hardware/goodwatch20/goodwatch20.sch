@@ -495,8 +495,6 @@ Wire Wire Line
 Wire Wire Line
 	5850 3850 5400 3850
 Wire Wire Line
-	5400 3950 5850 3950
-Wire Wire Line
 	4400 2800 4400 2150
 Wire Wire Line
 	4400 2150 2250 2150
@@ -571,10 +569,10 @@ Text Label 5050 2500 0    60   ~ 0
 NoConn ~ 5000 5200
 NoConn ~ 4900 5200
 $Comp
-L 0433bm15a0001 U2
+L 0433bm15a0001 B1
 U 1 1 59D2E4F9
 P 10100 6050
-F 0 "U2" H 10050 6450 60  0000 C CNN
+F 0 "B1" H 10050 6450 60  0000 C CNN
 F 1 "0433bm15a0001" H 10050 6350 60  0000 C CNN
 F 2 "GoodWatch20:0433bm15a0001" H 10100 6050 60  0001 C CNN
 F 3 "" H 10100 6050 60  0001 C CNN
@@ -594,9 +592,9 @@ Wire Wire Line
 Wire Wire Line
 	10700 6100 10950 6100
 Text Label 9150 6100 0    60   ~ 0
-RF_P
-Text Label 10750 6100 0    60   ~ 0
 RF_N
+Text Label 10750 6100 0    60   ~ 0
+RF_P
 Wire Wire Line
 	10700 5900 10950 5900
 Wire Wire Line
@@ -668,19 +666,6 @@ Connection ~ 4600 5250
 Wire Wire Line
 	4800 5200 4800 5250
 Connection ~ 4800 5250
-Wire Wire Line
-	5500 5250 5500 5050
-$Comp
-L VCC #PWR013
-U 1 1 59D30A8B
-P 5500 5050
-F 0 "#PWR013" H 5500 4900 50  0001 C CNN
-F 1 "VCC" H 5500 5200 50  0000 C CNN
-F 2 "" H 5500 5050 50  0000 C CNN
-F 3 "" H 5500 5050 50  0000 C CNN
-	1    5500 5050
-	1    0    0    -1  
-$EndComp
 $Comp
 L FA128 X2
 U 1 1 59D3CB4A
@@ -713,9 +698,9 @@ Wire Wire Line
 Wire Wire Line
 	1750 1100 1400 1100
 Text Label 2550 950  0    60   ~ 0
-RF_XIN
-Text Label 1400 1100 0    60   ~ 0
 RF_XOUT
+Text Label 1400 1100 0    60   ~ 0
+RF_XIN
 $Comp
 L C C6
 U 1 1 59D3F241
@@ -769,4 +754,8 @@ F 3 "" H 5900 4550 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	6500 4550 6050 4550
+Text Label 5200 5250 0    60   ~ 0
+RFVCC
+NoConn ~ 5400 3950
+NoConn ~ 5850 3950
 $EndSCHEMATC
