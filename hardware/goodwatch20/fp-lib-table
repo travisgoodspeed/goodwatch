@@ -2,4 +2,5 @@
   (lib (name GoodWatch20)(type KiCad)(uri goodwatch20.pretty)(options "")(descr ""))
   (lib (name Capacitors_SMD)(type KiCad)(uri "$(KIPRJMOD)/Capacitors_SMD.pretty")(options "")(descr ""))
   (lib (name Resistors_SMD)(type KiCad)(uri "$(KIPRJMOD)/Resistors_SMD.pretty")(options "")(descr ""))
+  (lib (name Inductors_SMD)(type KiCad)(uri "$(KIPRJMOD)/Inductors_SMD.pretty")(options "")(descr ""))
 )
