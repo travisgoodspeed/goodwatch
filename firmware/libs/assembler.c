@@ -12,7 +12,7 @@
 */
 
 #include<stdint.h>
-
+#include<string.h>
 #include<stdio.h>
 
 static enum {JNZ, JEQ, JNC, JC, JN, JGE, JL, JMP} jumpcond;
@@ -31,6 +31,8 @@ static int src,dst;
 static int as, ad;
 //1 for byte, 0 for word.
 static int bw;
+//Disassembled string, to display on 7-seg display.
+static char asmstr[8];
 
 //! Disassemble an instruction into the local buffer.
 void asm_dis(uint16_t adr, uint16_t ins){
@@ -46,6 +48,8 @@ void asm_dis(uint16_t adr, uint16_t ins){
   bw=0;
   as=ad=src=dst=-1;
   opstr="err";
+  //Clear the string buffer.
+  memset(asmstr,' ',8);
 
 
   //First, we take care of some emulated instructions.  We don't
@@ -183,12 +187,51 @@ void asm_dis(uint16_t adr, uint16_t ins){
   }
 }
 
+#ifndef STANDALONE
+#include "api.h"
+//! Shows the currently disassembled instruction.
+void asm_show(){
+  int i;
+  
+  memset(asmstr,' ',8);
+  strcpy(asmstr,opstr);
+  
+  switch(type){
+  default:
+    strcpy(asmstr,"error   ");
+    break;
+  case JUMPOP:
+    for(i=0;i<4;i++){
+      lcd_digit(i,(jumptarget>>(4*i))&0xF);
+    }
+    break;
+  case TWOOP:
+    /* printf("%04x: %s r%d, r%d\n", */
+    /* 	   address, */
+    /* 	   opstr, */
+    /* 	   src, */
+    /* 	   dst); */
+    break;
+  case ONEOP:
+    /* printf("%04x: %s r%d\n", */
+    /* 	   address, */
+    /* 	   opstr, */
+    /* 	   src); */
+    break;
+  case EMUOP:
+    //For now, emu ops are just the op string.
+    break;
+  }
+  
+  lcd_string(asmstr);
+}
+#endif
+
 
 #ifdef STANDALONE
 
 #include<stdio.h>
 #include<assert.h>
-#include<string.h>
 
 //! Print the current instruction to the console.
 void asm_print(){

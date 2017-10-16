@@ -57,6 +57,7 @@ void hex_draw(){
      being drawn.
    */
   
+  //static int adr=0x8000; //Beginning of Flash.
   static int adr=0x8000; //Beginning of Flash.
   char ch=getchar();
 
@@ -112,6 +113,12 @@ void hex_draw(){
     lcd_cleardigit(1);
     lcd_cleardigit(0);
     return;
+  }else if(getchar()=='4'){
+    /* This should probably be handled with the rest of the input
+       elsewhere.
+     */
+    asm_dis(adr, ((unsigned int*)adr)[0]);
+    asm_show();
   }else{
     /* Now that the range is legal and the value known, let's fetch the
        value and display it.

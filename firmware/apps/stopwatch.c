@@ -40,7 +40,6 @@ int stopwatch_exit(){
 void stopwatch_draw_time(){
   static char oldch=0;
   char ch;
-  static int i=0;
   unsigned int min, sec, subsec;
 
   /* The stopwatch is special in that it never times out.  Be very
