@@ -69,7 +69,7 @@ result.  Press {\tt =} to push the current number into the stack and
 begin another; you can think of this as the Enter or Space key from an
 HP calculator.
 
-\subsection*{Hex Viewer}
+\subsection*{Hex Viewer, Disassembler}
 
 The hex viewer application display eight nybbles on the screen.  The
 left four are the address, while the right four are the little-endian
@@ -84,6 +84,11 @@ unlocked for your reading pleasure, but a troublesome region at {\tt
 reboot.  Flash runs 32kB starting at {\tt 0x8000}, Info Flash is at
 {\tt 0x1800}, and RAM is at {\tt 0x1C00}.  The interrupt table is at
 the very end of the address space.
+
+Holding the 4 button will disassemble the current instruction, as best
+the 7-segment display can handle.  AM and PM show the two bits of the
+{\tt As} field, and $\div{}$ shows the one bit of the {\tt Ad} field.
+
 
 
 \section{Construction}

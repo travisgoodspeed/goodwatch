@@ -211,12 +211,29 @@ void asm_show(){
     /* 	   opstr, */
     /* 	   src, */
     /* 	   dst); */
+    setam((as>>1)&1);
+    setpm(as&1);
+    setdivide(ad);
+
+    lcd_digit(3,src/10);
+    lcd_digit(2,src%10);
+    setperiod(2,1);
+    lcd_digit(1,dst/10);
+    lcd_digit(0,dst%10);
+    
+    
     break;
   case ONEOP:
     /* printf("%04x: %s r%d\n", */
     /* 	   address, */
     /* 	   opstr, */
     /* 	   src); */
+    setam((as>>1)&1);
+    setpm(as&1);
+
+    lcd_digit(1,dst/10);
+    lcd_digit(0,dst%10);
+    
     break;
   case EMUOP:
     //For now, emu ops are just the op string.

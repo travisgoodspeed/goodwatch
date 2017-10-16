@@ -102,6 +102,7 @@ void lcd_digit(int pos, int digit){
       CLEARPOINT(lcdmap[pos][bit]);
   }
 }
+
 //! Draws one LCD character
 void lcd_char(int pos, char c){
   int segments;//=numfont[digit];
@@ -175,18 +176,19 @@ void lcd_hex(long num){
      them on the screen.
    */
   int i;
-
   
-  /* There is some weird bug where a segment in the second digit can
-     be dropped when drawn left to right.  I don't understand it, but
-     this works around it. --Travis
-  */
-
-  //for(i=0;i<8;i++)
-  for(i=7;i>=0;i--)
+  
+  for(i=0;i<8;i++)
     lcd_digit(i,(num>>(4*i))&0xf);
 }
 
+//! Activates a period, or turns it off.
+void setperiod(int digit, int on){
+  if(on)             //On
+    DRAWPOINT(lcdmap[digit][7]);
+  else               //Off
+    CLEARPOINT(lcdmap[digit][7]);
+}
 
 //! Activates the colon.  2 for invert.
 void setcolon(int on){

@@ -114,8 +114,8 @@ void hex_draw(){
     lcd_cleardigit(0);
     return;
   }else if(getchar()=='4'){
-    /* This should probably be handled with the rest of the input
-       elsewhere.
+    /* Holding the 4 button will disassemble the current instruction.
+       This should probably be handled with the rest of the input.
      */
     asm_dis(adr, ((unsigned int*)adr)[0]);
     asm_show();
