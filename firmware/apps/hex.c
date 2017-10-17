@@ -57,7 +57,6 @@ void hex_draw(){
      being drawn.
    */
   
-  //static int adr=0x8000; //Beginning of Flash.
   static int adr=0x8000; //Beginning of Flash.
   char ch=getchar();
 
