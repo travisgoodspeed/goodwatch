@@ -6,7 +6,7 @@
 ## bad checksums.  It is free for any use, provided you tip your
 ## bartender.
 
-import serial, time, sys, argparse, string
+import serial, time, sys, argparse, string, struct
 
 class BSL:
     def __init__(self, port):
@@ -63,7 +63,10 @@ class BSL:
             x = ((crc >> 8) ^ byte) & 0xFF
             x ^= x >> 4
             crc = (crc << 8) ^ (x << 12) ^ (x << 5) ^ x
-        return chr(crc & 0xFF) + "" + chr((crc >> 8) & 0xFF)
+        return struct.pack('<H', crc & 0xFFFF)
+
+    def packadr(adr):
+        return struct.pack('<I', adr)[:-1]
 
     def transact(self, msg):
         """Sends a message, wrapped with a prefix and checksum.
@@ -71,10 +74,8 @@ class BSL:
 
         #Send the message.
         length = len(msg)
-        ll = chr(length & 0xFF)
-        lh = chr((length >> 8) & 0xFF)
         crc = self.crc(msg)
-        self.serial.write("\x80" + ll + lh + msg + crc)
+        self.serial.write(struct.pack('<BH', "\x80", length) + msg + crc)
 
         #Get the reply.
         reply = self.serial.read(1)
@@ -84,9 +85,7 @@ class BSL:
         elif ord(reply[0]) == 0x00:
             #Success
             eighty = ord(self.serial.read(1))
-            ll = ord(self.serial.read(1)[0])
-            lh = ord(self.serial.read(1)[0])
-            length = ll | (lh << 8)
+            length = struct.unpack('<H', ''.join(self.serial.read(2))[0]
             rep  =  self.serial.read(length)
             crc = self.serial.read(2)
             assert(crc == self.crc(rep))
@@ -122,11 +121,10 @@ class BSL:
         """Gets the BSL version and related bytes."""
         resp = self.transact("\x19")
         assert(len(resp) == 5)
-        
-        vendor = ord(resp[1]) # 0 for TI
-        interpreter = ord(resp[2])
-        api = ord(resp[3]) # 0 for flash, 30 for sram, 80 for restricted cmd set
-        peripheral = ord(resp[4])
+
+        # vendor is 0 for TI
+        # api is 0 for flash, 30 for sram, 80 for restricted cmd set
+        vendor, interpreter, api, peripheral = struct.unpack('<x4B', resp)
         return vendor, interpreter, api, peripheral
 
     def masserase(self):
@@ -136,12 +134,7 @@ class BSL:
 
     def read(self, adr, length=32):
         """Dumps memory from the given address."""
-        al = chr(adr & 0xFF)
-        am = chr((adr >> 8) & 0xFF)
-        ah = chr((adr >> 16) & 0xFF)
-        ll = chr(length & 0xFF)
-        lh = chr((length >> 8) & 0xFF)
-        resp = self.transact("\x18" + al + am + ah + ll + lh)
+        resp = self.transact(struct.pack('<B3sH', "\x18", packadr(adr), length))
         if resp[0] == "\x3b":
             print "Error: You need to unlock before reading."
         assert(resp[0] == "\x3a")
@@ -149,10 +142,7 @@ class BSL:
 
     def write(self, adr, data=""):
         """Writes memory to the given address."""
-        al = chr(adr & 0xFF)
-        am = chr((adr >> 8) & 0xFF)
-        ah = chr((adr >> 16) & 0xFF)
-        resp = self.transact("\x10" + al + am + ah + data)
+        resp = self.transact(struct.pack('<B3s',"\x10", packadr(adr)) + data)
         return resp[1:]
 
     
