@@ -65,6 +65,7 @@ class BSL:
             crc = (crc << 8) ^ (x << 12) ^ (x << 5) ^ x
         return struct.pack('<H', crc & 0xFFFF)
 
+    @staticmethod
     def packadr(adr):
         return struct.pack('<I', adr)[:-1]
 
@@ -75,7 +76,7 @@ class BSL:
         #Send the message.
         length = len(msg)
         crc = self.crc(msg)
-        self.serial.write(struct.pack('<BH', "\x80", length) + msg + crc)
+        self.serial.write(struct.pack('<BH', 0x80, length) + msg + crc)
 
         #Get the reply.
         reply = self.serial.read(1)
@@ -85,7 +86,7 @@ class BSL:
         elif ord(reply[0]) == 0x00:
             #Success
             eighty = ord(self.serial.read(1))
-            length = struct.unpack('<H', ''.join(self.serial.read(2))[0]
+            length = struct.unpack('<H', ''.join(self.serial.read(2)))[0]
             rep  =  self.serial.read(length)
             crc = self.serial.read(2)
             assert(crc == self.crc(rep))
@@ -134,7 +135,7 @@ class BSL:
 
     def read(self, adr, length=32):
         """Dumps memory from the given address."""
-        resp = self.transact(struct.pack('<B3sH', "\x18", packadr(adr), length))
+        resp = self.transact(struct.pack('<B3sH', 0x18, BSL.packadr(adr), length))
         if resp[0] == "\x3b":
             print "Error: You need to unlock before reading."
         assert(resp[0] == "\x3a")
@@ -142,7 +143,7 @@ class BSL:
 
     def write(self, adr, data=""):
         """Writes memory to the given address."""
-        resp = self.transact(struct.pack('<B3s',"\x10", packadr(adr)) + data)
+        resp = self.transact(struct.pack('<B3s',0x10, BSL.packadr(adr)) + data)
         return resp[1:]
 
     
