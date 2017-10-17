@@ -10,6 +10,7 @@ void lcd_hex(long num);
 
 //Symbols
 void setcolon(int on);
+void setperiod(int digit, int on);
 void setam(int on);
 void setpm(int on);
 void setmult(int on);

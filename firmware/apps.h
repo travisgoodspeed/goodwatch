@@ -7,6 +7,7 @@
 
 
 struct app {
+  char *name;         //Shows when entering the app.
   void (*init)(void); //Called exactly once at startup.
   void (*draw)(void); //Called four times per second to draw display.
   /* Called once when moving to the next applet.  Returns zero (or is
