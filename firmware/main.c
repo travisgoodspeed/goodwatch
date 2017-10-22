@@ -42,13 +42,22 @@ int post(){
        abruptly fading to nothing, but you might still be able to
        see the response at the right angle.
     */
-    lcd_hex(0x1cd1cd);
+    lcd_string("lcd  lcd");
+  }else if(UCSCTL7&2){
+    /* This flag is triggered when the 32kHz crystal has a fault, such
+       as if it is not populated or if a little drag of solder reaches
+       ground.  Watches with this problem will lose minutes a day, but
+       the '430 will fall back to an internal oscillator so that
+       non-watch functions still work.
+     */
+    lcd_string(" crystal");
   }else{
     /* Return zero if everything is hunky dory.
      */
     lcd_hex(0x600d600d);
     return 0;
   }
+  //We had a failure, indicated above.
   return 1;
 }
 
