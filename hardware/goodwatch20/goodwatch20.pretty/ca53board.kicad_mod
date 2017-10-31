@@ -1,4 +1,4 @@
-(module ca53board (layer F.Cu) (tedit 59B03522)
+(module ca53board (layer F.Cu) (tedit 59F8A035)
   (descr "PCB Layout for the Casio CA53W")
   (fp_text reference REF** (at 22.2 -25.9) (layer F.SilkS) hide
     (effects (font (size 1 1) (thickness 0.15)))
@@ -27,8 +27,8 @@
   (pad 3 thru_hole oval (at 25.2 -11.3) (size 1.2 2.7) (drill oval 0.8 2.3) (layers *.Cu *.Mask))
   (pad 2 connect rect (at 17.3 -16.4 4.5) (size 6.4 6) (layers B.Cu B.Mask))
   (pad "" np_thru_hole circle (at 20.3 -27.3) (size 1 1) (drill 1) (layers *.Cu *.Mask))
-  (pad "" np_thru_hole circle (at 23.9 -13.9) (size 1 1) (drill 1) (layers *.Cu *.Mask))
-  (pad "" np_thru_hole circle (at 1.6 -13.8) (size 1 1) (drill 1) (layers *.Cu *.Mask))
+  (pad "" np_thru_hole circle (at 23.9 -13.9) (size 1.2 1.2) (drill 1.2) (layers *.Cu *.Mask))
+  (pad "" np_thru_hole circle (at 1.6 -13.8) (size 1.2 1.2) (drill 1.2) (layers *.Cu *.Mask))
   (pad "" np_thru_hole circle (at 5.3 -27.3) (size 1 1) (drill 1) (layers *.Cu *.Mask))
   (pad 1 connect rect (at 12.9 -25.1) (size 8.3 4.4) (layers B.Cu B.Mask))
   (pad 5 thru_hole circle (at 1.27 -3.81) (size 1.524 1.524) (drill 0.762) (layers *.Cu *.Mask))
