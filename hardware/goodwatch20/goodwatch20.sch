@@ -48,8 +48,8 @@ Text Notes 7350 7500 0    60   ~ 0
 GoodWatch Rev 20
 Text Notes 10600 7650 0    60   ~ 0
 10 (WIP)
-Text Notes 7000 6750 0    60   ~ 0
-Replacement PCB for the Casio CA53W built around the CC430F6137.\nby Travis Goodspeed
+Text Notes 7000 7100 0    60   ~ 0
+Replacement PCB for the Casio 3208 watch module (CA53 or CA506) built around\nthe CC430F6137.  Tuned for 70cm (430MHz).\nby Travis Goodspeed
 $Comp
 L CA53LCD LCD1
 U 1 1 58F11D4F
@@ -67,7 +67,7 @@ U 1 1 58F17607
 P 4350 4000
 F 0 "U1" H 3900 3650 60  0000 C CNN
 F 1 "CC430F613x" H 4000 4350 60  0000 C CNN
-F 2 "AAgoodwatch20:CC430F613x" H 4350 4000 60  0001 C CNN
+F 2 "GoodWatch20:CC430F613x" H 4350 4000 60  0001 C CNN
 F 3 "" H 4350 4000 60  0001 C CNN
 	1    4350 4000
 	0    1    1    0   
@@ -78,7 +78,7 @@ U 1 1 58F233A6
 P 6050 3550
 F 0 "KPD1" H 6200 3150 60  0000 C CNN
 F 1 "CA53KEYPAD" V 6200 3650 60  0000 C CNN
-F 2 "AAgoodwatch20:ca53keypad" H 6050 3550 60  0001 C CNN
+F 2 "GoodWatch20:ca53keypad" H 6050 3550 60  0001 C CNN
 F 3 "" H 6050 3550 60  0001 C CNN
 	1    6050 3550
 	1    0    0    1   
@@ -91,7 +91,7 @@ U 1 1 58F257A1
 P 5100 2500
 F 0 "BRD1" H 5600 2250 60  0000 C CNN
 F 1 "CA53BOARD" H 5550 3200 60  0000 C CNN
-F 2 "AAgoodwatch20:ca53board" H 5100 2500 60  0001 C CNN
+F 2 "GoodWatch20:ca53board" H 5100 2500 60  0001 C CNN
 F 3 "" H 5100 2500 60  0001 C CNN
 	1    5100 2500
 	1    0    0    -1  
@@ -838,4 +838,17 @@ Wire Wire Line
 	5350 5650 5350 5600
 Wire Wire Line
 	5150 5650 5150 5600
+$Comp
+L GND #PWR017
+U 1 1 59FA28EB
+P 5200 2600
+F 0 "#PWR017" H 5200 2350 50  0001 C CNN
+F 1 "GND" H 5200 2450 50  0000 C CNN
+F 2 "" H 5200 2600 50  0000 C CNN
+F 3 "" H 5200 2600 50  0000 C CNN
+	1    5200 2600
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5250 2600 5200 2600
 $EndSCHEMATC
