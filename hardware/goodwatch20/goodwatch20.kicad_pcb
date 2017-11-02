@@ -3,7 +3,7 @@
   (general
     (links 88)
     (no_connects 0)
-    (area 96.524999 58.715199 122.278201 86.475001)
+    (area 94.102067 58.4222 122.5778 86.8528)
     (thickness 1.6)
     (drawings 14)
     (tracks 488)
@@ -730,10 +730,10 @@
     )
   )
 
-  (module GoodWatch20:FA128 (layer F.Cu) (tedit 59D3C782) (tstamp 59D3CCCD)
+  (module GoodWatch20:FA128 (layer F.Cu) (tedit 59FB716D) (tstamp 59D3CCCD)
     (at 101.0704 74.1572 180)
     (path /59D3CB4A)
-    (fp_text reference X2 (at 3.0264 -2.4238 180) (layer F.SilkS)
+    (fp_text reference Y2 (at 3.0264 -2.4238 180) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value FA128 (at -1.45 -1.15 270) (layer F.Fab)
