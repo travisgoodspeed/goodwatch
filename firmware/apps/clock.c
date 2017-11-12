@@ -58,8 +58,7 @@ int flicker=0;
 
 //! Draws whatever is being set
 static void draw_settingtime(char ch){
-  
-  int inputdigit=0;
+  unsigned char inputdigit=0;
 
   flicker^=1;
 
@@ -153,6 +152,7 @@ static void draw_settingtime(char ch){
       settingclock++;
     }
     break;
+    
   case 11:        //Month
     if(flicker)
       lcd_cleardigit(3);
@@ -178,7 +178,7 @@ static void draw_settingtime(char ch){
       settingclock++;
     }
     break;
-  case 14: //Day
+  case 14:
     if(flicker)
       lcd_cleardigit(0);
     if(ch){
