@@ -76,7 +76,7 @@ const int letterfont[]={
   A|B|C|D|E|F,   //O
   F|A|B|G|E,     //P
   F|A|B|C|D|E|DP,//Q
-  F|A|B|G|E,     //R  (Same as P, pretend it's Rho.)
+  E|G,           //R
   A|F|G|C|D,     //S  (Looks like a 5.)
   F|E|G,         //T
   F|E|D|C|B,     //U
