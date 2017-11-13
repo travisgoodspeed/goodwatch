@@ -63,6 +63,8 @@ void lcd_postdraw(){
   //Mark some flags no matter what the mode.
   if((UCSCTL4&SELM_7)!=SELM_0)
     setmult(1);  //Mult indicates main clock is not from XT1
+  if(UCSCTL7&2)
+    setdivide(1);   //Div indicates a crystal fault.
   
   //Now swap back the buffer.
   LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.
