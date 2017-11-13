@@ -112,6 +112,9 @@ void lcd_char(int pos, char c){
   if(c>='0' && c<='9'){
     lcd_digit(pos, c&0x0F);
     return;
+  }else if(c==' '){
+    lcd_cleardigit(pos);
+    return;
   }
 
   c&=~0x20;
