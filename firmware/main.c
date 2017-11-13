@@ -94,12 +94,14 @@ int main(void) {
 void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
   static int latch=0;
 
-  /* So if the side button is being pressed, we increment the latch
-     and move to the next application.  Some applications, such as the
-     calculator, might hijack the call, so if we are latched for too
-     many poling cycles, we forcibly revert to the clock applicaiton.
-   */
+  
   if(sidebutton_mode()){
+    /* So if the side button is being pressed, we increment the latch
+       and move to the next application.  Some applications, such as the
+       calculator, might hijack the call, so if we are latched for too
+       many poling cycles, we forcibly revert to the clock applicaiton.
+    */
+    
     lcd_zero();
     
     //Politely move to the next app if requested.
@@ -109,10 +111,24 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
     //Force a shift to the home if held for 4 seconds (16 polls)
     if(latch>16)
       app_forcehome();
-    
+
+  
+  }else if(sidebutton_set()){
+    /* Similarly, we'll reboot if the SET/PRGM button has been held for 10
+       seconds (40 polls).  We'll draw a countdown if getting close, so
+       there's no ambiguity as to whether the chip reset.
+       
+       The other features of this button are handled within each application's
+       draw function.
+    */
+    if(latch++>40)
+      PMMCTL0 = PMMPW | PMMSWPOR;
+   
   }else{
     latch=0;
   }
+
+  
 
 
   
