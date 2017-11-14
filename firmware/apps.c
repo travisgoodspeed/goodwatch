@@ -1,3 +1,10 @@
+/*! \file apps.c
+  \brief Application manager.
+
+  This module manages the different applications, and the switching
+  between them.
+ */
+
 #include <msp430.h>
 
 #include "apps.h"

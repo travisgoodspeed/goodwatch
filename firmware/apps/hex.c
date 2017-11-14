@@ -1,6 +1,10 @@
-/* This is a simple hex viewer, allowing the user to explore memory
-   and I/O registers.  It also acts asa a demo application, which
-   should be easy to fork for other purposes.
+/*! \file hex.c
+
+  \brief Hex Viewer
+  
+  This is a simple hex viewer, allowing the user to explore memory
+  and I/O registers.  It also acts asa a demo application, which
+  should be easy to fork for other purposes.
 */
 
 //MSP430 functions for the SFRIE.

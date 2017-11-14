@@ -1,4 +1,5 @@
 /*! \file assembler.c
+  \brief Tiny MSP430 disassembler library.
   
   This is a handy little MSP430 disassembler, intended for use on the
   GoodWatcher.  Because the output is a 7-segment display with just
@@ -15,23 +16,28 @@
 #include<string.h>
 #include<stdio.h>
 
+//! Conditions from a jump instruction.
 static enum {JNZ, JEQ, JNC, JC, JN, JGE, JL, JMP} jumpcond;
+//! Strings of the jump instructions.
 static const char *jumpcondstr[]={
   "jnz", "jeq", "jnc", "jc", "jn", "jge", "jl", "jmp"
 };
+//! Target of the most recently disassembled jump.
 static uint16_t jumptarget=0x1337;
+//! Address of the current instruction.
 static uint16_t address;
+//! Instruction type.
 static enum {ERROROP, ONEOP, TWOOP, JUMPOP, EMUOP} type=ERROROP;
 
-//Opcode name as a string.
+//! Opcode name as a string.
 static const char *opstr;
-//Source and destination registers.
+//! Source and destination registers.
 static int src,dst;
-//Addressing modes.
+//! Addressing modes.
 static int as, ad;
-//1 for byte, 0 for word.
+//! 1 for byte, 0 for word.
 static int bw;
-//Disassembled string, to display on 7-seg display.
+//! Disassembled string, to display on 7-seg display.
 static char asmstr[8];
 
 //! Disassemble an instruction into the local buffer.
@@ -189,7 +195,7 @@ void asm_dis(uint16_t adr, uint16_t ins){
 
 #ifndef STANDALONE
 #include "api.h"
-//! Shows the currently disassembled instruction.
+//! Prints the instruction to the watch LCD.
 void asm_show(){
   int i;
   
@@ -250,7 +256,7 @@ void asm_show(){
 #include<stdio.h>
 #include<assert.h>
 
-//! Print the current instruction to the console.
+//! Print the current instruction to the unix console, for testing.
 void asm_print(){
   switch(type){
   default:
@@ -283,8 +289,7 @@ void asm_print(){
   }
 }
 
-/* This test method ought to return non-zero if any internal tests
-   fail. */
+//! Unix command-line tool for testing.
 int main(){
   printf("Testing the MSP430 disassembler:\n");
 

@@ -1,16 +1,18 @@
-/* This is the main clock application, which is seen by default
-   whenever the watch has nothing else to do.  In addition to telling
-   the time, holding a button allows you to see additional
-   information, such as the date and git revision.
+/*! \file clock.c
+  \brief Main clock application, that runs by default.
+  
+  This is the main clock application, which is seen by default
+  whenever the watch has nothing else to do.  In addition to telling
+  the time, holding a button allows you to see additional
+  information, such as the date and git revision.
 */
 
 #include <msp430.h>
 
 #include "api.h"
 
-/* When this is non-zero, we are in programming mode.  The number
-   indicates the field being set.
- */
+
+//! If non-zero, we are setting the time.
 static int settingclock=0;
 
 
@@ -74,10 +76,12 @@ static void draw_date_rom(){
   setpm(0);
 }
 
-int flicker=0;
+
+
 
 //! Draws whatever is being set
 static void draw_settingtime(char ch){
+  static int flicker=0;
   unsigned char inputdigit=0;
 
   flicker^=1;

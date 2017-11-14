@@ -1,4 +1,5 @@
-/* RTC driver for the GoodWatch.
+/*! \file rtc.c
+  \brief RTC driver for the GoodWatch.
  */
 
 #include <msp430.h>
@@ -8,8 +9,11 @@
 #include "lcd.h"
 #include "lcdtext.h"
 
+//! If this is 0xdeadbeef, the ram time is good.
 static unsigned long magicword __attribute__ ((section (".noinit")));
+//! Time and date, in case of a reboot.
 static unsigned char ramsavetime[8] __attribute__ ((section (".noinit")));
+//! ROM copy of the manufacturing time.
 unsigned char *romsavetime=(unsigned char*) 0xFF00;
 
 //! Save the times to RAM.  Must be fast.
@@ -57,6 +61,7 @@ void rtc_init(){
   rtc_loadtime();
 }
 
+//! Real Time Clock interrupt handler.
 void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
   //Save the time once a minute, so that when we reboot, we loose just
   //a few seconds.  We might later decide to call this in the

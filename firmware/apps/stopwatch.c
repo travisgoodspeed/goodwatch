@@ -1,8 +1,13 @@
-/* This is a simple stop watch, which begins counting as the + key is
-   hit and clears the count when the 0 key is pressed.  Because the RTC is busy
-   with the real time, we could in quarter seconds as the display is updated.
+/*! \file stopwatch.c
+  
+  \brief Stopwatch application.
+   
+  This is a simple stop watch, which begins counting as the + key is
+  hit and clears the count when the 0 key is pressed.  Because the
+  RTC is busy with the real time, we could in quarter seconds as the
+  display is updated.
 
-   We do not count time or store the count when in other applications.
+  We do not count time or store the count when in other applications.
 */
 
 #include "api.h"
@@ -10,6 +15,7 @@
 
 
 static int counting=0;
+
 /* It's a crying shame, but you'll break the code if you increase this
    count to a long, because repeated divisions in rendering will take
    longer than the ~8k cycles we have per interrupt when running at

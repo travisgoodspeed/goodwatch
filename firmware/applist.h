@@ -1,3 +1,7 @@
+/*! \file applist.h
+  \brief Table of all active applications.  Add yours here.
+*/
+
 #include "apps/clock.h"
 #include "apps/stopwatch.h"
 #include "apps/rpn.h"

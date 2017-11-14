@@ -1,3 +1,6 @@
+/*! \file sidebutton.c
+  \brief Sidebutton driver.
+ */
 #include <msp430.h>
 
 #include "keypad.h"

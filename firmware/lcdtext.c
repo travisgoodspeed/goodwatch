@@ -1,3 +1,6 @@
+/*! \file lcdtext.c
+  \brief LCD font and text drawing functions.
+ */
 #include "lcd.h"
 #include "lcdtext.h"
 
@@ -16,9 +19,10 @@
 
  */
 
-//This maps the segments of each digit.
-// A,      B,      C,      D,      E,      F,      G,     dp         digit
+
+//! This maps the segments of each digit.
 const int lcdmap[10][8]={
+// A,      B,      C,      D,      E,      F,      G,     dp         digit
   {0x0b04, 0x0b40, 0x0b20, 0x0b01, 0x0a10, 0x0a20, 0x0b02, 0x0b10}, //0
   {0x0940, 0x0a04, 0x0a02, 0x0910, 0x0901, 0x0902, 0x0920, 0x0a01}, //1
   {0x0804, 0x0840, 0x0820, 0x0801, 0x0710, 0x0720, 0x0802, 0x0810}, //2
@@ -36,7 +40,9 @@ const int lcdmap[10][8]={
 //as the rightmost decimal point because we don't seem to have that
 //cell.
 
+//! Bit flags for each of the eight segments.
 enum lcdmappos {A=1, B=2, C=4, D=8, E=0x10, F=0x20, G=0x40, DP=0x80};
+//! Font for numbers.
 const int numfont[]={
   A|B|C|D|E|F,   //0
   B|C,           //1
@@ -55,6 +61,7 @@ const int numfont[]={
   A|F|E|G|D,     //E
   A|G|F|E        //F
 };
+//! Font for letters.
 const int letterfont[]={
   /* This font begins at 0x41 hex in the ASCII table, rendering
      letters as best they can be on the 7-segment display.
@@ -87,7 +94,9 @@ const int letterfont[]={
   A|B|G|E|D      //Z
 };
 
+//! Sets a pixel.
 #define DRAWPOINT(todraw) lcdm[todraw>>8]|=todraw&0xFF
+//! Clears a pixel.
 #define CLEARPOINT(todraw) lcdm[todraw>>8]&=~(todraw&0xFF)
 
 
@@ -128,7 +137,7 @@ void lcd_char(int pos, char c){
   }
 }
 
-//! clears one LCD digit.
+//! Clears one LCD digit.
 void lcd_cleardigit(int pos){
   int bit;
   for(bit=0;bit<8;bit++)

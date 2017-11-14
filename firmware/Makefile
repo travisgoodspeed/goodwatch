@@ -21,7 +21,7 @@ goodwatch.hex: goodwatch
 	msp430-objcopy -O ihex goodwatch goodwatch.hex
 
 clean:
-	rm -f *~ */*~ *.hex *.elf *.o */*.o goodwatch gittag.h
+	rm -f *~ */*~ *.hex *.elf *.o */*.o goodwatch gittag.h html latex
 erase:
 	$(BSL) -e
 flash: goodwatch.hex

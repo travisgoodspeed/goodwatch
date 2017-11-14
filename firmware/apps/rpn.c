@@ -1,9 +1,14 @@
-#include "api.h"
+/*! \file rpn.c
+   \brief RPN Calculator.
 
-/* This is a simple RPN calculator, so that our calculator watch can
+   This is a simple RPN calculator, so that our calculator watch can
    still calculate.  The = key is a space, and the stack is STACKSIZE
    deep.
 */
+
+
+#include "api.h"
+
 
 #define STACKSIZE 10
 
@@ -68,7 +73,7 @@ static void rpn_updatebuffer(int i){
 }
 
 
-//Last character pressed.
+//! Last character pressed.
 static char oldch=0;
 
 //! Initializes the calculator.

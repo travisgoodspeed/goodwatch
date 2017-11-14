@@ -1,5 +1,8 @@
-/* Minimal LCD library, forked from a reference by G. Larmore at
-   Texas Instruments.
+/*! \file lcd.c
+  \brief LCD Driver.
+  
+  Minimal LCD library, based on a handy reference by G. Larmore at
+  Texas Instruments.  See lcdtext.c for the font library.
 */
 
 #include <msp430.h>
@@ -7,9 +10,12 @@
 
 #include "api.h"
 
+//! LCD Main memory.
 volatile unsigned char *lcdm=&LCDM1;
+//! LCD Blink Memory, for double-buffering.
 volatile unsigned char *lcdbm=&LCDBM1;
 
+//! While non-zero, this blinks a useless LCD segment to indicate CPU load.
 int flickermode=0;
 
 //! Clears the LCD memory and blink memory.

@@ -1,5 +1,7 @@
-/* Main module.  This version just initializes the LCD and then drops
-   to a low power mode, letting the WDT do the work on a slow
+/*! \file main.c
+
+  \brief Main module.  This version just initializes the LCD and then
+   drops to a low power mode, letting the WDT do the work on a slow
    interval.
 */
 
@@ -14,7 +16,7 @@
 #include "sidebutton.h"
 
 
-//Initialize the XT1 crystal, and stabilize it.
+//! Initialize the XT1 crystal, and stabilize it.
 void xtal_init(){
   P5SEL |= BIT0 + BIT1;                     // Select XT1
   UCSCTL6 |= XCAP_3;                        // Internal load cap
@@ -61,6 +63,7 @@ int post(){
   return 1;
 }
 
+//! Main method.
 int main(void) {
   WDTCTL = WDTPW + WDTHOLD; // Stop WDT
 
@@ -107,7 +110,7 @@ int main(void) {
   while(1);
 }
 
-// Watchdog Timer interrupt service routine, calls back to handler functions.
+//! Watchdog Timer interrupt service routine, calls back to handler functions.
 void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
   static int latch=0;
 

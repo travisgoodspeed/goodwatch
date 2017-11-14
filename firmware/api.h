@@ -1,6 +1,9 @@
-/* This should be the only header file included by applications.  It
-   should allow for general I/O functions, but nothing internal to a
-   driver.  (But of course it includes too much for now.)
+/*! \file api.h
+  \brief Main API header, that includes the others.
+
+  This should be the only header file included by applications.  It
+  should allow for general I/O functions, but nothing internal to a
+  driver.  (But of course it includes too much for now.)
 */
 
 #include <stdint.h>
@@ -19,4 +22,6 @@
 #include "libs/assembler.h"
 
 //Standalone functions.
+
+//! Power On Self Test
 int post();

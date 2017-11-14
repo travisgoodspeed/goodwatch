@@ -1,3 +1,7 @@
+/*! \file keypad.c
+  \brief Keypad driver.
+ */
+
 #include <msp430.h>
 
 #include "apps.h"
