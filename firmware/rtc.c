@@ -10,7 +10,7 @@
 
 static unsigned long magicword __attribute__ ((section (".noinit")));
 static unsigned char ramsavetime[8] __attribute__ ((section (".noinit")));
-static unsigned char *romsavetime=(unsigned char*) 0xFF00;
+unsigned char *romsavetime=(unsigned char*) 0xFF00;
 
 //! Save the times to RAM.  Must be fast.
 static void rtc_savetime(){

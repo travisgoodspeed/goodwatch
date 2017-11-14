@@ -54,6 +54,26 @@ static void draw_date(){
   setpm(0);
 }
 
+//! Draws the date as yyyy.mm.dd
+static void draw_date_rom(){
+  unsigned int year=(romsavetime[4]+(romsavetime[5]<<8)) % 4096;;
+  unsigned int month=romsavetime[6];
+  unsigned int day=romsavetime[7];
+
+  lcd_digit(7,(year/1000)%10);
+  lcd_digit(6,(year/100)%10);
+  lcd_digit(5,(year/10)%10);
+  lcd_digit(4,year%10);
+  setcolon(0);
+  lcd_digit(3,month/10);
+  lcd_digit(2,month%10);
+  lcd_digit(1,day/10);
+  lcd_digit(0,day%10);
+
+  setam(0);
+  setpm(0);
+}
+
 int flicker=0;
 
 //! Draws whatever is being set
@@ -246,6 +266,10 @@ void clock_draw(){
       //4 shows the git revision.
       lcd_hex(GITTAG);
       lcd_cleardigit(7);
+      break;
+    case '5':
+      //5 shows the git date from Flash.
+      draw_date_rom();
       break;
     case '6':
       //6 toggles the CPU load indicator.
