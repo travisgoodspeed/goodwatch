@@ -19,7 +19,7 @@ void xtal_init(){
   P5SEL |= BIT0 + BIT1;                     // Select XT1
   UCSCTL6 |= XCAP_3;                        // Internal load cap
 
-  // Loop until XT1,XT2 & DCO stabilizes
+  // Loop until XT1 & DCO stabilizes
   do{
     UCSCTL7 &= ~(XT1LFOFFG + DCOFFG);
                                             // Clear LFXT1,DCO fault flags
@@ -30,7 +30,7 @@ void xtal_init(){
                                             // strength
   //See page 125 of the family guide.
   //UCSCTL4 = SELM_3 + SELS_0 + SELA_0;  //XT1 for ACLK and SMCLK, MCLK from DCO.
-  UCSCTL4 = SELM_0 + SELS_0 + SELA_0;  //XT1 for everything; very slow CPU.
+  UCSCTL4 = SELM_0 + SELS_0 + SELA_0;    //XT1 for everything; very slow CPU.
 }
 
 //! Power On Self Test
@@ -62,15 +62,30 @@ int post(){
 }
 
 int main(void) {
-  WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
+  WDTCTL = WDTPW + WDTHOLD; // Stop WDT
 
   //Initialize the various modules.
   lcd_init();
-  xtal_init();
+  
+  lcd_zero();
+  lcd_string("RTC INIT");
   rtc_init();
+  
+  lcd_zero();
+  lcd_string("KEY INIT");
   key_init();
+  
+  lcd_zero();
+  lcd_string("BUT INIT");
   sidebutton_init();
+  
+  lcd_zero();
+  lcd_string("APP INIT");
   app_init();
+  
+  lcd_zero();
+  lcd_string("OSC INIT");
+  xtal_init();
 
   // Setup and enable WDT 250ms, ACLK, interval timer
   WDTCTL = WDT_ADLY_250;
@@ -82,10 +97,12 @@ int main(void) {
   SVSMLCTL = 0;
   PMMCTL0_H = 0x00;
 
+  lcd_string("POSTPOST");
   // Run the POST until it passes.
   while(post());
 
-  __bis_SR_register(LPM3_bits +GIE);         // Enter LPM3
+  lcd_string("LPM3LPM3");
+  __bis_SR_register(LPM3_bits + GIE);        // Enter LPM3
   //__bis_SR_register(LPM0_bits + GIE);	     // Enter LPM0 w/interrupt
   while(1);
 }
@@ -129,15 +146,11 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
   }
 
   
-
-
   
-  lcd_predraw();
-
   /* The applet is drawn four times per second.  We handle
      double-buffering, so that incomplete drawings won't be shown to
      the user, but everything else is the app's responsibility. */
+  lcd_predraw();
   app_draw();
-
   lcd_postdraw();
 }

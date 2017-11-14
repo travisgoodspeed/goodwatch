@@ -247,6 +247,10 @@ void clock_draw(){
       lcd_hex(GITTAG);
       lcd_cleardigit(7);
       break;
+    case '6':
+      //6 toggles the CPU load indicator.
+      flickermode=(flickermode?0:-1);
+      break;
     case '0':
       //0 shows the alphabet test.
       lcd_string("abcdefgh");

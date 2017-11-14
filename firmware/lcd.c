@@ -1,17 +1,16 @@
-/* Minimal LCD example, forked from a reference by G. Larmore at TI.
-   The LCD pinout doesn't match ours yet, and will need to be
-   modified to fit.  */
+/* Minimal LCD library, forked from a reference by G. Larmore at
+   Texas Instruments.
+*/
 
 #include <msp430.h>
 #include <string.h>
 
-#include "lcdtext.h"
-#include "rtc.h"
-#include "apps.h"
-#include "sidebutton.h"
+#include "api.h"
 
 volatile unsigned char *lcdm=&LCDM1;
 volatile unsigned char *lcdbm=&LCDBM1;
+
+int flickermode=0;
 
 //! Clears the LCD memory and blink memory.
 void lcd_zero(){
@@ -62,7 +61,7 @@ void lcd_predraw(){
 void lcd_postdraw(){
   //Mark some flags no matter what the mode.
   if((UCSCTL4&SELM_7)!=SELM_0)
-    setmult(1);  //Mult indicates main clock is not from XT1
+    setmult(1);     //Mult indicates main clock is not from XT1
   if(UCSCTL7&2)
     setdivide(1);   //Div indicates a crystal fault.
   
@@ -72,13 +71,18 @@ void lcd_postdraw(){
   //Copy to blink memory for the next round.
   memcpy((char*) lcdbm,(char*) lcdm,13);
 
-  /* Uncomment this for a sort of CPU monitor, which will darken one
+  /* This is a sort of CPU monitor, which will darken one
      piece of the day-of-week characters only while the rest of the
      screen is being drawn.  If the segment is very dark, you might be
      taking more than your fair share of cycles.  If it is very light,
      you are either not redrawing the screen, or you have plenty of
      cycles to spare.
+     
+     Start it by pressing 6 in clock mode.
    */
-  //lcdbm[0x0c]|=0x01; //Set a segment to visualize delay times.
+  if(flickermode){
+    flickermode--;
+    lcdbm[0x0c]|=0x01; //Set a segment to visualize delay times.
+  }
 }
 
