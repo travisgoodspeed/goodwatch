@@ -30,6 +30,9 @@ Loader (BSL).  You might find it handy for other projects involving
 that chip, or other MSP430F5 and MSP430F6 chips without USB.  You will
 need to be a member of the `dialout` group to flash the firmware.
 
+[Firmware documentation](http://goodwatch.org/doxygen/) can be built
+with Doxygen.
+
 ## Hardware Status
 
 Our replacement board is based around the CC430F6137, which combines
