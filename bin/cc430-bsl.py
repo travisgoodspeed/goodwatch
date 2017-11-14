@@ -6,7 +6,7 @@
 ## bad checksums.  It is free for any use, provided you tip your
 ## bartender.
 
-import serial, time, sys, argparse;
+import serial, time, sys, argparse, progressbar;
 
 
 class BSL:
@@ -196,8 +196,10 @@ class BSL:
 
     def writeihexfile(self,filename):
         """Writes an Intel Hex file to the CC430."""
+        bar=progressbar.ProgressBar();
         f=open(filename,'r');
-        for l in f:
+        lines=f.readlines();
+        for l in bar(lines):
             self.writeihexline(l.strip());
 
 def coredump(bsl):
