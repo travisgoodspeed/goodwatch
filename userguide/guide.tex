@@ -25,8 +25,8 @@ Howdy y'all,
 
 The GoodWatch is a clone of the Casio 3208 watch module, replacing
 that module in the CA-53W and CA-506 series watches.  It is built
-around the CC430F6137 RFSoC, allowing for years of battery life and
-programmability in C.  The second model adds a 70cm amateur radio
+around the CC430F6137 RFSoC, allowing for years of battery life with
+convenient C programming.  The second model adds a 70cm amateur radio
 transceiver.
 
 \section{Usage}
@@ -46,9 +46,10 @@ hour, minute and date can be changed; the seconds are held at zero
 until the minute is finished being set.
 
 Hold $\div$ to show the date in YYYYMMDD format.  Hold 7 for a
-self-test, which ought to display {\tt GOODGOOD} but might otherwise
+self-test, which ought to display {\tt ALL GOOD} but might otherwise
 indicate a trouble code.  Hold 4 to show the Git hash of the firmware
-revision.
+revision, 5 to show the date of manufacture, or 6 to toggle a blinking
+CPU load indicator.
 
 \subsection*{Stopwatch}
 
