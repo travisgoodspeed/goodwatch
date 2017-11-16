@@ -8,8 +8,10 @@
 #include "apps/hex.h"
 
 
-/* 
-   Each of these function pointers is called four times per second.
+/*  For each application, the init() function is called at entry.  The
+    draw() function is called 4 times per second.  The exit() function
+    is called when the mode button is pressed, but returns 1 to reject
+    a mode switch or 0 to allow it.
  */
 static struct app apps[]={
   //Clock

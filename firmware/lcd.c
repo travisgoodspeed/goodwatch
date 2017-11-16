@@ -70,6 +70,8 @@ void lcd_postdraw(){
     setmult(1);     //Mult indicates main clock is not from XT1
   if(UCSCTL7&2)
     setdivide(1);   //Div indicates a crystal fault.
+  if(power_ishigh())
+    setminus(1);    //Minus indicates the radio is on.
   
   //Now swap back the buffer.
   LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.

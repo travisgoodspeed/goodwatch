@@ -90,6 +90,10 @@ int main(void) {
   lcd_string("OSC INIT");
   xtal_init();
 
+  lcd_zero();
+  lcd_string("RAD INIT");
+  radio_init();
+
   // Setup and enable WDT 250ms, ACLK, interval timer
   WDTCTL = WDT_ADLY_250;
   SFRIE1 |= WDTIE;
@@ -99,7 +103,10 @@ int main(void) {
   SVSMHCTL = 0;
   SVSMLCTL = 0;
   PMMCTL0_H = 0x00;
+  
 
+
+  
   lcd_string("POSTPOST");
   // Run the POST until it passes.
   while(post());
