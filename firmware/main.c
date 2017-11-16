@@ -14,7 +14,7 @@
 #include "keypad.h"
 #include "apps.h"
 #include "sidebutton.h"
-
+#include "radio.h"
 
 //! Initialize the XT1 crystal, and stabilize it.
 void xtal_init(){
@@ -53,10 +53,18 @@ int post(){
        non-watch functions still work.
      */
     lcd_string(" crystal");
+  }else if(has_radio && RF1AIFERR & 1){
+    lcd_string("RF  LOWV");
+  }else if(has_radio && RF1AIFERR & 2){
+    lcd_string("RF OPERR");
+  }else if(has_radio && RF1AIFERR & 4){
+    lcd_string("RFOUTERR");
+  }else if(has_radio && RF1AIFERR & 8){
+    lcd_string("RF OVERW");
   }else{
     /* Return zero if everything is hunky dory.
      */
-    lcd_hex(0x600d600d);
+    lcd_string("all good");
     return 0;
   }
   //We had a failure, indicated above.

@@ -14,3 +14,11 @@ int radio_on();
 
 //! Turns the radio off.
 int radio_off();
+
+
+//! Read a register from the radio.
+uint8_t radio_readreg(uint8_t addr);
+//! Write to a register in the radio.
+void radio_writereg(uint8_t addr, uint8_t value);
+//! Strobe a radio register.
+uint8_t radio_strobe(uint8_t strobe);
