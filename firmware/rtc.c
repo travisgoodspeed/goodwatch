@@ -62,9 +62,84 @@ void rtc_init(){
   rtc_setdow();
 }
 
+
+//! Years div by 4, but not by 100 unless also by 400 are leap years.
+#define IS_LEAP_YEAR(year) ((year%400==0) || (year%4==0 && year%100!=0))
+//! Number of leap years since 1984.  Accurate until 2200, then off by one.
+#define LEAPS_SINCE_YEAR(year) (((year) - 1984) \
+				+ ((year) - 1984) / 4 \
+				+ (year>2100?-1:0)    \
+				);
+
+
+//! Returns the number of days for a given month.
+static unsigned int rtc_get_max_days(unsigned int month, unsigned int year) {
+  switch (month) {
+    //Thirty days hath November, April, June, and September.
+  case 4: case 6: case 9: case 11:
+    return 30;
+
+    //With 28 or 29 there is but one
+  case 2:
+    if (IS_LEAP_YEAR(year))
+      return 29;
+    else
+      return 28;
+    
+    //All the rest have thirty one
+  case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+    return 31;
+
+  default:
+    return 0;
+  }
+}
+
 //! Sets the DOW from the calendar date.
 void rtc_setdow(){
-  //TODO
+  unsigned int dow;
+
+  //Begin with the offset for the current year.
+  dow = LEAPS_SINCE_YEAR(RTCYEAR);
+
+  //Subtract a day if this year is a leap year, but we haven't reached
+  //the leap day yet.
+  if ((29 == rtc_get_max_days(2, RTCYEAR)) && (RTCMON < 3))
+    dow--;
+    
+  //Add this month's offset.
+  switch (RTCMON) {
+  case 5:
+    dow += 1;
+    break;
+    
+  case 8:
+    dow += 2;
+    break;
+    
+  case 2: case 3: case 11:
+    dow += 3;
+    break;
+    
+  case 6:
+    dow += 4;
+    break;
+    
+  case 9: case 12:
+    dow += 5;
+    break;
+    
+  case 4: case 7:
+    dow += 6;
+    break;
+  }
+
+  //Add the day of the current month.
+  dow += RTCDAY;
+  
+  
+  dow = dow % 7;
+  RTCDOW = dow;
 }
 
 //! Real Time Clock interrupt handler.

@@ -231,6 +231,10 @@ static void draw_settingtime(char ch){
      */
     settingclock=0;
   }
+
+  //Update the DOW.  We could save some cycles by only doing this if
+  //the date changes, but we don't.
+  rtc_setdow();
 }
 
 
