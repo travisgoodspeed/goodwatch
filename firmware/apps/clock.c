@@ -56,6 +56,21 @@ static void draw_date(){
   setpm(0);
 }
 
+static const char *daysofweek[7]={
+  "  sunday",
+  "  monday",
+  " tuesday",
+  "wednesdy",
+  "thursday",
+  "  friday",
+  "saturday"
+};
+
+//! Draws the day of the week.
+static void draw_dow(){
+  lcd_string(daysofweek[RTCDOW]);
+}
+
 //! Draws the date as yyyy.mm.dd
 static void draw_date_rom(){
   unsigned int year=(romsavetime[4]+(romsavetime[5]<<8)) % 4096;;
@@ -253,10 +268,6 @@ void clock_draw(){
     draw_settingtime(ch);
   else
     switch(ch){
-    case '/':
-      //Hold / to draw the date.
-      draw_date();
-      break;
     case '7':
       //Hold 7 to run the self-test after startup.  Response codes try to
       //roughly describe the fault.
@@ -266,6 +277,15 @@ void clock_draw(){
       //8 shows 0xdeadbeef.
       lcd_hex(0xdeadbeef);
       break;
+    case '9':
+      //Hold / to draw the date.
+      draw_dow();
+      break;
+    case '/':
+      //Hold / to draw the date.
+      draw_date();
+      break;
+
     case '4':
       //4 shows the git revision.
       lcd_hex(GITTAG);

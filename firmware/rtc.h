@@ -7,3 +7,6 @@ extern unsigned char *romsavetime;
 
 //! Configure the Real Time Clock
 void rtc_init();
+
+//! Sets the DOW from the calendar date.
+void rtc_setdow();

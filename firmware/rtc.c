@@ -59,6 +59,12 @@ void rtc_init(){
   RTCPS1CTL = RT1SSEL_2 + RT1PSDIV_3;       // out from RT0PS, /16, start timer
 
   rtc_loadtime();
+  rtc_setdow();
+}
+
+//! Sets the DOW from the calendar date.
+void rtc_setdow(){
+  //TODO
 }
 
 //! Real Time Clock interrupt handler.

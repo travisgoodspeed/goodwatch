@@ -146,7 +146,7 @@ void lcd_cleardigit(int pos){
 }
 
 //! Draws a string to the LCD.
-void lcd_string(char *str){
+void lcd_string(const char *str){
   int i=7;//LCD position.
   while(i>=0 && *str){
     lcd_char(i--, *str++);

@@ -11,7 +11,7 @@ void lcd_cleardigit(int pos);
 //! Draw a number to the LCD.
 void lcd_number(long num);
 //! Draw a string to the LCD.
-void lcd_string(char *str);
+void lcd_string(const char *str);
 //! Draw a hex number to the LCD.
 void lcd_hex(long num);
 
