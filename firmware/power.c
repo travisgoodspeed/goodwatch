@@ -113,13 +113,21 @@ static unsigned int power_vcoredown (unsigned char level) {
   // Wait until levels are settled.
   while ((PMMIFG & SVSMHDLYIFG) == 0 || (PMMIFG & SVSMLDLYIFG) == 0);
 
+
   // Set VCore to new level
   PMMCTL0_L = PMMCOREV0 * level;
+  
+  /*
+    printf("Changing high and low sides.\n");
+    // Set also SVS highside and SVS low side to new level
+    PMMIFG &= ~(SVSHIFG | SVSMHDLYIFG | SVSLIFG | SVSMLDLYIFG);
+    printf("a\n");
+    SVSMHCTL |= SVSHE | SVSHFP | (SVSHRVL0 * level);
+    printf("b\n");
+    SVSMLCTL |= SVSLE | SVSLFP | (SVSLRVL0 * level);
+  */
 
-  // Set also SVS highside and SVS low side to new level
-  PMMIFG &= ~(SVSHIFG | SVSMHDLYIFG | SVSLIFG | SVSMLDLYIFG);
-  SVSMHCTL |= SVSHE | SVSHFP | (SVSHRVL0 * level);
-  SVSMLCTL |= SVSLE | SVSLFP | (SVSLRVL0 * level);
+
   // Wait until SVS high side and SVS low side is settled
   while ((PMMIFG & SVSMHDLYIFG) == 0 || (PMMIFG & SVSMLDLYIFG) == 0);
   // Disable full-performance mode to save energy
@@ -127,7 +135,8 @@ static unsigned int power_vcoredown (unsigned char level) {
   // Disable SVS/SVM Low
   // Disable full-performance mode to save energy
   SVSMLCTL &= ~(SVSLE+SVMLE+SVSLFP);
-    
+
+
   // Clear all Flags
   PMMIFG &= ~(SVMHVLRIFG | SVMHIFG | SVSMHDLYIFG
 	      | SVMLVLRIFG | SVMLIFG | SVSMLDLYIFG);
@@ -146,13 +155,13 @@ static unsigned int power_vcoredown (unsigned char level) {
 
 //! Sets the core core voltage.
 int power_setvcore (int level) {
-  unsigned int oldlevel;
-  unsigned int status = 1;
+  int oldlevel, origlevel;
+  int status = 1;
 
   //Mask off the level.
   level &= PMMCOREV_3;
   //Current core voltage.
-  oldlevel = (PMMCTL0 & PMMCOREV_3);
+  origlevel = oldlevel = (PMMCTL0 & PMMCOREV_3);
   
   // step by step increase or decrease
   while (((level != oldlevel) && (status)) || (level < oldlevel)) {
@@ -160,10 +169,11 @@ int power_setvcore (int level) {
       status = power_vcoreup(++oldlevel);
     else
       status = power_vcoredown(--oldlevel);
+    __delay_cycles(850);
   }
 
   printf("Power %d->%d.\n",
-	 oldlevel,
+	 origlevel,
 	 PMMCTL0 & PMMCOREV_3);
   return status;
 }

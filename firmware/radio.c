@@ -40,9 +40,14 @@ void radio_init(){
   /* If the radio components are missing, the AVCC_RF lines will be
      unconnected and the radio will immediately have a low voltage error.
   */
+  has_radio=1;
+
+  radio_on();
+  
   if(RF1AIFERR & 1){
     printf("No radio.\n");
     has_radio=0;
+    radio_off();
     return;
   }
 
@@ -50,7 +55,6 @@ void radio_init(){
   //make sure that won't cause problems later.
   printf("Has radio.\n");
   has_radio=1;
-  radio_on();
   radio_off();
 }
 
@@ -67,25 +71,33 @@ int radio_on(){
   PMMCTL0_H = 0x00;
 
   //Step up the core voltage a bit.
-  power_setvcore(2);
-  __delay_cycles(850);
   power_setvcore(3);
   __delay_cycles(850);
 
   //Strobe the radio to reset it.
   radio_strobe(RF_SRES);
   radio_strobe(RF_SNOP);
+
+  printf("RF1AIFERR: %02x\n",
+	 RF1AIFERR);
   
   return 1; //Success
 }
 
 //! Turns the radio off.
 int radio_off(){
+  //Drop the voltage first.
+  power_setvcore(0);
+  __delay_cycles(850);
 
-  //Disable high-power mode.
+  //Then disable high-power mode.
   PMMCTL0_H = 0xA5;
   PMMCTL0_L &= ~PMMHPMRE_L;
   PMMCTL0_H = 0x00;
+
+
+  
+  
 
   return 1;
 }
