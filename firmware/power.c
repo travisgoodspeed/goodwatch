@@ -6,6 +6,7 @@
   times.
 */
 
+#include<stdio.h>
 #include<msp430.h>
 
 //! Returns non-zero if in anything but the lowest power mode.
@@ -36,10 +37,14 @@ static unsigned int power_vcoreup (unsigned char level) {
   while ((PMMIFG & SVSMHDLYIFG) == 0);
   // Disable full-performance mode to save energy
   SVSMHCTL &= ~SVSLFP ;
+  
   // Check if a VCore increase is possible
   if ((PMMIFG & SVMHIFG) == SVMHIFG){
-    // Vcc is to low for a Vcore increase, so recover the previous
+    // Vcc is too low for a Vcore increase, so recover the previous
     // settings.
+
+    printf("VCC too low to raise core.\n");
+    
     PMMIFG &= ~SVSMHDLYIFG;
     SVSMHCTL = SVSMHCTL_backup;
     // Wait until SVM highside is settled
@@ -142,7 +147,7 @@ static unsigned int power_vcoredown (unsigned char level) {
 //! Sets the core core voltage.
 int power_setvcore (int level) {
   unsigned int oldlevel;
-  unsigned int status = 0;
+  unsigned int status = 1;
 
   //Mask off the level.
   level &= PMMCOREV_3;
@@ -156,5 +161,9 @@ int power_setvcore (int level) {
     else
       status = power_vcoredown(--oldlevel);
   }
+
+  printf("Power %d->%d.\n",
+	 oldlevel,
+	 PMMCTL0 & PMMCOREV_3);
   return status;
 }
