@@ -73,6 +73,8 @@ int post(){
 
 //! Main method.
 int main(void) {
+  printf("main()\n");
+  
   WDTCTL = WDTPW + WDTHOLD; // Stop WDT
 
   //Initialize the various modules.
