@@ -24,6 +24,7 @@
   
 */
 
+#include<stdio.h>
 #include<stdint.h>
 #include<msp430.h>
 
@@ -40,12 +41,14 @@ void radio_init(){
      unconnected and the radio will immediately have a low voltage error.
   */
   if(RF1AIFERR & 1){
+    printf("No radio.\n");
     has_radio=0;
     return;
   }
 
   //With no voltage error, we have a radio!  Let's power cycle it to
   //make sure that won't cause problems later.
+  printf("Has radio.\n");
   has_radio=1;
   radio_on();
   radio_off();

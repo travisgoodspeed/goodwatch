@@ -37,5 +37,5 @@ void dmesg_clear(){
 void dmesg_init(){
   if(dmesg_magic!=0xdeadbeef || dmesg_index>=DMESGLEN)
     dmesg_clear();
-  printf("dmesg_init();\n");
+  printf("\n\n----\n");
 }

@@ -69,6 +69,7 @@ int post(){
     lcd_string("all good");
     return 0;
   }
+  
   //We had a failure, indicated above.
   return 1;
 }
@@ -78,9 +79,7 @@ int main(void) {
   WDTCTL = WDTPW + WDTHOLD; // Stop WDT
 
   //Initialize the various modules.
-  dmesg_init();
-  printf("main()\n");
-  
+  dmesg_init();  
   lcd_init();
   
   lcd_zero();
