@@ -16,7 +16,7 @@ all: goodwatch.hex
 gittag.h:
 	echo "#define GITTAG" 0x`git describe --always` >gittag.h
 goodwatch: $(modules) $(apps) *.h
-	$(CC) -o goodwatch $(modules) $(apps)
+	$(CC) -T msp430.x -o goodwatch $(modules) $(apps)
 	../bin/printsizes.py goodwatch || echo "Please install python-pyelftools."
 
 goodwatch.hex: goodwatch
