@@ -31,9 +31,11 @@ def printsizes(stream):
     datalen=len(data.data());
     bss=elffile.get_section_by_name('.bss');
     bsslen=len(bss.data());
-    dataperc=(datalen+bsslen)*100.0/8192;
-    print("%d bytes of .data, %d bytes of .bss (%d %%)"
-          %(datalen,bsslen,dataperc));
+    noinit=elffile.get_section_by_name('.noinit');
+    noinitlen=len(noinit.data());
+    dataperc=(datalen+bsslen+noinitlen)*100.0/4096;
+    print("%d bytes of .data, %d bytes of .bss, %d bytes of .noinit (%d %%)"
+          %(datalen,bsslen,noinitlen,dataperc));
     if dataperc>80:
         print("WARNING: %d percent of code is used!"%codeperc);
 
