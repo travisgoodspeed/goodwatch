@@ -103,8 +103,14 @@ class BSL:
     def unlock(self,
                password="\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff"):
         """Unlocks the bootloader, optionally with a password."""
+        
 
-        #Password must be 32 bytes.
+        #Password must be 32 bytes; read from a file otherwise.
+        if len(password)!=32:
+            print "Loading password from %s." % password;
+            password=self.passwordfromfile(password);
+            print len(password);
+
         assert(len(password)==32);
 
         resp=self.transact("\x11"+password);
@@ -202,6 +208,31 @@ class BSL:
         for l in bar(lines):
             self.writeihexline(l.strip());
 
+
+    def handlepasswordline(self,line):
+        """Returns a password fragment from the line, if available."""
+        assert(line[0]==':');
+        length=int(line[1:3],16);
+        adr=int(line[3:7],16);
+        verb=int(line[7:9],16);
+        
+        data=line[9:(9+length*2)].decode('hex');
+        if verb==0 and adr>=0xFFE0:
+            #Return the password bytes from this line.
+            return data;
+
+        #Empty string by default.
+        return "";
+
+    def passwordfromfile(self,filename):
+        """Returns the password from an ihex file, for unlocking."""
+        f=open(filename,'r');
+        lines=f.readlines();
+        password="";
+        for l in lines:
+            password+=self.handlepasswordline(l);
+        return password;
+    
 def coredump(bsl):
     """Prints all of memory."""
 
@@ -228,6 +259,16 @@ def coredump(bsl):
     print "Got %d bytes of Flash ROM." % len(bulk);
     print bulk.encode('hex');
 
+def dmesg(bsl):
+    """Prints all of memory."""
+
+    print "\n\n\nDumping most of memory as a read test.";
+    
+    ##Dump RAM
+    bulk=bsl.readbulk(0x1C00,4096)
+    print "Got %d bytes of RAM." % len(bulk);
+    print bulk.encode('hex');
+
 def writetest(bsl):
     """Tests writing an image to Flash."""
 
@@ -248,6 +289,7 @@ if __name__=='__main__':
     parser.add_argument('-f','--file', help='Flash File');
     parser.add_argument('-P','--password', help='Password File or Hex');
     parser.add_argument('-d','--dump', help='Produce a core dump.',action='count');
+    parser.add_argument('-D','--dmesg', help='Prints the dmesg.',action='count');
     parser.add_argument('-u','--unlock',help='Unlock BSL.',action='count');
     parser.add_argument('-t','--time',help='Set the Time.',action='count');
     
@@ -262,7 +304,7 @@ if __name__=='__main__':
         bsl.unlock();
     if args.unlock!=None:
         print "Unlocking."
-        bsl.unlock();
+        bsl.unlock(args.password);
     if args.file!=None:
         print "Writing %s as Intel hex." % args.file
         bsl.writeihexfile(args.file);
@@ -278,5 +320,7 @@ if __name__=='__main__':
         bsl.write(0xFF00,timestr);
     if args.dump!=None:
         coredump(bsl);
+    if args.dmesg!=None:
+        dmesg(bsl);
     bsl.reset();
     
