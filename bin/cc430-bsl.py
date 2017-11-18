@@ -11,7 +11,7 @@ import serial, time, sys, argparse, progressbar;
 
 class BSL:
     def __init__(self, port):
-        print("Opening %s" % port);
+        #print("Opening %s" % port);
         self.serial=serial.Serial(port,
                                   baudrate=9600,
                                   parity=serial.PARITY_EVEN,
@@ -107,9 +107,7 @@ class BSL:
 
         #Password must be 32 bytes; read from a file otherwise.
         if len(password)!=32:
-            print "Loading password from %s." % password;
             password=self.passwordfromfile(password);
-            print len(password);
 
         assert(len(password)==32);
 
@@ -260,14 +258,11 @@ def coredump(bsl):
     print bulk.encode('hex');
 
 def dmesg(bsl):
-    """Prints all of memory."""
+    """Prints the dmesg buffer."""
 
-    print "\n\n\nDumping most of memory as a read test.";
-    
     ##Dump RAM
-    bulk=bsl.readbulk(0x1C00,4096)
-    print "Got %d bytes of RAM." % len(bulk);
-    print bulk.encode('hex');
+    bulk=bsl.readbulk(0x2400,2048)
+    print bulk;
 
 def writetest(bsl):
     """Tests writing an image to Flash."""
@@ -303,7 +298,7 @@ if __name__=='__main__':
         bsl.masserase();
         bsl.unlock();
     if args.unlock!=None:
-        print "Unlocking."
+        #print "Unlocking."
         bsl.unlock(args.password);
     if args.file!=None:
         print "Writing %s as Intel hex." % args.file

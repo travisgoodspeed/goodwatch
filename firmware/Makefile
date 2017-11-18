@@ -28,5 +28,7 @@ erase:
 	$(BSL) -e
 flash: goodwatch.hex
 	$(BSL) -etf goodwatch.hex
+dmesg:
+	../bin/cc430-bsl.py -P goodwatch.hex -uD
 
 
