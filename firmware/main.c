@@ -7,6 +7,7 @@
 
 #include <msp430.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "lcd.h"
 #include "lcdtext.h"
@@ -15,6 +16,7 @@
 #include "apps.h"
 #include "sidebutton.h"
 #include "radio.h"
+#include "dmesg.h"
 
 //! Initialize the XT1 crystal, and stabilize it.
 void xtal_init(){
@@ -73,11 +75,12 @@ int post(){
 
 //! Main method.
 int main(void) {
-  printf("main()\n");
-  
   WDTCTL = WDTPW + WDTHOLD; // Stop WDT
 
   //Initialize the various modules.
+  dmesg_init();
+  printf("main()\n");
+  
   lcd_init();
   
   lcd_zero();
