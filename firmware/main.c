@@ -55,8 +55,11 @@ int post(){
        non-watch functions still work.
      */
     lcd_string(" crystal");
+
+/*Can't run this test because of an unfixed errata.
   }else if(has_radio && RF1AIFERR & 1){
     lcd_string("RF  LOWV");
+    */
   }else if(has_radio && RF1AIFERR & 2){
     lcd_string("RF OPERR");
   }else if(has_radio && RF1AIFERR & 4){

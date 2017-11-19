@@ -35,28 +35,43 @@
 //! Cleared to zero at the first radio failure.
 int has_radio=1;
 
+
+//! Sets the radio frequency.
+void radio_setfreq(float freq)
+{
+        float freqMult = (0x10000 / 1000000.0) / 26;
+        uint32_t num = freq * freqMult;
+
+        
+	radio_writereg(FREQ2, (num >> 16) & 0xFF);
+	radio_writereg(FREQ1, (num >> 8) & 0xFF);
+	radio_writereg(FREQ0, num & 0xFF);
+}
+
+
 //! Send a message in Morse.
 void radio_morse(const char *msg){
-  while(*msg!='\0'){
-
-    //Transmit if not a space.
-    if(*msg!=' ')
-      radio_strobe(RF_STX);
-    
-    if(*msg=='.' || *msg=='*')
-      __delay_cycles(2000);
-    else if(*msg=='-')
-      __delay_cycles(6000);
-    else if(*msg==' ')
-      __delay_cycles(2000);
-
-    //End transmission.
-    radio_strobe(RF_SIDLE);
-    //Intercharacter space.
-    __delay_cycles(2000);
-
-    msg++;
-  }
+  if(has_radio)
+    while(*msg!='\0'){
+      
+      //Transmit if not a space.
+      if(*msg!=' ')
+	radio_strobe(RF_STX);
+      
+      if(*msg=='.' || *msg=='*')
+	__delay_cycles(2000);
+      else if(*msg=='-')
+	__delay_cycles(6000);
+      else if(*msg==' ')
+	__delay_cycles(6000);
+      
+      //End transmission.
+      radio_strobe(RF_SIDLE);
+      //Intercharacter space.
+      __delay_cycles(1000);
+      
+      msg++;
+    }
 }
 
 //! Called at boot.  Gracefully fails if no radio.
@@ -77,15 +92,18 @@ void radio_init(){
 
   //Chirp a bit if we have a radio.
   if(has_radio){
+    //Load the default frequency.
     radio_writesettings(NULL);
     radio_writepower(0x51); //0 dBm
+    radio_setfreq(434000000);
     radio_strobe(RF_SCAL);
+      
     
-    /*
     //Morse test.
-    while(1)
-      radio_morse("-.- -.- ....- ...- --..    ");
-    */
+    
+    //while(1)
+    //radio_morse("-.- -.- ....- ...- --..    ");
+    
   }
   
   radio_off();
@@ -109,6 +127,8 @@ int radio_on(){
 
   //Strobe the radio to reset it.
   radio_resetcore();
+
+  
  
   
   return 1; //Success

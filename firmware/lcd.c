@@ -72,8 +72,6 @@ void lcd_postdraw(){
     setdivide(1);   //Div indicates a crystal fault.
   if(power_ishigh())
     setminus(1);    //Minus indicates the radio is on.
-  if(has_radio && RF1AIFERR & 0x000F)
-    setplus(1);     //Plus indicates the radio has an error.
   
   //Now swap back the buffer.
   LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.
