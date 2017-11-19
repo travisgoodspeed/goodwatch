@@ -23,7 +23,9 @@ Our firmware is freely available in this repository, compiling with
 the standard MSP430 compiler packages that ship with Debian.  It
 consists of a Clock, a Stopwatch, an RPN Calculator, and a Hex Memory
 Viewer with Disassembler, all written in C.  It compiles in Debian
-with all of the MSP430 packages installed.
+with all of the MSP430 packages installed.  On watched with a radio,
+we have a basic Morse transmitter for now, with other radio applications
+on the way.
 
 Additionally, we've written out own client for the CC430's BootStrap
 Loader (BSL).  You might find it handy for other projects involving
@@ -45,8 +47,13 @@ functional, and Travis is wearing one for daily use.  Assembly of the
 GoodWatch10 is a bit difficult, as components are 0201 wherever
 possible and the central chip is QFN.
 
-The GoodWatch20 gerber files have been finalized, and boards have been
-ordered.  It adds support for sound and a 433MHz radio.
+The first GoodWatch20 boards has been constructed, which features a
+radio chain.  Software support for the radio has just begun, and
+unfortunately the chip antenna intended for this watch will not fit
+within the case.
+
+The GoodWatch21 will be manufactured in early 2018 with a wider filter
+and other radio modifications.
 
 See `BOM.txt` in the hardware directories for a parts list, and the
 wiki for an assembly guide.
