@@ -32,29 +32,62 @@
 #include "radio.h"
 
 
-//! Set to 1 at boot if the watch has a radio.
-int has_radio;
+//! Cleared to zero at the first radio failure.
+int has_radio=1;
+
+//! Send a message in Morse.
+void radio_morse(const char *msg){
+  while(*msg!='\0'){
+
+    //Transmit if not a space.
+    if(*msg!=' ')
+      radio_strobe(RF_STX);
+    
+    if(*msg=='.' || *msg=='*')
+      __delay_cycles(2000);
+    else if(*msg=='-')
+      __delay_cycles(6000);
+    else if(*msg==' ')
+      __delay_cycles(2000);
+
+    //End transmission.
+    radio_strobe(RF_SIDLE);
+    //Intercharacter space.
+    __delay_cycles(2000);
+
+    msg++;
+  }
+}
 
 //! Called at boot.  Gracefully fails if no radio.
 void radio_init(){
   /* If the radio components are missing, the AVCC_RF lines will be
      unconnected and the radio will immediately have a low voltage error.
   */
-  has_radio=1;
-
   radio_on();
-  
-  if(RF1AIFERR & 1){
-    printf("No radio.\n");
-    has_radio=0;
-    radio_off();
-    return;
-  }
 
-  //With no voltage error, we have a radio!  Let's power cycle it to
-  //make sure that won't cause problems later.
-  printf("Has radio.\n");
-  has_radio=1;
+
+  /* We can't check RF1AIFERR&1 to tell whether the radio circuit is
+     powered, because Errata RF1A6 makes that bit useless.  Instead,
+     we 
+   */
+  radio_strobe(RF_SCAL);
+  printf("This watch has %s radio.\n",
+	 has_radio?"a":"no");
+
+  //Chirp a bit if we have a radio.
+  if(has_radio){
+    radio_writesettings(NULL);
+    radio_writepower(0x51); //0 dBm
+    radio_strobe(RF_SCAL);
+    
+    /*
+    //Morse test.
+    while(1)
+      radio_morse("-.- -.- ....- ...- --..    ");
+    */
+  }
+  
   radio_off();
 }
 
@@ -71,21 +104,29 @@ int radio_on(){
   PMMCTL0_H = 0x00;
 
   //Step up the core voltage a bit.
-  power_setvcore(3);
+  power_setvcore(2);
   __delay_cycles(850);
 
   //Strobe the radio to reset it.
-  radio_strobe(RF_SRES);
-  radio_strobe(RF_SNOP);
-
-  printf("RF1AIFERR: %02x\n",
-	 RF1AIFERR);
+  radio_resetcore();
+ 
   
   return 1; //Success
 }
 
+//! Restarts the radio.
+void radio_resetcore(){
+  radio_strobe(RF_SRES);
+  radio_strobe(RF_SNOP);
+}
+
+
 //! Turns the radio off.
 int radio_off(){
+  //Cut the radio's oscillator.
+  radio_strobe(RF_SIDLE);
+  radio_strobe(RF_SXOFF);
+  
   //Drop the voltage first.
   power_setvcore(0);
   __delay_cycles(850);
@@ -94,11 +135,7 @@ int radio_off(){
   PMMCTL0_H = 0xA5;
   PMMCTL0_L &= ~PMMHPMRE_L;
   PMMCTL0_H = 0x00;
-
-
   
-  
-
   return 1;
 }
 
@@ -130,9 +167,120 @@ void radio_writereg(uint8_t addr, uint8_t value){
   RF1ADINB = value;
 }
 
-//! Strobe a rdaio register.
+// Chipcon
+// Product = CC430Fx13x
+// Chip version = C   (PG 0.7)
+// Crystal accuracy = 10 ppm
+// X-tal frequency = 26 MHz
+// RF output power = 0 dBm
+// RX filterbandwidth = 101.562500 kHz
+// Deviation = 19 kHz
+// Datarate = 38.383484 kBaud
+// Modulation = (1) GFSK
+// Manchester enable = (0) Manchester disabled
+// RF Frequency = 914.999969 MHz
+// Channel spacing = 199.951172 kHz
+// Channel number = 0
+// Optimization = -
+// Sync mode = (3) 30/32 sync word bits detected
+// Format of RX/TX data = (0) Normal mode, use FIFOs for RX and TX
+// CRC operation = (1) CRC calculation in TX and CRC check in RX enabled
+// Forward Error Correction = 
+// Length configuration = (0) Fixed packet length, packet length configured by PKTLEN
+// Packetlength = 61
+// Preamble count = (2)  4 bytes
+// Append status = 1
+// Address check = (0) No address check
+// FIFO autoflush = 0
+// Device address = 0
+// GDO0 signal selection = ( 6) Asserts when sync word has been sent / received, and de-asserts at the end of the packet
+// GDO2 signal selection = (41) RF_RDY
+RF_SETTINGS rfSettingsDefault = {
+    0x08,   // FSCTRL1   Frequency synthesizer control.
+    0x00,   // FSCTRL0   Frequency synthesizer control.
+    0x23,   // FREQ2     Frequency control word, high byte.
+    0x31,   // FREQ1     Frequency control word, middle byte.
+    0x3B,   // FREQ0     Frequency control word, low byte.
+    0xCA,   // MDMCFG4   Modem configuration.
+    0x83,   // MDMCFG3   Modem configuration.
+    0x93,   // MDMCFG2   Modem configuration.
+    0x22,   // MDMCFG1   Modem configuration.
+    0xF8,   // MDMCFG0   Modem configuration.
+    0x00,   // CHANNR    Channel number.
+    0x34,   // DEVIATN   Modem deviation setting (when FSK modulation is enabled).
+    0x56,   // FREND1    Front end RX configuration.
+    0x10,   // FREND0    Front end TX configuration.
+    0x18,   // MCSM0     Main Radio Control State Machine configuration.
+    0x16,   // FOCCFG    Frequency Offset Compensation Configuration.
+    0x6C,   // BSCFG     Bit synchronization Configuration.
+    0x43,   // AGCCTRL2  AGC control.
+    0x40,   // AGCCTRL1  AGC control.
+    0x91,   // AGCCTRL0  AGC control.
+    0xE9,   // FSCAL3    Frequency synthesizer calibration.
+    0x2A,   // FSCAL2    Frequency synthesizer calibration.
+    0x00,   // FSCAL1    Frequency synthesizer calibration.
+    0x1F,   // FSCAL0    Frequency synthesizer calibration.
+    0x59,   // FSTEST    Frequency synthesizer calibration.
+    0x81,   // TEST2     Various test settings.
+    0x35,   // TEST1     Various test settings.
+    0x09,   // TEST0     Various test settings.
+    0x47,   // FIFOTHR   RXFIFO and TXFIFO thresholds.
+    0x29,   // IOCFG2    GDO2 output pin configuration.
+    0x06,   // IOCFG0    GDO0 output pin configuration. Refer to SmartRF? Studio User Manual for detailed pseudo register explanation.
+    0x04,   // PKTCTRL1  Packet automation control.
+    0x04,   // PKTCTRL0  Packet automation control.
+    0x00,   // ADDR      Device address.
+    0x64    // PKTLEN    Packet length.
+};
+
+
+//! Writes a radio settings structure.
+void radio_writesettings(RF_SETTINGS *pRfSettings) {
+  if(!pRfSettings)
+    pRfSettings= &rfSettingsDefault;
+  
+  radio_writereg(FSCTRL1,  pRfSettings->fsctrl1);
+  radio_writereg(FSCTRL0,  pRfSettings->fsctrl0);
+  radio_writereg(FREQ2,    pRfSettings->freq2);
+  radio_writereg(FREQ1,    pRfSettings->freq1);
+  radio_writereg(FREQ0,    pRfSettings->freq0);
+  radio_writereg(MDMCFG4,  pRfSettings->mdmcfg4);
+  radio_writereg(MDMCFG3,  pRfSettings->mdmcfg3);
+  radio_writereg(MDMCFG2,  pRfSettings->mdmcfg2);
+  radio_writereg(MDMCFG1,  pRfSettings->mdmcfg1);
+  radio_writereg(MDMCFG0,  pRfSettings->mdmcfg0);
+  radio_writereg(CHANNR,   pRfSettings->channr);
+  radio_writereg(DEVIATN,  pRfSettings->deviatn);
+  radio_writereg(FREND1,   pRfSettings->frend1);
+  radio_writereg(FREND0,   pRfSettings->frend0);
+  radio_writereg(MCSM0 ,   pRfSettings->mcsm0);
+  radio_writereg(FOCCFG,   pRfSettings->foccfg);
+  radio_writereg(BSCFG,    pRfSettings->bscfg);
+  radio_writereg(AGCCTRL2, pRfSettings->agcctrl2);
+  radio_writereg(AGCCTRL1, pRfSettings->agcctrl1);
+  radio_writereg(AGCCTRL0, pRfSettings->agcctrl0);
+  radio_writereg(FSCAL3,   pRfSettings->fscal3);
+  radio_writereg(FSCAL2,   pRfSettings->fscal2);
+  radio_writereg(FSCAL1,   pRfSettings->fscal1);
+  radio_writereg(FSCAL0,   pRfSettings->fscal0);
+  radio_writereg(FSTEST,   pRfSettings->fstest);
+  radio_writereg(TEST2,    pRfSettings->test2);
+  radio_writereg(TEST1,    pRfSettings->test1);
+  radio_writereg(TEST0,    pRfSettings->test0);
+  radio_writereg(FIFOTHR,  pRfSettings->fifothr);
+  radio_writereg(IOCFG2,   pRfSettings->iocfg2);
+  radio_writereg(IOCFG0,   pRfSettings->iocfg0);
+  radio_writereg(PKTCTRL1, pRfSettings->pktctrl1);
+  radio_writereg(PKTCTRL0, pRfSettings->pktctrl0);
+  radio_writereg(ADDR,     pRfSettings->addr);
+  radio_writereg(PKTLEN,   pRfSettings->pktlen);
+}
+
+
+//! Strobe a radio register.
 uint8_t radio_strobe(uint8_t strobe){
   uint8_t  statusByte = 0;
+  uint16_t count=0;
   uint16_t gdo_state;
   
   // Check for valid strobe command 
@@ -142,6 +290,7 @@ uint8_t radio_strobe(uint8_t strobe){
     
     // Wait for radio to be ready for next instruction
     while( !(RF1AIFCTL1 & RFINSTRIFG));
+    
     
     // Write the strobe instruction
     if ((strobe > RF_SRES) && (strobe < RF_SNOP)){
@@ -153,7 +302,17 @@ uint8_t radio_strobe(uint8_t strobe){
         if ( (strobe == RF_SXOFF) || (strobe == RF_SPWD) || (strobe == RF_SWOR) ) {
 	  
 	}else{
-          while ((RF1AIN&0x04)== 0x04);     // chip-ready ?
+	  /* We'll get stuck in an infinite loop here if the radio
+	     crystal isn't available.
+	   */
+          while ((RF1AIN&0x04)== 0x04){
+	    if(count++>1000){
+	      printf("Timeout in radio_strobe.  Broken XT2?\n");
+	      has_radio=0;
+	      return 0xFF;
+	    }
+	  }
+	  
           // Delay for ~810usec at 1.05MHz CPU clock, see erratum RF1A7
           __delay_cycles(850);
         }
@@ -161,10 +320,20 @@ uint8_t radio_strobe(uint8_t strobe){
       radio_writereg(IOCFG2, gdo_state);    // restore IOCFG2 setting
       
       while( !(RF1AIFCTL1 & RFSTATIFG) );
-    }else{ //Active mode	
-      RF1AINSTRB = strobe; 	   
+    }else{ //Active mode
+      RF1AINSTRB = strobe;
     }
     statusByte = RF1ASTATB;
   }
   return statusByte;
 }
+
+//! Writes one value to the power table.
+void radio_writepower(unsigned char value) {
+  while( !(RF1AIFCTL1 & RFINSTRIFG));
+  RF1AINSTRW = 0x3E00 + value;              // PA Table single write
+  
+  while( !(RF1AIFCTL1 & RFINSTRIFG));
+  RF1AINSTRB = RF_SNOP;                     // reset PA_Table pointer
+}
+
