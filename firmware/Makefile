@@ -31,4 +31,7 @@ flash: goodwatch.hex
 dmesg:
 	../bin/cc430-bsl.py -P goodwatch.hex -uD
 
-
+#Same as dmesg, but it gives the target some time to boot first.
+run:
+	sleep 5
+	../bin/cc430-bsl.py -P goodwatch.hex -uD
