@@ -11,7 +11,6 @@
 */
 
 #include "api.h"
-#include "lcdtext.h"
 
 
 static int counting=0;
