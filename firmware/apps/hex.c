@@ -120,7 +120,10 @@ void hex_draw(){
     /* Holding the 4 button will disassemble the current instruction.
        This should probably be handled with the rest of the input.
      */
-    asm_dis(adr, ((unsigned int*)adr)[0]);
+    asm_dis(adr,
+	    ((unsigned int*)adr)[0],
+	    ((unsigned int*)adr)[1],
+	    ((unsigned int*)adr)[2]);
     asm_show();
   }else{
     /* Now that the range is legal and the value known, let's fetch the

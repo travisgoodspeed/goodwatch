@@ -6,7 +6,8 @@
  */
 
 //! Process an instruction.
-void asm_dis(uint16_t adr, uint16_t ins);
+void asm_dis(uint16_t adr, uint16_t ins,
+	     uint16_t immediate0, uint16_t immediate1);
 
 //! Display the most recently processed instruction to the LCD.
 void asm_show();

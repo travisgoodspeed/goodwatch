@@ -33,6 +33,8 @@ static enum {ERROROP, ONEOP, TWOOP, JUMPOP, EMUOP} type=ERROROP;
 static const char *opstr;
 //! Source and destination registers.
 static int src,dst;
+//! Immediate values.
+static int imm0, imm1;
 //! Addressing modes.
 static int as, ad;
 //! 1 for byte, 0 for word.
@@ -41,12 +43,17 @@ static int bw;
 static char asmstr[8];
 
 //! Disassemble an instruction into the local buffer.
-void asm_dis(uint16_t adr, uint16_t ins){
+void asm_dis(uint16_t adr, uint16_t ins,
+	     uint16_t immediate0, uint16_t immediate1){
   /* This function disassembles an instruction, storing its opcode,
      operands, and other information in local static buffers for
      near-term use.  Because it's intended to run in a
      microcontroller, it uses a single static buffer and no heap.
   */
+
+  //Immediates may or may not be used.
+  imm0=immediate0;
+  imm1=immediate1;
 
   //By default, we know nothing.
   type=ERROROP;
@@ -98,7 +105,7 @@ void asm_dis(uint16_t adr, uint16_t ins){
     case 4: //PUSH
       opstr="psh";
       break;
-    case 5: //ALL
+    case 5: //CALL
       opstr="cal";
       break;
     case 6: //RETI
@@ -236,10 +243,18 @@ void asm_show(){
     /* 	   src); */
     setam((as>>1)&1);
     setpm(as&1);
-
-    lcd_digit(1,dst/10);
-    lcd_digit(0,dst%10);
     
+    if(as==3 && src==0){
+      /* Immediate value. */
+      lcd_digit(3, (imm0>>12) & 0xF);
+      lcd_digit(2, (imm0>>8) & 0xF);
+      lcd_digit(1, (imm0>>4) & 0xF);
+      lcd_digit(0, (imm0) & 0xF);
+    }else{
+      /* Source and dest are the same, so just show once. */
+      lcd_digit(1,dst/10);
+      lcd_digit(0,dst%10);
+    }
     break;
   case EMUOP:
     //For now, emu ops are just the op string.
@@ -276,10 +291,18 @@ void asm_print(){
 	   dst);
     break;
   case ONEOP:
-    printf("%04x: %s r%d\n",
-	   address,
-	   opstr,
-	   src);
+    if(as==3 && src==0){
+      /* Immediate value, not a register. */
+      printf("%04x: %s 0x%04x\n",
+	     address,
+	     opstr,
+	     imm0);
+    }else{
+      printf("%04x: %s r%d\n",
+	     address,
+	     opstr,
+	     src);
+    }
     break;
   case EMUOP:
     printf("%04x: %s\n",
@@ -294,42 +317,58 @@ int main(){
   printf("Testing the MSP430 disassembler:\n");
 
   //3FFF is an unconditional jump to self.
-  asm_dis(0xdead, 0x3FFF);
+  asm_dis(0xdead, 0x3FFF, 0, 0);
   asm_print();
   assert(jumptarget==0xdead);
   assert(type==JUMPOP);
 
   //2002 is jnz     $+6 
-  asm_dis(0x013a, 0x2002);
+  asm_dis(0x013a, 0x2002, 0, 0);
   asm_print();
   assert(jumptarget==0x0140);
   assert(type==JUMPOP);
 
   //430F is mov r14, r15
-  asm_dis(0, 0x4e0F);
+  asm_dis(0, 0x4e0F, 0, 0);
   asm_print();
   assert(type==TWOOP);
   assert(!strcmp(opstr,"mov"));
 
   //4130 is a RET, emulated by MOV @SP+,PC.
-  asm_dis(0x0, 0x4130);
+  asm_dis(0x0, 0x4130, 0, 0);
   asm_print();
   assert(type==EMUOP);
   assert(!strcmp(opstr,"ret"));
 
   //4303 is a NOP, emulated by MOV #0,R3
-  asm_dis(0x0, 0x4303);
+  asm_dis(0x0, 0x4303, 0, 0);
   asm_print();
   assert(type==EMUOP);
   assert(!strcmp(opstr,"nop"));
 
-  /*
-  //4134 is "pop r1"
-  asm_dis(0, 0x4134);
+  //110f is "rra r15"
+  asm_dis(0, 0x110f, 0, 0);
   asm_print();
   assert(type==ONEOP);
-  assert(!strcmp(opstr,"pop"));
+  assert(!strcmp(opstr,"rra"));
 
+  //12b0 is a call to the first immediate.
+  asm_dis(0, 0x12b0, 0xdead, 0);
+  asm_print();
+  assert(type==ONEOP);
+  assert(!strcmp(opstr,"cal"));
+  
+
+  /*
+  //4134 is "pop r1"
+  printf("\nThis shoul be pop r1.\n");
+  asm_dis(0, 0x4134);
+  asm_print();
+  //assert(type==ONEOP);
+  //assert(!strcmp(opstr,"pop"));
+  */
+
+  /*
   //930f is "tst r15"
   asm_dis(0, 0x930f);
   asm_print();
@@ -337,11 +376,6 @@ int main(){
   assert(!strcmp(opstr,"tst"));
   */
 
-  //110f is "rra r15"
-  asm_dis(0, 0x110f);
-  asm_print();
-  assert(type==ONEOP);
-  assert(!strcmp(opstr,"rra"));
   
 
   return 0;
