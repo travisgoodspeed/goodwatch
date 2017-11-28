@@ -48,30 +48,6 @@ void radio_setfreq(float freq){
 }
 
 
-//! Send a message in Morse.
-void radio_morse(const char *msg){
-  if(has_radio)
-    while(*msg!='\0'){
-      
-      //Transmit if not a space.
-      if(*msg!=' ')
-	radio_strobe(RF_STX);
-      
-      if(*msg=='.' || *msg=='*')
-	__delay_cycles(2000);
-      else if(*msg=='-')
-	__delay_cycles(6000);
-      else if(*msg==' ')
-	__delay_cycles(6000);
-      
-      //End transmission.
-      radio_strobe(RF_SIDLE);
-      //Intercharacter space.
-      __delay_cycles(1000);
-      
-      msg++;
-    }
-}
 
 //! Called at boot.  Gracefully fails if no radio.
 void radio_init(){

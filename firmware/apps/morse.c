@@ -45,25 +45,25 @@ void morse_draw(){
   case '7':
     lcd_string("      73");
     lcd_postdraw();
-    radio_morse("--... ...-- ");
+    radio_morse("73");
     break;
   case '1':
     lcd_string("      CQ");
     lcd_postdraw();
-    radio_morse("-.-. --.- ");
+    radio_morse("CQ CQ CQ");
     break;
   case '0':
     lcd_string("       K");
     lcd_postdraw();
-    radio_morse("-.- ");
+    radio_morse("K");
     break;
     
     
   case '/':
-    /* TODO Replace this with a configurable callsign. */
-    lcd_string("  KK4VCZ");
+    lcd_string("        ");
+    lcd_string(CALLSIGN);
     lcd_postdraw();
-    radio_morse("-.- -.- ....- ...- --..    ");
+    radio_morse(CALLSIGN);
     break;
     
   default:  //Show that we're using morse.

@@ -76,5 +76,3 @@ void radio_writesettings(RF_SETTINGS *pRfSettings);
 void radio_writepower(unsigned char value);
 
 
-//! Send a message in Morse.
-void radio_morse(const char *msg);

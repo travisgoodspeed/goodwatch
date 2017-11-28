@@ -9,6 +9,9 @@
 #include <stdint.h>
 
 
+#include "config.h"
+#include "configdefault.h"
+
 //GoodWatch modules.
 #include "lcd.h"
 #include "lcdtext.h"
@@ -22,6 +25,7 @@
 
 //Handy libraries.  These are tested host-side.
 #include "libs/assembler.h"
+#include "libs/morse.h"
 
 //Standalone functions.
 
