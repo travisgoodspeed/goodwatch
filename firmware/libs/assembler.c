@@ -359,13 +359,16 @@ int main(){
   assert(!strcmp(opstr,"cal"));
   
 
-  /*
-  //4134 is "pop r1"
-  printf("\nThis shoul be pop r1.\n");
-  asm_dis(0, 0x4134);
+
+  //4134 is "pop r11"
+  /* POPS are emulated instructions, done by memory offsets on a MOV
+     from R1.
+   
+  printf("\nThis should be pop r11, which is emulated by a MOV.\n");
+  asm_dis(0, 0x413B, 0, 0);
   asm_print();
-  //assert(type==ONEOP);
-  //assert(!strcmp(opstr,"pop"));
+  assert(type==EMUOP);
+  assert(!strcmp(opstr,"pop"));
   */
 
   /*
