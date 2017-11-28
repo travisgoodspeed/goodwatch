@@ -18,7 +18,10 @@ void morse_init(){
      until we need it, but for now we'll start it at entry to keep
      things simple.
    */
-  radio_init();
+  if(has_radio)
+    radio_init();
+  else
+    app_next();
 }
 //! Exit the radio tool.
 int morse_exit(){
