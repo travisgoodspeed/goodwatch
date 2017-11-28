@@ -37,7 +37,7 @@ static void rtc_loadtime(){
   }
   
   //Default clock comes from flash.
-  //RTC will fix any corruption.
+  /* Older implementation, sometimes fails for linking alignment.
   RTCHOUR = ramsavetime[0]   %24;
   RTCMIN =  ramsavetime[1]   %60;
   RTCSEC =  ramsavetime[2]   %60;
@@ -45,6 +45,15 @@ static void rtc_loadtime(){
   RTCMON = ramsavetime[6];
   RTCDAY = ramsavetime[7];  //Not sure why, but we have to set
   RTCDAY = ramsavetime[7];  //the day twice.  RTC Errata?
+  */
+
+  SetRTCHOUR(ramsavetime[0]   %24);
+  SetRTCMIN(ramsavetime[1]   %60);
+  SetRTCSEC(ramsavetime[2]   %60);
+  
+  SetRTCYEAR((ramsavetime[4]+(ramsavetime[5]<<8)) % 4096);
+  SetRTCMON(ramsavetime[6]);
+  SetRTCDAY(ramsavetime[7]);
 }
 
 
