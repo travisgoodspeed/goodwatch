@@ -37,8 +37,7 @@ int has_radio=1;
 
 
 //! Sets the radio frequency.
-void radio_setfreq(float freq)
-{
+void radio_setfreq(float freq){
         float freqMult = (0x10000 / 1000000.0) / 26;
         uint32_t num = freq * freqMult;
 
@@ -90,6 +89,7 @@ void radio_init(){
   printf("This watch has %s radio.\n",
 	 has_radio?"a":"no");
 
+  /*
   //Chirp a bit if we have a radio.
   if(has_radio){
     //Load the default frequency.
@@ -108,6 +108,10 @@ void radio_init(){
   }
   
   radio_off();
+  radio_on();
+  radio_off();
+  */
+  radio_off();
 }
 
 //! Turns the radio on.  Returns zero on failure.
@@ -123,7 +127,10 @@ int radio_on(){
   PMMCTL0_H = 0x00;
 
   //Step up the core voltage a bit.
-  power_setvcore(2);
+  while(!power_setvcore(2)){
+    printf("Failed to set vcore.\n");
+    __delay_cycles(850);
+  }
   __delay_cycles(850);
 
   //Strobe the radio to reset it.
@@ -147,10 +154,16 @@ int radio_off(){
   //Cut the radio's oscillator.
   radio_strobe(RF_SIDLE);
   radio_strobe(RF_SXOFF);
+
   
+  /* We really ought to lower the
+     core voltage, but seems that it
+     can never come back up.
+  */
   //Drop the voltage first.
   power_setvcore(0);
   __delay_cycles(850);
+  
 
   //Then disable high-power mode.
   PMMCTL0_H = 0xA5;

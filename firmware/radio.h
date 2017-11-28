@@ -52,6 +52,9 @@ void radio_init();
 //! Turns the radio on.  Returns zero on failure.
 int radio_on();
 
+//! Sets the radio frequency.
+void radio_setfreq(float freq);
+
 //! Restarts the radio.  (Call this after radio_on().)
 void radio_resetcore();
 

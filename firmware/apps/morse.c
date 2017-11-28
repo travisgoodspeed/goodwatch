@@ -8,7 +8,7 @@
   
 */
 
-
+#include<msp430.h>
 #include "api.h"
 
 
@@ -18,10 +18,15 @@ void morse_init(){
      until we need it, but for now we'll start it at entry to keep
      things simple.
    */
-  if(has_radio)
-    radio_init();
-  else
+  if(has_radio){
+    radio_on();
+    radio_writesettings(0);
+    radio_writepower(0x25);
+    radio_setfreq(434000000);
+    radio_strobe(RF_SCAL);
+  }else{
     app_next();
+  }
 }
 //! Exit the radio tool.
 int morse_exit(){

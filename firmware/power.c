@@ -12,8 +12,8 @@
 //! Returns non-zero if in anything but the lowest power mode.
 int power_ishigh(){
   return
-    PMMCTL0_L&PMMHPMRE_L  //High power mode.
-    || PMMCTL0 & PMMCOREV_3 //VCore in anything but 0 mode.
+    ( PMMCTL0_L & PMMHPMRE_L)  //High power mode.
+    || (PMMCTL0 & PMMCOREV_3) //VCore in anything but 0 mode.
     ;
 }
 
@@ -121,15 +121,17 @@ static unsigned int power_vcoredown (unsigned char level) {
     printf("Changing high and low sides.\n");
     // Set also SVS highside and SVS low side to new level
     PMMIFG &= ~(SVSHIFG | SVSMHDLYIFG | SVSLIFG | SVSMLDLYIFG);
+    
     printf("a\n");
     SVSMHCTL |= SVSHE | SVSHFP | (SVSHRVL0 * level);
     printf("b\n");
     SVSMLCTL |= SVSLE | SVSLFP | (SVSLRVL0 * level);
-  */
+    */
 
 
   // Wait until SVS high side and SVS low side is settled
-  while ((PMMIFG & SVSMHDLYIFG) == 0 || (PMMIFG & SVSMLDLYIFG) == 0);
+  //while ((PMMIFG & SVSMHDLYIFG) == 0 || (PMMIFG & SVSMLDLYIFG) == 0);
+    
   // Disable full-performance mode to save energy
   SVSMHCTL &= ~SVSLFP;
   // Disable SVS/SVM Low

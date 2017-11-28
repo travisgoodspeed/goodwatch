@@ -114,13 +114,12 @@ int main(void) {
   SFRIE1 |= WDTIE;
 
   // Turn off SVSH, SVSM
+  /*
   PMMCTL0_H = 0xA5;
   SVSMHCTL = 0;
   SVSMLCTL = 0;
   PMMCTL0_H = 0x00;
-  
-
-
+  */
   
   lcd_string("POSTPOST");
   // Run the POST until it passes.
@@ -128,8 +127,11 @@ int main(void) {
 
   lcd_string("LPM3LPM3");
   __bis_SR_register(LPM3_bits + GIE);        // Enter LPM3
+  //__bis_SR_register(LPM2_bits + GIE);        // Enter LPM3
   //__bis_SR_register(LPM0_bits + GIE);	     // Enter LPM0 w/interrupt
-  while(1);
+  while(1){
+    printf("main while().\n");
+  }
 }
 
 //! Watchdog Timer interrupt service routine, calls back to handler functions.
