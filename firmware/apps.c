@@ -48,6 +48,11 @@ void app_draw(){
 
 //! Force return to the home app.
 void app_forcehome(){
+  //First we try to exit politely.
+  if(apps[appindex].exit)
+    apps[appindex].exit();
+
+  //And force it if that doesn't work.
   appindex=0;
   apps[appindex].init();
 }
