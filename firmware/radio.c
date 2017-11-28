@@ -84,7 +84,7 @@ void radio_init(){
 
   /* We can't check RF1AIFERR&1 to tell whether the radio circuit is
      powered, because Errata RF1A6 makes that bit useless.  Instead,
-     we 
+     we run a radio strobe and look for its reply.
    */
   radio_strobe(RF_SCAL);
   printf("This watch has %s radio.\n",
@@ -94,7 +94,8 @@ void radio_init(){
   if(has_radio){
     //Load the default frequency.
     radio_writesettings(NULL);
-    radio_writepower(0x51); //0 dBm
+    //radio_writepower(0x2D); //-6 dBm
+    radio_writepower(0x25); //-12 dBm
     radio_setfreq(434000000);
     radio_strobe(RF_SCAL);
       
