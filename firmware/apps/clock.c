@@ -109,7 +109,7 @@ static void draw_settingtime(char ch){
 
   //Zero the second hand if we're not yet to the date.  ("Hacking.")
   if(settingclock<7)
-    RTCSEC=0;
+    SetRTCSEC(0);
 
   //First we draw the entire thing, then we blink the second being
   //set.
@@ -123,7 +123,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(7);
     if(ch){
-      RTCHOUR=inputdigit*10+RTCHOUR%10;
+      SetRTCHOUR(inputdigit*10+RTCHOUR%10);
       settingclock++;
     }
     break;
@@ -131,7 +131,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(6);
     if(ch){
-      RTCHOUR=RTCHOUR-RTCHOUR%10+inputdigit;
+      SetRTCHOUR(RTCHOUR-RTCHOUR%10+inputdigit);
       settingclock++;
     }
     break;
@@ -139,7 +139,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(4);
     if(ch){
-      RTCMIN=inputdigit*10+RTCMIN%10;
+      SetRTCMIN(inputdigit*10+RTCMIN%10);
       settingclock++;
     }
     break;
@@ -147,7 +147,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(3);
     if(ch){
-      RTCMIN=RTCMIN-RTCMIN%10+inputdigit;
+      SetRTCMIN(RTCMIN-RTCMIN%10+inputdigit);
       settingclock++;
     }
     break;
@@ -163,7 +163,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(7);
     if(ch){
-      RTCYEAR=inputdigit*1000+RTCYEAR%1000;
+      SetRTCYEAR(inputdigit*1000+RTCYEAR%1000);
       settingclock++;
     }
     break;
@@ -171,7 +171,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(6);
     if(ch){
-      RTCYEAR=RTCYEAR-RTCYEAR%1000+inputdigit*100+RTCYEAR%100;
+      SetRTCYEAR(RTCYEAR-RTCYEAR%1000+inputdigit*100+RTCYEAR%100);
       settingclock++;
     }
     break;
@@ -179,7 +179,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(5);
     if(ch){
-      RTCYEAR=RTCYEAR-RTCYEAR%100+inputdigit*10+RTCYEAR%10;
+      SetRTCYEAR(RTCYEAR-RTCYEAR%100+inputdigit*10+RTCYEAR%10);
       settingclock++;
     }
     break;
@@ -187,7 +187,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(4);
     if(ch){
-      RTCYEAR=RTCYEAR-RTCYEAR%10+inputdigit;
+      SetRTCYEAR(RTCYEAR-RTCYEAR%10+inputdigit);
       settingclock++;
     }
     break;
@@ -196,7 +196,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(3);
     if(ch){
-      RTCMON=inputdigit*10+RTCMON%10;
+      SetRTCMON(inputdigit*10+RTCMON%10);
       settingclock++;
     }
     break;
@@ -204,7 +204,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(2);
     if(ch){
-      RTCMON=RTCMON-RTCMON%10+inputdigit;
+      SetRTCMON(RTCMON-RTCMON%10+inputdigit);
       settingclock++;
     }
     break;
@@ -213,7 +213,7 @@ static void draw_settingtime(char ch){
     if(flicker) 
       lcd_cleardigit(1);
     if(ch){
-      RTCDAY=inputdigit*10+RTCDAY%10;
+      SetRTCDAY(inputdigit*10+RTCDAY%10);
       settingclock++;
     }
     break;
@@ -221,7 +221,7 @@ static void draw_settingtime(char ch){
     if(flicker)
       lcd_cleardigit(0);
     if(ch){
-      RTCDAY=RTCDAY-RTCDAY%10+inputdigit;
+      SetRTCDAY(RTCDAY-RTCDAY%10+inputdigit);
       settingclock++;
     }
     break;
