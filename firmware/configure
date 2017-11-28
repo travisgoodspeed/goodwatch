@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo "Please copy configtemplate.h to config.h and edit it to fit your needs."
