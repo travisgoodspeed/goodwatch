@@ -55,7 +55,7 @@ void morse_draw(){
     break;
     
   default:  //Show the callsign by default.
-    lcd_string("RAD TOOL");
+    lcd_string("   MORSE");
     break;
   }
 
