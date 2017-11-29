@@ -4,6 +4,7 @@
 
 #include <msp430.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "rtc.h"
 #include "lcd.h"
