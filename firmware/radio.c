@@ -30,6 +30,7 @@
 
 #include "power.h"
 #include "radio.h"
+#include "configdefault.h"
 
 
 //! Cleared to zero at the first radio failure.
@@ -103,7 +104,7 @@ int radio_on(){
   PMMCTL0_H = 0x00;
 
   //Step up the core voltage a bit.
-  while(!power_setvcore(2)){
+  while(!power_setvcore(COREVOLTAGE)){
     printf("Failed to set vcore.\n");
     __delay_cycles(850);
   }

@@ -7,10 +7,15 @@
   configuration.
 */
 
+#include "config.h"
 
 #ifndef CALLSIGN
 #define CALLSIGN "N0CALL"
 #warning "CALLSIGN is not defined in config.h"
+#endif
+
+#ifndef COREVOLTAGE
+#define COREVOLTAGE 0
 #endif
 
 
