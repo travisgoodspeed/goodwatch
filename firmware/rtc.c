@@ -53,7 +53,11 @@ static void rtc_loadtime(){
   
   SetRTCYEAR((ramsavetime[4]+(ramsavetime[5]<<8)) % 4096);
   SetRTCMON(ramsavetime[6]);
+  //printf("Setting RTCMON to %d yielded %d.\n",
+  //ramsavetime[6], RTCMON);
   SetRTCDAY(ramsavetime[7]);
+  printf("Setting RTCDAY to %d yielded %d.\n",
+  ramsavetime[7], RTCDAY);
 }
 
 
@@ -146,9 +150,9 @@ void rtc_setdow(){
   //Add the day of the current month.
   dow += RTCDAY;
   
-  
+  //Write the result to the register.
   dow = dow % 7;
-  RTCDOW = dow;
+  SetRTCDOW(dow);
 }
 
 //! Real Time Clock interrupt handler.
