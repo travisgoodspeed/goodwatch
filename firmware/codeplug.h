@@ -6,6 +6,9 @@
 
 #define CODEPLUGLEN 512
 
+//! Initialize the codeplug at boot.
+void codeplug_init();
+
 //! Single entry in the codeplug database.
 struct codeplugentry {
   /* The flags byte is undefined; keep at zero for now. */

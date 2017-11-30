@@ -5,6 +5,9 @@
   of twelve-byte entries as defined in codeplug.h.
 */
 
+#include<stdio.h>
+#include<string.h>
+
 #include "codeplug.h"
 #include "radio.h"
 
@@ -13,6 +16,23 @@ struct codeplugentry *codeplug = (struct codeplugentry*) 0x1800;
 
 //! Index of entry in the codeplug.
 static int codeplugi=0;
+
+
+//! Initialize the codeplug at boot.
+void codeplug_init(){
+  do{
+    printf("Codeplug entry '%s': %02x 0x%02x%02x%02x\n",
+	   codeplug_name(),
+	   codeplug[codeplugi].flags,
+	   codeplug[codeplugi].freq2,
+	   codeplug[codeplugi].freq1,
+	   codeplug[codeplugi].freq0
+	   );
+    
+    codeplug_next();
+  }while(codeplugi);
+  
+}
 
 //! Next codeplug entry.
 void codeplug_next(){
@@ -35,7 +55,10 @@ void codeplug_prev(){
 
 //! Return the name of the codeplug entry.  8 bytes, no null terminator!
 const char *codeplug_name(){
-  return codeplug[codeplugi].name;
+  static char name[9];
+  memcpy(name,codeplug[codeplugi].name,8);
+  name[8]=0;
+  return name;
 }
 
 //! Sets the codeplug frequency.
