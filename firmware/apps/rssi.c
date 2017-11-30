@@ -47,32 +47,30 @@ void rssi_draw(){
   
   switch(ch){
   case '/':
-    lcd_number(radio_getfreq()/10.0);
-    setperiod(5,1);
+    lcd_number(radio_getfreq()/10000);
     setperiod(2,1);
     
     break;
   default:
-    //Update the signal strength once a second.
+    //Update the signal strength only once a second.
     if((i++&0x04)==4){
-      //radio_setfreq(434000000);
       rssi=radio_getrssi();
     }
     lcd_number(rssi);
     lcd_string("RSSI");
     switch(rssi&0xF0){
     case 0xF0:
-      setperiod(0,1);
     case 0xE0:
     case 0xD0:
-      setperiod(1,1);
+      setperiod(0,1);
     case 0xC0:
-      setperiod(2,1);
+      setperiod(1,1);
     case 0xB0:
-      setperiod(3,1);
+      setperiod(2,1);
     case 0xA0:
-      setperiod(4,1);
+      setperiod(3,1);
     case 0x90:
+      setperiod(4,1);
     case 0x80:
       setperiod(5,1);
     case 0x70:

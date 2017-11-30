@@ -54,16 +54,20 @@ void radio_setfreq(float freq){
 
 //! Gets the radio frequency.
 uint32_t radio_getfreq(){
-  float freqIMult = 26.0 / 0x10000 * 1000000.0;
-  uint32_t num=
+  static uint32_t oldhex=0, oldnum=0;
+  uint32_t hex=
     0xFF0000l & (((uint32_t) radio_readreg(FREQ2))<<16);
-  num|= (0xFF00l & (radio_readreg(FREQ1)<<8));
-  num|= (0xFFl & (radio_readreg(FREQ0)));
+  hex|= (0xFF00l & (radio_readreg(FREQ1)<<8));
+  hex|= (0xFFl & (radio_readreg(FREQ0)));
 
-  printf("Num in hex is %08lx\n", num);
+  //Return the old value if it hasn't changed.
+  if(oldhex==hex)
+    return oldnum;
 
-  num=num*freqIMult;
-  return num;
+  //Otherwise calculate the new value and return it.
+  oldhex=hex;
+  oldnum=hex*396.728515625;
+  return oldnum;
 }
 
 
