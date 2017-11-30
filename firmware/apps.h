@@ -1,5 +1,4 @@
 /*! \file apps.h
-  
   \brief These are functions for working with applications and the task switcher.
 
  */

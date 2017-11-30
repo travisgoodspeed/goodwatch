@@ -5,7 +5,7 @@ CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os
 BSL = ../bin/cc430-bsl.py
 
 modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o sidebutton.o radio.o power.o \
-	dmesg.o \
+	dmesg.o codeplug.o \
 	libs/assembler.o libs/morse.o
 apps= apps/clock.o apps/rpn.o apps/hex.o apps/stopwatch.o \
 	apps/morse.o apps/rssi.o
@@ -36,3 +36,6 @@ dmesg:
 run:
 	sleep 5
 	../bin/cc430-bsl.py -P goodwatch.hex -uD
+
+codeplug.hex: codeplug.txt
+	../bin/goodwatch-txt2cp.py -i codeplug.txt -o codeplug.hex

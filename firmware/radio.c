@@ -52,6 +52,19 @@ void radio_setfreq(float freq){
   while(radio_getstate()!=1);
 }
 
+//! Sets the raw radio frequency registers.
+void radio_setrawfreq(uint8_t freq2, uint8_t freq1, uint8_t freq0){
+  //Store the frequency.
+  radio_writereg(FREQ2, freq2);
+  radio_writereg(FREQ1, freq1);
+  radio_writereg(FREQ0, freq0);
+
+  //Strobe a calibration to make it count.
+  radio_strobe(RF_SCAL);
+  //Wait for it to take effect.
+  while(radio_getstate()!=1);
+}
+
 //! Gets the radio frequency.
 uint32_t radio_getfreq(){
   static uint32_t oldhex=0, oldnum=0;

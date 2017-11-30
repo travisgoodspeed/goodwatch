@@ -54,6 +54,8 @@ int radio_on();
 
 //! Sets the radio frequency.
 void radio_setfreq(float freq);
+//! Sets the raw radio frequency registers.
+void radio_setrawfreq(uint8_t freq2, uint8_t freq1, uint8_t freq0);
 //! Gets the radio frequency.
 uint32_t radio_getfreq();
 
