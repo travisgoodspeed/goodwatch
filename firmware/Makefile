@@ -7,7 +7,8 @@ BSL = ../bin/cc430-bsl.py
 modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o sidebutton.o radio.o power.o \
 	dmesg.o \
 	libs/assembler.o libs/morse.o
-apps= apps/clock.o apps/rpn.o apps/hex.o apps/stopwatch.o apps/morse.c
+apps= apps/clock.o apps/rpn.o apps/hex.o apps/stopwatch.o \
+	apps/morse.o apps/rssi.o
 
 all: goodwatch.hex
 

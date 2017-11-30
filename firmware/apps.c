@@ -7,14 +7,12 @@
 
 #include <msp430.h>
 
-#include "apps.h"
-#include "lcd.h"
-#include "lcdtext.h"
+#include "api.h"
 
 #include "applist.h"
 
 //! We begin on the clock.
-static int appindex=0, idlecount=0;
+static int appindex=DEFAULTAPP, idlecount=0;
 
 //! Every 3 minutes we return to the clock unless this is called.
 void app_cleartimer(){

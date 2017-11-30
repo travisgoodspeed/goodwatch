@@ -18,4 +18,6 @@
 #define COREVOLTAGE 0
 #endif
 
-
+#ifndef DEFAULTAPP
+#define DEFAULTAPP 0
+#endif

@@ -54,6 +54,8 @@ int radio_on();
 
 //! Sets the radio frequency.
 void radio_setfreq(float freq);
+//! Gets the radio frequency.
+uint32_t radio_getfreq();
 
 //! Restarts the radio.  (Call this after radio_on().)
 void radio_resetcore();
@@ -73,6 +75,9 @@ uint8_t radio_strobe(uint8_t strobe);
 void radio_writesettings(RF_SETTINGS *pRfSettings);
 
 //! Writes one value to the power table.
-void radio_writepower(unsigned char value);
+void radio_writepower(uint8_t value);
 
-
+//! Read the RSSI.
+int radio_getrssi();
+//! Read the radio MARC state.
+int radio_getstate();

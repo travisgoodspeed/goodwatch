@@ -37,17 +37,25 @@
 int has_radio=1;
 
 
+static float lastfreq=0;
+
 //! Sets the radio frequency.
 void radio_setfreq(float freq){
-        float freqMult = (0x10000 / 1000000.0) / 26;
-        uint32_t num = freq * freqMult;
+  float freqMult = (0x10000 / 1000000.0) / 26;
+  uint32_t num = freq * freqMult;
 
-        
-	radio_writereg(FREQ2, (num >> 16) & 0xFF);
-	radio_writereg(FREQ1, (num >> 8) & 0xFF);
-	radio_writereg(FREQ0, num & 0xFF);
+  //Store the frequency.
+  lastfreq=freq;
+  
+  radio_writereg(FREQ2, (num >> 16) & 0xFF);
+  radio_writereg(FREQ1, (num >> 8) & 0xFF);
+  radio_writereg(FREQ0, num & 0xFF);
 }
 
+//! Gets the radio frequency.
+uint32_t radio_getfreq(){
+  return (uint32_t) lastfreq;
+}
 
 
 //! Called at boot.  Gracefully fails if no radio.
@@ -340,7 +348,7 @@ uint8_t radio_strobe(uint8_t strobe){
 }
 
 //! Writes one value to the power table.
-void radio_writepower(unsigned char value) {
+void radio_writepower(uint8_t value) {
   while( !(RF1AIFCTL1 & RFINSTRIFG));
   RF1AINSTRW = 0x3E00 + value;              // PA Table single write
   
@@ -348,3 +356,28 @@ void radio_writepower(unsigned char value) {
   RF1AINSTRB = RF_SNOP;                     // reset PA_Table pointer
 }
 
+//! Read the RSSI.
+int radio_getrssi(){
+  int rssi;
+
+  
+  //Enter RX mode to get the value if we aren't already there.
+  radio_strobe(RF_SRX);
+  //Need a delay before the value becomes valid.
+  __delay_cycles(400);
+  
+  //Idle when we're done.
+  radio_strobe(RF_SIDLE);
+  
+  //Grab the new value.
+  rssi=radio_readreg(RSSI)^0x80;
+  
+  return rssi;
+}
+
+//! Read the radio MARC state.
+int radio_getstate(){
+  int state;
+  state=radio_readreg(MARCSTATE);
+  return state;
+}
