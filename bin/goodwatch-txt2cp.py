@@ -16,8 +16,10 @@ def freqbytes(freq):
     FREQ0= num      & 0xFF
     return FREQ2, FREQ1, FREQ0;
 
+codeplugadr=0x1800;
 def handleline(line):
     """Handles one line of the file."""
+    global codeplugadr;
     if len(line)==0:   #Empty line.
         return;
     elif line[0]=='#': #Comment
@@ -27,22 +29,28 @@ def handleline(line):
         # and the second word ought to be the name (8 characters or
         # less).  Further words would be flags, but we ignore them for
         # now.
+        LEN=12;
         words=line.split();
         freq=float(words[0]);
         name=words[1];
+        namehex=name.encode('hex');
         assert(len(name)<=8);
+        while len(namehex)<16:
+            namehex='20'+namehex;
+        FLAGS=0;
         (FREQ2, FREQ1, FREQ0) = freqbytes(freq);
-        print("%8s := %f = 0x%02x%02x%02x" % (
-            name, freq,
-            FREQ2, FREQ1, FREQ0));
-        
+        CRC=0xFF;  #FIXME This checksum is wrong, but cc430-bsl.py doesn't bother to check.
+        print(":%02x%04x00%02x%02x%02x%02x%s%02x" %(
+            LEN, codeplugadr, FLAGS, FREQ2,FREQ1,FREQ0, namehex, CRC
+            ));
+        codeplugadr=codeplugadr+12;
     
 def convertcodeplug(infile, outfile):
     """Converts a codeplug textfile into an intel hex file for flashing."""
     i=open(infile,'r');
     for line in i:
         handleline(line.strip());
-
+    print ":00000001FF";
 
 
 if __name__=='__main__':

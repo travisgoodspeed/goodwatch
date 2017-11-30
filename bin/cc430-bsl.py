@@ -101,11 +101,13 @@ class BSL:
             self.serial.read(10);
     
     def unlock(self,
-               password="\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff"):
+               password=None):
         """Unlocks the bootloader, optionally with a password."""
         
 
         #Password must be 32 bytes; read from a file otherwise.
+        if password==None:
+            password="\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff"
         if len(password)!=32:
             password=self.passwordfromfile(password);
 
