@@ -98,10 +98,6 @@ int main(void) {
   sidebutton_init();
   
   lcd_zero();
-  lcd_string("APP INIT");
-  app_init();
-  
-  lcd_zero();
   lcd_string("OSC INIT");
   xtal_init();
 
@@ -109,23 +105,21 @@ int main(void) {
   lcd_string("RAD INIT");
   radio_init();
 
-  // Setup and enable WDT 250ms, ACLK, interval timer
-  WDTCTL = WDT_ADLY_250;
-  SFRIE1 |= WDTIE;
 
-  // Turn off SVSH, SVSM
-  /*
-  PMMCTL0_H = 0xA5;
-  SVSMHCTL = 0;
-  SVSMLCTL = 0;
-  PMMCTL0_H = 0x00;
-  */
   
   lcd_string("POSTPOST");
   // Run the POST until it passes.
   while(post());
 
-  lcd_string("LPM3LPM3");
+  lcd_zero();
+  lcd_string("APP INIT");
+  app_init();
+  
+
+  // Setup and enable WDT 250ms, ACLK, interval timer
+  WDTCTL = WDT_ADLY_250;
+  SFRIE1 |= WDTIE;
+
   __bis_SR_register(LPM3_bits + GIE);        // Enter LPM3
   //__bis_SR_register(LPM2_bits + GIE);        // Enter LPM3
   //__bis_SR_register(LPM0_bits + GIE);	     // Enter LPM0 w/interrupt

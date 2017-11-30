@@ -43,13 +43,18 @@ static float lastfreq=0;
 void radio_setfreq(float freq){
   float freqMult = (0x10000 / 1000000.0) / 26;
   uint32_t num = freq * freqMult;
-
-  //Store the frequency.
+  
   lastfreq=freq;
   
+  //Store the frequency.
   radio_writereg(FREQ2, (num >> 16) & 0xFF);
   radio_writereg(FREQ1, (num >> 8) & 0xFF);
   radio_writereg(FREQ0, num & 0xFF);
+
+  //Strobe a calibration to make it count.
+  radio_strobe(RF_SCAL);
+  //Wait for it to take effect.
+  while(radio_getstate()!=1);
 }
 
 //! Gets the radio frequency.
@@ -359,7 +364,6 @@ void radio_writepower(uint8_t value) {
 //! Read the RSSI.
 int radio_getrssi(){
   int rssi;
-
   
   //Enter RX mode to get the value if we aren't already there.
   radio_strobe(RF_SRX);

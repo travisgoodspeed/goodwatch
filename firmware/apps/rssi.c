@@ -24,12 +24,6 @@ void rssi_init(){
     radio_writesettings(0);
     radio_writepower(0x25);
     radio_setfreq(434000000);
-    __delay_cycles(400);
-    radio_setfreq(434000000);
-
-    //Strobe to receive mode, so we can catch the RSSI.o
-    printf("Got 0x%02x strobing SRX in rssi_init().\n",
-	   radio_strobe(RF_SRX));
   }else{
     app_next();
   }
@@ -46,7 +40,7 @@ int rssi_exit(){
 //! Draw the screen and increase the count.
 void rssi_draw(){
   char ch=getchar();
-  static int i=0, rssi=0x5;
+  static int rssi=0x5;
   
   switch(ch){
   case '/':
