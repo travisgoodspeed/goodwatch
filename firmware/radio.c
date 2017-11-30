@@ -59,7 +59,19 @@ void radio_setfreq(float freq){
 
 //! Gets the radio frequency.
 uint32_t radio_getfreq(){
-  return (uint32_t) lastfreq;
+  //Fastest way is to just return out own frequency, saving divisions.
+  //return (uint32_t) lastfreq;
+  
+  float freqIMult = 26.0 / 0x10000 * 1000000.0;
+  uint32_t num=
+    0xFF0000l & (((uint32_t) radio_readreg(FREQ2))<<16);
+  num|= (0xFF00l & (radio_readreg(FREQ1)<<8));
+  num|= (0xFFl & (radio_readreg(FREQ0)));
+
+  printf("Num in hex is %08lx\n", num);
+
+  num=num*freqIMult;
+  return num;
 }
 
 
