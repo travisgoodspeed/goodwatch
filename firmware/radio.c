@@ -36,15 +36,10 @@
 //! Cleared to zero at the first radio failure.
 int has_radio=1;
 
-
-static float lastfreq=0;
-
 //! Sets the radio frequency.
 void radio_setfreq(float freq){
   float freqMult = (0x10000 / 1000000.0) / 26;
   uint32_t num = freq * freqMult;
-  
-  lastfreq=freq;
   
   //Store the frequency.
   radio_writereg(FREQ2, (num >> 16) & 0xFF);
@@ -59,9 +54,6 @@ void radio_setfreq(float freq){
 
 //! Gets the radio frequency.
 uint32_t radio_getfreq(){
-  //Fastest way is to just return out own frequency, saving divisions.
-  //return (uint32_t) lastfreq;
-  
   float freqIMult = 26.0 / 0x10000 * 1000000.0;
   uint32_t num=
     0xFF0000l & (((uint32_t) radio_readreg(FREQ2))<<16);

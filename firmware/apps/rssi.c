@@ -15,9 +15,11 @@
 //! Enter the RSSI tool.
 void rssi_init(){
   /* Begin by initializing the radio if we have one, or jumping to the
-     next app if we don't.  I don't quite know why, but this app won't
-     work until after we cycle through the Morse app.  Maybe a known
-     erratum?
+     next app if we don't.
+     
+     While the radio is on, we keep it in the IDLE state except for
+     once per second, when we briefly jump to receive mode to measure
+     the RSSI.
    */
   if(has_radio){
     radio_on();
@@ -40,6 +42,7 @@ int rssi_exit(){
 //! Draw the screen and increase the count.
 void rssi_draw(){
   char ch=getchar();
+  static int i=0;
   static int rssi=0x5;
   
   switch(ch){
@@ -49,13 +52,34 @@ void rssi_draw(){
     setperiod(2,1);
     
     break;
-  default:  //Show that we're using rssi.
-    //if((i++&0x04)==4){
-    //radio_setfreq(434000000);
+  default:
+    //Update the signal strength once a second.
+    if((i++&0x04)==4){
+      //radio_setfreq(434000000);
       rssi=radio_getrssi();
-    //}
+    }
     lcd_number(rssi);
     lcd_string("RSSI");
+    switch(rssi&0xF0){
+    case 0xF0:
+      setperiod(0,1);
+    case 0xE0:
+    case 0xD0:
+      setperiod(1,1);
+    case 0xC0:
+      setperiod(2,1);
+    case 0xB0:
+      setperiod(3,1);
+    case 0xA0:
+      setperiod(4,1);
+    case 0x90:
+    case 0x80:
+      setperiod(5,1);
+    case 0x70:
+      setperiod(6,1);
+    case 0x60:
+      setperiod(7,1);
+    }
     break;
   }
 
