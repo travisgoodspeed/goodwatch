@@ -10,7 +10,7 @@
 
 //Then radio apps.
 #include "apps/morse.h"
-#include "apps/rssi.h"
+#include "apps/tuner.h"
 
 /*  For each application, the init() function is called at entry.  The
     draw() function is called 4 times per second.  The exit() function
@@ -27,10 +27,11 @@ static struct app apps[]={
   {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit},
   //Hex Viewer.
   {.name="memory", .init=hex_init, .draw=hex_draw, .exit=hex_exit},
+
+  //Tuner Tool
+  {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit},
   //Radio Tool
   {.name="morse", .init=morse_init, .draw=morse_draw, .exit=morse_exit},
-  //RSSI Tool
-  {.name="rssi", .init=rssi_init, .draw=rssi_draw, .exit=rssi_exit},
   
   //End on null entry.
   {.name=0, .init=0, .draw=0, .exit=0} 

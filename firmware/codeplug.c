@@ -17,7 +17,6 @@ struct codeplugentry *codeplug = (struct codeplugentry*) 0x1800;
 //! Index of entry in the codeplug.
 static int codeplugi=0;
 
-
 //! Initialize the codeplug at boot.
 void codeplug_init(){
   do{
@@ -63,10 +62,8 @@ const char *codeplug_name(){
 
 //! Sets the codeplug frequency.
 void codeplug_setfreq(){
-  radio_setrawfreq(
-		   codeplug[codeplugi].freq2,
+  radio_setrawfreq(codeplug[codeplugi].freq2,
 		   codeplug[codeplugi].freq1,
 		   codeplug[codeplugi].freq0);
 }
-
 

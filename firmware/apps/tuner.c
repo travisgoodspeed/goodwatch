@@ -1,8 +1,8 @@
-/*! \file rssi.c
-  \brief Handy RSSI Tool.
+ /*! \file tuner.c
+  \brief Tuning application and RSSI tool.
   
-  This is a quick little tool for measuring the RSSI on the current
-  frequency.
+  This quick little tool allows the user to tune the radio between
+  configured and VFO frequencies.
   
 */
 
@@ -12,8 +12,8 @@
 #include "api.h"
 
 
-//! Enter the RSSI tool.
-void rssi_init(){
+//! Enter the tuner tool.
+void tuner_init(){
   /* Begin by initializing the radio if we have one, or jumping to the
      next app if we don't.
      
@@ -31,7 +31,7 @@ void rssi_init(){
   }
 }
 //! Exit the radio tool.
-int rssi_exit(){
+int tuner_exit(){
   /* Always turn the radio off at exit.
    */
   radio_off();
@@ -40,24 +40,41 @@ int rssi_exit(){
   return 0;
 }
 //! Draw the screen and increase the count.
-void rssi_draw(){
+void tuner_draw(){
   char ch=getchar();
   static int i=0;
   static int rssi=0x5;
   
+  
   switch(ch){
-  case '/':
+  default: //Show the channel name
+    lcd_string(codeplug_name());
+    break;
+
+  case '/': //Show the frequency.
     lcd_number(radio_getfreq()/10000);
     setperiod(2,1);
     
     break;
-  default:
-    //Update the signal strength only once a second.
+
+  case '+':  //Next channel.
+    codeplug_next();
+    codeplug_setfreq();
+    break;
+  case '-':  //Previous channel.
+    codeplug_prev();
+    codeplug_setfreq();
+    break;
+
+  case '7': //Show scalar RSSI.
+    //Update the RSSI if appropriate.
     if((i++&0x04)==4){
       rssi=radio_getrssi();
     }
+  
     lcd_number(rssi);
     lcd_string("RSSI");
+    
     switch(rssi&0xF0){
     case 0xF0:
     case 0xE0:

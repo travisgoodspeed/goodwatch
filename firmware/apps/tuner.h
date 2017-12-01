@@ -1,10 +1,10 @@
 /*! \file rssi.h
-  \brief Handy RSSI Tool.
+  \brief Tuning application and RSSI tool.
 */
 
 //! Enter the radio tool.
-void rssi_init();
+void tuner_init();
 //! Exit the radio tool.
-int rssi_exit();
+int tuner_exit();
 //! Draw the screen and increase the count.
-void rssi_draw();
+void tuner_draw();

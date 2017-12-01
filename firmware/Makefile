@@ -8,7 +8,7 @@ modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o sidebutton.o radi
 	dmesg.o codeplug.o \
 	libs/assembler.o libs/morse.o
 apps= apps/clock.o apps/rpn.o apps/hex.o apps/stopwatch.o \
-	apps/morse.o apps/rssi.o
+	apps/tuner.o apps/morse.o
 
 all: goodwatch.hex
 
