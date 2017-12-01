@@ -179,6 +179,14 @@ class BSL:
         resp=self.transact("\x13")
         return resp[1:]
 
+    def loadpc(self,adr):
+        """Begins execution at a given address."""
+        al=chr(adr&0xFF)
+        am=chr((adr>>8)&0xFF)
+        ah=chr((adr>>16)&0xFF)
+        resp=self.transact("\x17"+al+am+ah)
+        return resp[1:]
+    
     
     MAXLEN=256; #Maximum bytes per read request.
     def readbulk(self,adr,length):
