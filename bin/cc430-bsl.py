@@ -187,6 +187,23 @@ class BSL:
         resp=self.transact("\x17"+al+am+ah)
         return resp[1:]
     
+    def setbaud(self,rate=9600):
+        """Sets the baud rate."""
+        #First we inform the BSL of the rate.
+        if rate==9600:
+            ratebyte=0x02;
+        elif rate==19200:
+            ratebyte=0x03;
+        elif rate==38400:
+            ratebyte=0x04;
+        elif rate==57600:
+            ratebyte=0x05;
+        elif rate==115200:
+            ratebyte=0x06;
+        resp=self.transact("\x17"+ratebyte);
+        
+        #Then we jump the port to the new rate.
+        self.serial.setBaudrate(rate);
     
     MAXLEN=256; #Maximum bytes per read request.
     def readbulk(self,adr,length):
