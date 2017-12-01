@@ -191,15 +191,15 @@ class BSL:
         """Sets the baud rate."""
         #First we inform the BSL of the rate.
         if rate==9600:
-            ratebyte=0x02;
+            ratebyte='\x02';
         elif rate==19200:
-            ratebyte=0x03;
+            ratebyte='\x03';
         elif rate==38400:
-            ratebyte=0x04;
+            ratebyte='\x04';
         elif rate==57600:
-            ratebyte=0x05;
+            ratebyte='\x05';
         elif rate==115200:
-            ratebyte=0x06;
+            ratebyte='\x06';
         resp=self.transact("\x17"+ratebyte);
         
         #Then we jump the port to the new rate.
@@ -320,18 +320,29 @@ def writetest(bsl):
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='CC430F6137 BSL Client')
     parser.add_argument('-e','--erase', help='Mass Erase',action='count');
-    parser.add_argument('-p','--port', help='Serial Port',default='/dev/ttyUSB0');
+    parser.add_argument('-p','--port',
+                        help='Serial Port',default='/dev/ttyUSB0');
     parser.add_argument('-f','--file', help='Flash File');
     parser.add_argument('-P','--password', help='Password File or Hex');
-    parser.add_argument('-d','--dump', help='Produce a core dump.',action='count');
-    parser.add_argument('-D','--dmesg', help='Prints the dmesg.',action='count');
-    parser.add_argument('-u','--unlock',help='Unlock BSL.',action='count');
-    parser.add_argument('-t','--time',help='Set the Time.',action='count');
+    parser.add_argument('-d','--dump',
+                        help='Produce a core dump.',action='count');
+    parser.add_argument('-D','--dmesg',
+                        help='Prints the dmesg.',action='count');
+    parser.add_argument('-u','--unlock',
+                        help='Unlock BSL.',action='count');
+    parser.add_argument('-t','--time',
+                        help='Set the Time.',action='count');
+    parser.add_argument('-r','--rate',
+                        help='Baud Rate', default=9600);
     
     args = parser.parse_args()
 
     bsl=BSL(args.port);
     bsl.enter_bsl();
+    
+    if int(args.rate)!=9600:
+        print("Setting baud rate to %d"% int(args.rate));
+        bsl.setbaud(int(args.rate));
 
     if args.erase!=None:
         print "Mass erasing."
