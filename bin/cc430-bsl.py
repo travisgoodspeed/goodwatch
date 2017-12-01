@@ -166,6 +166,19 @@ class BSL:
         resp=self.transact("\x10"+al+am+ah+data)
         return resp[1:]
 
+    def erasesegment(self,adr):
+        """Erases one segment of Flash at a given address."""
+        al=chr(adr&0xFF)
+        am=chr((adr>>8)&0xFF)
+        ah=chr((adr>>16)&0xFF)
+        resp=self.transact("\x12"+al+am+ah)
+        return resp[1:]
+    
+    def unlocklockinfo(self):
+        """Unlocks or locks Info FLash."""
+        resp=self.transact("\x13")
+        return resp[1:]
+
     
     MAXLEN=256; #Maximum bytes per read request.
     def readbulk(self,adr,length):
