@@ -6,6 +6,9 @@
   any particularly large or complicated radio tools should go in a
   different applet.
   
+  7 transmits "73", 1 transmits "CQ CQ CQ CQ", 0 transmits "K", and /
+  transmits the owner's callsign.
+  
 */
 
 #include<msp430.h>

@@ -5,6 +5,11 @@
   whenever the watch has nothing else to do.  In addition to telling
   the time, holding a button allows you to see additional
   information, such as the date and git revision.
+  
+  By default, the time is drawn.  Hold 7 to run a self-test, 8 to
+  display the callsign, 9 for the day of the week, / for the date, 4
+  for the git tag, 5 for the date of flashing, 6 to toggle the CPU
+  load indicator, 0 for the name of the current working channel.
 */
 
 #include <msp430.h>
@@ -280,11 +285,12 @@ void clock_draw(){
       post();
       break;
     case '8':
-      //8 shows 0xdeadbeef.
-      lcd_hex(0xdeadbeef);
+      //8 shows the callsign.
+      lcd_string("        ");
+      lcd_string(CALLSIGN);
       break;
     case '9':
-      //Hold / to draw the date.
+      //Hold 9 to draw the day of the week.
       draw_dow();
       break;
     case '/':
@@ -306,9 +312,8 @@ void clock_draw(){
       flickermode=(flickermode?0:-1);
       break;
     case '0':
-      //0 shows the alphabet test.
-      lcd_string("abcdefgh");
-      
+      //0 shows the current working channel.
+      lcd_string(codeplug_name());
       break;
       
     case 0:

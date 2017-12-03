@@ -4,6 +4,9 @@
   This quick little tool allows the user to tune the radio between
   configured and VFO frequencies.
   
+  + and - change the channel, / shows the current working frequency,
+  and 7 measures the signal strength on the current channel.
+  
 */
 
 #include<stdio.h>
