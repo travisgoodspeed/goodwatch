@@ -27,7 +27,6 @@ void codeplug_init(){
 	   codeplug[codeplugi].freq1,
 	   codeplug[codeplugi].freq0
 	   );
-    
     codeplug_next();
   }while(codeplugi);
   
@@ -55,15 +54,30 @@ void codeplug_prev(){
 //! Return the name of the codeplug entry.  8 bytes, no null terminator!
 const char *codeplug_name(){
   static char name[9];
-  memcpy(name,codeplug[codeplugi].name,8);
-  name[8]=0;
+
+  if(codeplug[codeplugi].flags!=0xFF){
+    memcpy(name,codeplug[codeplugi].name,8);
+    name[8]=0;
+  }else{
+    /* We don't seem to have a codeplug, so we write "Missing" to the
+       display as a warning.  When we support a VFO mode, we'll switch
+       to it here.
+     */
+    strcpy(name,"MISSING");
+  }
   return name;
 }
 
 //! Sets the codeplug frequency.
 void codeplug_setfreq(){
-  radio_setrawfreq(codeplug[codeplugi].freq2,
-		   codeplug[codeplugi].freq1,
-		   codeplug[codeplugi].freq0);
+  if(codeplug[codeplugi].flags!=0xFF){
+    /* We have a codeplug, so set the current entry's frequency. */
+    radio_setrawfreq(codeplug[codeplugi].freq2,
+		     codeplug[codeplugi].freq1,
+		     codeplug[codeplugi].freq0);
+  }else{
+    /* We don't have a codeplug, so default to 434.0 */
+    radio_setfreq(434000000);
+  }
 }
 

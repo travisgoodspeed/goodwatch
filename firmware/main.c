@@ -102,12 +102,10 @@ int main(void) {
   lcd_string("OSC INIT");
   xtal_init();
 
-  /* TODO This is disabled for now, as the codeplug is very new.
-
   lcd_zero();
   lcd_string("CP  INIT");
   codeplug_init();
-  */
+  
 
   lcd_zero();
   lcd_string("RAD INIT");

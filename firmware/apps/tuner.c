@@ -25,7 +25,8 @@ void tuner_init(){
     radio_on();
     radio_writesettings(0);
     radio_writepower(0x25);
-    radio_setfreq(434000000);
+    codeplug_setfreq();
+    radio_strobe(RF_SCAL);
   }else{
     app_next();
   }

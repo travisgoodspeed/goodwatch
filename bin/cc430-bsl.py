@@ -325,7 +325,8 @@ def writetest(bsl):
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='CC430F6137 BSL Client')
-    parser.add_argument('-e','--erase', help='Mass Erase',action='count');
+    parser.add_argument('-e','--erase', help='Mass Erase (w/o Info)',action='count');
+    parser.add_argument('-E','--eraseinfo', help='Mass Erase (w/  Info)',action='count');
     parser.add_argument('-p','--port',
                         help='Serial Port',default='/dev/ttyUSB0');
     parser.add_argument('-f','--file', help='Flash File');
@@ -354,6 +355,17 @@ if __name__=='__main__':
         print "Mass erasing."
         bsl.masserase();
         bsl.unlock();
+    if args.eraseinfo!=None:
+        print "Mass erasing, plus Info."
+        bsl.masserase();
+        bsl.unlock();
+        #We don't need to call unlocklockinfo() because we are
+        #targetting the banks directly.
+        bsl.erasesegment(0x1800);
+        bsl.erasesegment(0x1880);
+        bsl.erasesegment(0x1900);
+        bsl.erasesegment(0x1980);
+        
     if args.unlock!=None:
         #print "Unlocking."
         bsl.unlock(args.password);

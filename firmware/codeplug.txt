@@ -2,10 +2,19 @@
 # freq name [flags]
 
 #Handy frequencies in our band.
-433.000 433.00
+433.000 433
+433.92  CAR43392   #EU Car freq band.
 433.450 433.45
-434.000 434.00
+434.000 434
 
 #DMR Simplex, slightly out of band.
-441.000 DMR441.0
+441.000 DMR441
+
+# 915 MHz
+915.000 915
+
+# 315 MHz
+315.000 CAR315
+
+
 

@@ -40,10 +40,12 @@ def handleline(line):
         FLAGS=0;
         (FREQ2, FREQ1, FREQ0) = freqbytes(freq);
         CRC=0xFF;  #FIXME This checksum is wrong, but cc430-bsl.py doesn't bother to check.
-        codeplugadr=codeplugadr+12;
-        return(":%02x%04x00%02x%02x%02x%02x%s%02x\n" %(
+        
+        line=":%02x%04x00%02x%02x%02x%02x%s%02x\n" %(
             LEN, codeplugadr, FLAGS, FREQ2,FREQ1,FREQ0, namehex, CRC
-            ));
+            );
+        codeplugadr=codeplugadr+12;
+        return line;
     
 def convertcodeplug(infile, outfile):
     """Converts a codeplug textfile into an intel hex file for flashing."""

@@ -124,8 +124,12 @@ void lcd_char(int pos, char c){
   }else if(c==' '){
     lcd_cleardigit(pos);
     return;
+  }else if(c=='.'){
+    lcd_cleardigit(pos);
+    setperiod(pos,1);
+    return;
   }
-
+  
   c&=~0x20;
   segments=letterfont[c-'A'];
     

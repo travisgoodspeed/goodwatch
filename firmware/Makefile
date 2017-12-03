@@ -2,7 +2,7 @@
 #Standard Debian gcc-msp430 and msp430mcu packages.
 CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os
 
-BSL = ../bin/cc430-bsl.py
+BSL = ../bin/cc430-bsl.py -r 38400
 
 modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o sidebutton.o radio.o power.o \
 	dmesg.o codeplug.o \
@@ -41,7 +41,7 @@ codeplug.hex: codeplug.txt
 	../bin/goodwatch-txt2cp.py -i codeplug.txt -o codeplug.hex
 flashcp: codeplug.hex
 	#FIXME Might need a different sort of erase.
-	$(BSL) -ef codeplug.hex
+	$(BSL) -Ef codeplug.hex
 dump:
 	$(BSL) -ed
 
