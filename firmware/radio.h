@@ -50,7 +50,7 @@ extern int has_radio;
 void radio_init();
 
 //! Turns the radio on.  Returns zero on failure.
-int radio_on();
+void radio_on();
 
 //! Sets the radio frequency.
 void radio_setfreq(float freq);
@@ -63,13 +63,21 @@ uint32_t radio_getfreq();
 void radio_resetcore();
 
 //! Turns the radio off.
-int radio_off();
+void radio_off();
 
 
 //! Read a register from the radio.
 uint8_t radio_readreg(uint8_t addr);
 //! Write to a register in the radio.
 void radio_writereg(uint8_t addr, uint8_t value);
+
+//! Read multiple bytes from a register.
+void radio_readburstreg(uint8_t addr,
+			uint8_t *buffer, uint8_t count);
+//! Write multiple bytes to a register.
+void radio_writeburstreg(uint8_t addr,
+			 uint8_t *buffer, uint8_t count);
+
 //! Strobe a radio register.
 uint8_t radio_strobe(uint8_t strobe);
 

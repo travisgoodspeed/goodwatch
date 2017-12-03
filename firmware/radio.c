@@ -99,36 +99,14 @@ void radio_init(){
   radio_strobe(RF_SCAL);
   printf("This watch has %s radio.\n",
 	 has_radio?"a":"no");
-
-  /*
-  //Chirp a bit if we have a radio.
-  if(has_radio){
-    //Load the default frequency.
-    radio_writesettings(NULL);
-    //radio_writepower(0x2D); //-6 dBm
-    radio_writepower(0x25); //-12 dBm
-    radio_setfreq(434000000);
-    radio_strobe(RF_SCAL);
-      
-    
-    //Morse test.
-    
-    //while(1)
-    //radio_morse("-.- -.- ....- ...- --..    ");
-    
-  }
   
-  radio_off();
-  radio_on();
-  radio_off();
-  */
   radio_off();
 }
 
 //! Turns the radio on.  Returns zero on failure.
-int radio_on(){
+void radio_on(){
   if(!has_radio){
-    return 0; //Failure.
+    return;
   }
 
   //Enable high power mode so that LPM3 can be used with an active
@@ -146,11 +124,6 @@ int radio_on(){
 
   //Strobe the radio to reset it.
   radio_resetcore();
-
-  
- 
-  
-  return 1; //Success
 }
 
 //! Restarts the radio.
@@ -161,7 +134,7 @@ void radio_resetcore(){
 
 
 //! Turns the radio off.
-int radio_off(){
+void radio_off(){
   //Cut the radio's oscillator.
   radio_strobe(RF_SIDLE);
   radio_strobe(RF_SXOFF);
@@ -180,8 +153,6 @@ int radio_off(){
   PMMCTL0_H = 0xA5;
   PMMCTL0_L &= ~PMMHPMRE_L;
   PMMCTL0_H = 0x00;
-  
-  return 1;
 }
 
 
@@ -199,6 +170,41 @@ uint8_t radio_readreg(uint8_t addr){
   
   //Reading the data clears the interrupt flag.
   return RF1ADOUTB;
+}
+
+//! Read multiple bytes from a register.
+void radio_readburstreg(uint8_t addr,
+			uint8_t *buffer, uint8_t count){
+  unsigned int i;
+
+  if(count > 0){
+    while (!(RF1AIFCTL1 & RFINSTRIFG));       // Wait for INSTRIFG
+    RF1AINSTR1B = (addr | RF_REGRD);          // Send addr of first conf. reg. to be read 
+                                              // ... and the burst-register read instruction
+    for (i = 0; i < (count-1); i++) {
+      while (!(RFDOUTIFG&RF1AIFCTL1));        // Wait for the Radio Core to update the RF1ADOUTB reg
+      buffer[i] = RF1ADOUT1B;                 // Read DOUT from Radio Core + clears RFDOUTIFG
+                                              // Also initiates auo-read for next DOUT byte
+    }
+    buffer[count-1] = RF1ADOUT0B;             // Store the last DOUT from Radio Core  
+  }
+}
+
+//! Write multiple bytes to a register.
+void radio_writeburstreg(uint8_t addr,
+			 uint8_t *buffer, uint8_t count){
+  unsigned char i;
+  
+  if(count > 0){
+    while (!(RF1AIFCTL1 & RFINSTRIFG));       // Wait for the Radio to be ready for next instruction
+    RF1AINSTRW = ((addr | RF_REGWR)<<8 ) + buffer[0]; // Send address + Instruction
+    
+    for (i = 1; i < count; i++) {
+      RF1ADINB = buffer[i];                   // Send data
+      while (!(RFDINIFG & RF1AIFCTL1));       // Wait for TX to finish
+    }
+    i = RF1ADOUTB;                            // Reset RFDOUTIFG flag which contains status byte
+  }
 }
 
 //! Write to a register in the radio.

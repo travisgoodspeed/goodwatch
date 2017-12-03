@@ -30,7 +30,7 @@ static struct app apps[]={
 
   //Tuner Tool
   {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit},
-  //Radio Tool
+  //Morse transmitter.
   {.name="morse", .init=morse_init, .draw=morse_draw, .exit=morse_exit},
   
   //End on null entry.

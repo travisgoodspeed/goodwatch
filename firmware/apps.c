@@ -6,6 +6,7 @@
  */
 
 #include <msp430.h>
+#include <stdio.h>
 
 #include "api.h"
 
@@ -55,13 +56,14 @@ void app_forcehome(){
   apps[appindex].init();
 }
 
-//! Renders the current app to the screen.
+//! Initializes the set of applications.
 void app_init(){
   void (*tocall)(void)=apps[appindex].init;
   if(tocall)
     tocall();
   else
     appindex=0;
+
   return;
 }
 
@@ -87,7 +89,7 @@ void app_next(){
   if(!tocall)
     appindex=0;
 
-  //Initialize the new application and return.
+  //Initialize the new application.
   apps[appindex].init();
   return;
 }

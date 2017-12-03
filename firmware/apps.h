@@ -14,13 +14,17 @@ struct app {
      NULL) if the application may move on, or returns non-zero if the
      exit call is intercepted.
    */
-  int (*exit)(void); 
+  int (*exit)(void);
+
+  /* Callbacks for packets being sent and received.  Set to null if unused. */
+  void (*packetrx)(void); //A packet has arrived.
+  void (*packettx)(void); //A packet has been sent.
 };
 
 
 //! Draw the current application.
 void app_draw();
-//! Initialize the current application.
+//! Initializes the set of applications.
 void app_init();
 //! Move to the next application.
 void app_next();
