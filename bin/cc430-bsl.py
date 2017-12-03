@@ -85,6 +85,9 @@ class BSL:
         if len(reply)!=1:
             print "Error, missing reply.";
             sys.exit(1);
+        elif msg[0]=='\x52':
+            #Change baud rate command has a briefer reply.
+            pass;
         elif ord(reply[0])==0x00:
             #Success
             eighty=ord(self.serial.read(1));
@@ -200,10 +203,15 @@ class BSL:
             ratebyte='\x05';
         elif rate==115200:
             ratebyte='\x06';
-        resp=self.transact("\x17"+ratebyte);
+
+        
+        resp=self.transact("\x52"+ratebyte);
+        #self.serial.write("\x80\x52\x06");
+        #print self.serial.read().encode('hex');
         
         #Then we jump the port to the new rate.
-        self.serial.setBaudrate(rate);
+        #self.serial.setBaudrate(rate); #Old convention.
+        self.serial.baudrate=rate;      #New convention.
     
     MAXLEN=256; #Maximum bytes per read request.
     def readbulk(self,adr,length):
