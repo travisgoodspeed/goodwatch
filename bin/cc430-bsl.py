@@ -204,10 +204,8 @@ class BSL:
         elif rate==115200:
             ratebyte='\x06';
 
-        
+        #Command the rate change.
         resp=self.transact("\x52"+ratebyte);
-        #self.serial.write("\x80\x52\x06");
-        #print self.serial.read().encode('hex');
         
         #Then we jump the port to the new rate.
         #self.serial.setBaudrate(rate); #Old convention.
