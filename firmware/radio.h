@@ -83,6 +83,8 @@ uint8_t radio_strobe(uint8_t strobe);
 
 //! Writes a radio settings structure.
 void radio_writesettings(RF_SETTINGS *pRfSettings);
+//! Writes a table of radio settings until the first null pair.
+void radio_writesettingstable(const uint8_t *settings);
 
 //! Writes one value to the power table.
 void radio_writepower(uint8_t value);

@@ -9,15 +9,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "lcd.h"
-#include "lcdtext.h"
-#include "rtc.h"
-#include "keypad.h"
-#include "apps.h"
-#include "sidebutton.h"
-#include "radio.h"
+#include "api.h"
 #include "dmesg.h"
-#include "codeplug.h"
 
 //! Initialize the XT1 crystal, and stabilize it.
 void xtal_init(){
@@ -34,8 +27,11 @@ void xtal_init(){
   UCSCTL6 &= ~(XT1DRIVE_3);                 // Xtal is now stable, reduce drive
                                             // strength
   //See page 125 of the family guide.
-  //UCSCTL4 = SELM_3 + SELS_0 + SELA_0;  //XT1 for ACLK and SMCLK, MCLK from DCO.
+  #ifdef TURBOMODE
+  UCSCTL4 = SELM_3 + SELS_0 + SELA_0;  //XT1 for ACLK and SMCLK, MCLK from DCO.
+  #else
   UCSCTL4 = SELM_0 + SELS_0 + SELA_0;    //XT1 for everything; very slow CPU.
+  #endif
 }
 
 //! Power On Self Test

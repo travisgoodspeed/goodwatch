@@ -284,6 +284,22 @@ RF_SETTINGS rfSettingsDefault = {
     0x64    // PKTLEN    Packet length.
 };
 
+//! Writes a table of radio settings until the first null pair.
+void radio_writesettingstable(const uint8_t *settings){
+  int i=0;
+  printf("Packetlen was %d.\n",
+	 radio_readreg(PKTLEN));
+
+  while(settings[i]!=0 || settings[i+1]!=0){
+    radio_writereg(settings[i],settings[i+1]);
+    printf("cc1110[0x%02x]:=0x%02x\n",
+	   settings[i],
+	   settings[i+1]);
+    i+=2;
+  }
+  printf("Packetlen is %d.\n",
+	 radio_readreg(PKTLEN));
+}
 
 //! Writes a radio settings structure.
 void radio_writesettings(RF_SETTINGS *pRfSettings) {

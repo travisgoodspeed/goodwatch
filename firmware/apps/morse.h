@@ -3,9 +3,9 @@
 
 */
 
-//! Enter the radio tool.
+//! Enter the Morse app.
 void morse_init();
-//! Exit the radio tool.
+//! Exit the Morse app.
 int morse_exit();
-//! Draw the screen and increase the count.
+//! Draw the screen.
 void morse_draw();

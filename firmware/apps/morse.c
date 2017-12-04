@@ -15,7 +15,7 @@
 #include "api.h"
 
 
-//! Enter the radio tool.
+//! Enter the Morse application.
 void morse_init(){
   /* Power management being king, we shouldn't initialize the radio
      until we need it, but for now we'll start it at entry to keep
@@ -31,7 +31,7 @@ void morse_init(){
     app_next();
   }
 }
-//! Exit the radio tool.
+//! Exit the Morse app.
 int morse_exit(){
   /* Always turn the radio off at exit.
    */
@@ -40,7 +40,8 @@ int morse_exit(){
   //Allow the exit.
   return 0;
 }
-//! Draw the screen and increase the count.
+
+//! Draw the screen.
 void morse_draw(){
   char ch=getchar();
   

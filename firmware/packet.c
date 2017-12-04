@@ -65,7 +65,12 @@ void packet_tx(uint8_t *buffer, uint8_t length){
 //! Interrupt handler for incoming packets.
 void __attribute__ ((interrupt(CC1101_VECTOR)))
 packet_isr (void) {
-  switch(RF1AIV&~1){       // Prioritizing Radio Core Interrupt 
+  int rf1aiv=RF1AIV;
+  
+  printf("CC1101 interrupt: RF1AIV=%d\n",
+	 rf1aiv);
+  
+  switch(rf1aiv){       // Prioritizing Radio Core Interrupt 
     case  0: break;                         // No RF core interrupt pending
     case  2: break;                         // RFIFG0
     case  4: break;                         // RFIFG1
@@ -77,15 +82,17 @@ packet_isr (void) {
     case 16: break;                         // RFIFG7
     case 18: break;                         // RFIFG8
     case 20:                                // RFIFG9
+      printf("RFIFG9 handler\n");
       if(receiving){//End of RX packet.
-	
         // Read the length byte from the FIFO.
         rxlen = radio_readreg( RXBYTES );
-        radio_readburstreg(RF_RXFIFORD, rxbuffer, rxlen);
+	printf("Received %d byte packet.\n", rxlen);
+	
+        //radio_readburstreg(RF_RXFIFORD, rxbuffer, rxlen);
         
         // Stop here to see contents of RxBuffer
         __no_operation();
-	printf("Received %d byte packet.\n", rxlen);
+	
         /*
         // Check the CRC results
         if(RxBuffer[CRC_LQI_IDX] & CRC_OK){
@@ -95,8 +102,8 @@ packet_isr (void) {
 	}
 	*/
       }else if(transmitting){ //End of TX packet.
-        RF1AIE &= ~BIT9;     // Disable TX end-of-packet interrupt
 	printf("Transmitted packet.\n");
+        RF1AIE &= ~BIT9;     // Disable TX end-of-packet interrupt
         transmitting = 0;
       }else{
 	printf("Unexpected packet ISR.\n");
@@ -108,6 +115,8 @@ packet_isr (void) {
     case 28: break;                         // RFIFG13
     case 30: break;                         // RFIFG14
     case 32: break;                         // RFIFG15
-  }  
-  __bic_SR_register_on_exit(LPM3_bits);
+  }
+
+  printf("Handled.\n");
+  //__bic_SR_register_on_exit(LPM3_bits);
 }

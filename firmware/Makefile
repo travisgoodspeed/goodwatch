@@ -8,7 +8,7 @@ modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o sidebutton.o powe
 	radio.o packet.o dmesg.o codeplug.o \
 	libs/assembler.o libs/morse.o
 apps= apps/clock.o apps/rpn.o apps/hex.o apps/stopwatch.o \
-	apps/tuner.o apps/morse.o
+	apps/tuner.o apps/morse.o apps/iclicker.o
 
 all: goodwatch.hex
 
@@ -30,7 +30,7 @@ erase:
 flash: goodwatch.hex
 	$(BSL) -etf goodwatch.hex
 dmesg:
-	../bin/cc430-bsl.py -P goodwatch.hex -uD
+	$(BSL) -P goodwatch.hex -uD
 
 #Same as dmesg, but it gives the target some time to boot first.
 run:
