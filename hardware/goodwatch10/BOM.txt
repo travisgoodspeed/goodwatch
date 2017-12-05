@@ -30,3 +30,5 @@ C4      GRJ155R60J106ME11D      81-GRJ155R60J106ME1D    0402     1     10uF
 C5      GRM033R60J474KE90D      81-GRM33R60J474KE90D    0201     1     0.47uF
 Y1      ABS07-120-32.768KHZ-T   815-ABS0712032.768KT    SMDXTAL  1     32.768kHz6pF
 
+In Mouser.fr C1 not available in either of above references, sourcing instead:
+C1      81-ZRB18AR60J476ME1L	ZRB18AR60J476ME01L      0603     1     47uF
