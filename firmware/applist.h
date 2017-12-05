@@ -12,6 +12,7 @@
 #include "apps/morse.h"
 #include "apps/tuner.h"
 #include "apps/iclicker.h"
+#include "apps/beacon.h"
 
 /*  For each application, the init() function is called at entry.  The
     draw() function is called 4 times per second.  The exit() function
@@ -33,6 +34,9 @@ static struct app apps[]={
   {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit},
   //Morse transmitter.
   {.name="morse", .init=morse_init, .draw=morse_draw, .exit=morse_exit},
+
+  //Beacon
+  {.name="beacon", .init=beacon_init, .draw=beacon_draw, .exit=beacon_exit},
 
   //iClicker
   //{.name="iclicker", .init=iclicker_init, .draw=iclicker_draw, .exit=iclicker_exit},

@@ -128,8 +128,10 @@ void radio_on(){
 
 //! Restarts the radio.
 void radio_resetcore(){
+  //Reset the core.
   radio_strobe(RF_SRES);
-  radio_strobe(RF_SNOP);
+  //Wait for ready.
+  while(radio_strobe(RF_SIDLE)&0x70);
 }
 
 

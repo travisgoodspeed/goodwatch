@@ -53,10 +53,10 @@ int post(){
      */
     lcd_string(" crystal");
 
-/*Can't run this test because of an unfixed errata.
+  /*Can't run this test because of an unfixed errata.
   }else if(has_radio && RF1AIFERR & 1){
     lcd_string("RF  LOWV");
-    */
+  */
   }else if(has_radio && RF1AIFERR & 2){
     lcd_string("RF OPERR");
   }else if(has_radio && RF1AIFERR & 4){
@@ -123,10 +123,10 @@ int main(void) {
   SFRIE1 |= WDTIE;
 
   __bis_SR_register(LPM3_bits + GIE);        // Enter LPM3
-  //__bis_SR_register(LPM2_bits + GIE);        // Enter LPM3
+  //__bis_SR_register(LPM2_bits + GIE);        // Enter LPM2
   //__bis_SR_register(LPM0_bits + GIE);	     // Enter LPM0 w/interrupt
   while(1){
-    printf("main while().\n");
+    //printf("main while().\n");
   }
 }
 
@@ -168,8 +168,6 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
     latch=0;
   }
 
-  
-  
   /* The applet is drawn four times per second.  We handle
      double-buffering, so that incomplete drawings won't be shown to
      the user, but everything else is the app's responsibility. */

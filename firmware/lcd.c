@@ -28,6 +28,9 @@ void lcd_zero(){
 //! Initialize the LCD memory and populate it with sample text.
 void lcd_init() {
   int i;
+
+  //Turn the LCD off to set its pins.
+  LCDBCTL0 = 0;
   
   // Select LCD COM pins
   P5SEL |= (/*BIT5 |*/ BIT6 | BIT7);
@@ -37,9 +40,13 @@ void lcd_init() {
   // LCD_FREQ = ACLK/32/4, LCD Mux 3, turn on LCD
   // Charge pump generated internally at 3.44V, external bias (V2-V4) generation
   // Internal reference for charge pump
-  LCDBCTL0 =  (LCDDIV0 + LCDDIV1 + LCDDIV2 + LCDDIV3 + LCDDIV4)
-             | LCDPRE0 | LCD3MUX | LCDON | LCDSON;
+  LCDBCTL0 =  (LCDDIV0 | LCDDIV1 | LCDDIV2 | LCDDIV3 | LCDDIV4)
+    | LCDPRE0
+    | LCD3MUX //Fourth 
+    //| LCDSSEL //Use the VLO clock instead of ACLK.  (Needs different dividers.)
+    ;
   LCDBVCTL = LCDCPEN | VLCD_3_44 | LCD2B; //Highest contrast, 1/2 BIAS
+  //LCDBVCTL = LCDCPEN | VLCD_3_02 | LCD2B; //Mid contrast
   //LCDBVCTL = LCDCPEN | VLCD_2_60 | LCD2B; //Weakest contrast.
   LCDBCTL0 |= LCDON + LCDSON;
   REFCTL0 &= ~REFMSTR;// //Disable legacy mode.

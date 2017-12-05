@@ -48,6 +48,11 @@ void packet_rxoff(){
 
 //! Transmit a packet.
 void packet_tx(uint8_t *buffer, uint8_t length){
+  if(transmitting){
+    //printf("Refusing to transmit with pending packet.\n");
+    return;
+  }
+  
   RF1AIES |= BIT9;                          
   RF1AIFG &= ~BIT9;                         // Clear pending interrupts
   RF1AIE |= BIT9;                           // Enable TX end-of-packet interrupt
