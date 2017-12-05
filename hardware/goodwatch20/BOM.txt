@@ -9,7 +9,7 @@ Base parts, required for all watches.
         MfgrPartNo              Digikey             Pkg      Qty   Cmt
 U1      CC430F6137IRGCR         296-25822-1-ND      VQFN64   1     CPU
 R1      RC0201FR-0775KL         YAG2795CT-ND        0201     1     75K
-C1      CL10A476MR8NZNE         1276-6528-1-ND      0601     1     47uF
+C1      CL10A476MR8NZNE         1276-6528-1-ND      0603     1     47uF
 C2,C3   02016D104KAT2A          478-5266-1-ND       0201     2     0.1uF
 C4      GRJ155R60J106ME11D      490-13211-1-ND      0402     1     10uF
 C5      GRM033R60J474KE90D      490-10409-1-ND      0201     1     0.47uF
