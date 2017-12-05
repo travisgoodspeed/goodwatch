@@ -15,6 +15,7 @@
 
 //! Receive packet buffer, with room for RSSI and LQI.
 uint8_t rxbuffer[PACKETLEN+2];
+//! Length of received packet.
 uint8_t rxlen;
 
 //! Transmit packet buffer.
@@ -28,8 +29,6 @@ void packet_rxon(){
   RF1AIFG &= ~BIT9;   // Clear a pending interrupt
   RF1AIE  |= BIT9;    // Enable the interrupt
   
-  //Strobe into IDLE to be safe, then RX.
-  radio_strobe( RF_SIDLE );
   radio_strobe( RF_SRX );
   receiving=1;
 }
@@ -59,6 +58,9 @@ void packet_tx(uint8_t *buffer, uint8_t length){
   //Strobe into transmit mode.
   radio_strobe( RF_STX );
   transmitting=1;
+
+  printf("Transmitting on %ld.\n",
+	 radio_getfreq());
 }
 
 
@@ -66,11 +68,12 @@ void packet_tx(uint8_t *buffer, uint8_t length){
 void __attribute__ ((interrupt(CC1101_VECTOR)))
 packet_isr (void) {
   int rf1aiv=RF1AIV;
+  int i;
   
   printf("CC1101 interrupt: RF1AIV=%d\n",
 	 rf1aiv);
   
-  switch(rf1aiv){       // Prioritizing Radio Core Interrupt 
+  switch(rf1aiv&~1){       // Prioritizing Radio Core Interrupt 
     case  0: break;                         // No RF core interrupt pending
     case  2: break;                         // RFIFG0
     case  4: break;                         // RFIFG1
@@ -88,7 +91,13 @@ packet_isr (void) {
         rxlen = radio_readreg( RXBYTES );
 	printf("Received %d byte packet.\n", rxlen);
 	
-        //radio_readburstreg(RF_RXFIFORD, rxbuffer, rxlen);
+        radio_readburstreg(RF_RXFIFORD, rxbuffer, rxlen);
+
+	for(i=0;i<16;i++){
+	  printf("%02x ", rxbuffer[i]);
+	}
+	printf("\n");
+
         
         // Stop here to see contents of RxBuffer
         __no_operation();

@@ -246,102 +246,60 @@ void radio_writereg(uint8_t addr, uint8_t value){
 // Device address = 0
 // GDO0 signal selection = ( 6) Asserts when sync word has been sent / received, and de-asserts at the end of the packet
 // GDO2 signal selection = (41) RF_RDY
-RF_SETTINGS rfSettingsDefault = {
-    0x08,   // FSCTRL1   Frequency synthesizer control.
-    0x00,   // FSCTRL0   Frequency synthesizer control.
-    0x23,   // FREQ2     Frequency control word, high byte.
-    0x31,   // FREQ1     Frequency control word, middle byte.
-    0x3B,   // FREQ0     Frequency control word, low byte.
-    0xCA,   // MDMCFG4   Modem configuration.
-    0x83,   // MDMCFG3   Modem configuration.
-    0x93,   // MDMCFG2   Modem configuration.
-    0x22,   // MDMCFG1   Modem configuration.
-    0xF8,   // MDMCFG0   Modem configuration.
-    0x00,   // CHANNR    Channel number.
-    0x34,   // DEVIATN   Modem deviation setting (when FSK modulation is enabled).
-    0x56,   // FREND1    Front end RX configuration.
-    0x10,   // FREND0    Front end TX configuration.
-    0x18,   // MCSM0     Main Radio Control State Machine configuration.
-    0x16,   // FOCCFG    Frequency Offset Compensation Configuration.
-    0x6C,   // BSCFG     Bit synchronization Configuration.
-    0x43,   // AGCCTRL2  AGC control.
-    0x40,   // AGCCTRL1  AGC control.
-    0x91,   // AGCCTRL0  AGC control.
-    0xE9,   // FSCAL3    Frequency synthesizer calibration.
-    0x2A,   // FSCAL2    Frequency synthesizer calibration.
-    0x00,   // FSCAL1    Frequency synthesizer calibration.
-    0x1F,   // FSCAL0    Frequency synthesizer calibration.
-    0x59,   // FSTEST    Frequency synthesizer calibration.
-    0x81,   // TEST2     Various test settings.
-    0x35,   // TEST1     Various test settings.
-    0x09,   // TEST0     Various test settings.
-    0x47,   // FIFOTHR   RXFIFO and TXFIFO thresholds.
-    0x29,   // IOCFG2    GDO2 output pin configuration.
-    0x06,   // IOCFG0    GDO0 output pin configuration. Refer to SmartRF? Studio User Manual for detailed pseudo register explanation.
-    0x04,   // PKTCTRL1  Packet automation control.
-    0x04,   // PKTCTRL0  Packet automation control.
-    0x00,   // ADDR      Device address.
-    0x64    // PKTLEN    Packet length.
+const uint8_t morsesettings[]={
+  FSCTRL1,   0x08,   // FSCTRL1   Frequency synthesizer control.
+  FSCTRL0,   0x00,   // FSCTRL0   Frequency synthesizer control.
+  FREQ2,     0x23,   // FREQ2     Frequency control word, high byte.
+  FREQ1,     0x31,   // FREQ1     Frequency control word, middle byte.
+  FREQ0,     0x3B,   // FREQ0     Frequency control word, low byte.
+  MDMCFG4,   0xCA,   // MDMCFG4   Modem configuration.
+  MDMCFG3,   0x83,   // MDMCFG3   Modem configuration.
+  MDMCFG2,   0x93,   // MDMCFG2   Modem configuration.
+  MDMCFG1,   0x22,   // MDMCFG1   Modem configuration.
+  MDMCFG0,   0xF8,   // MDMCFG0   Modem configuration.
+  CHANNR,    0x00,   // CHANNR    Channel number.
+  DEVIATN,   0x34,   // DEVIATN   Modem deviation setting (when FSK modulation is enabled).
+  FREND1,    0x56,   // FREND1    Front end RX configuration.
+  FREND0,    0x10,   // FREND0    Front end TX configuration.
+  MCSM0,     0x18,   // MCSM0     Main Radio Control State Machine configuration.
+  FOCCFG,    0x16,   // FOCCFG    Frequency Offset Compensation Configuration.
+  BSCFG,     0x6C,   // BSCFG     Bit synchronization Configuration.
+  AGCCTRL2,  0x43,   // AGCCTRL2  AGC control.
+  AGCCTRL1,  0x40,   // AGCCTRL1  AGC control.
+  AGCCTRL0,  0x91,   // AGCCTRL0  AGC control.
+  FSCAL3,    0xE9,   // FSCAL3    Frequency synthesizer calibration.
+  FSCAL2,    0x2A,   // FSCAL2    Frequency synthesizer calibration.
+  FSCAL1,    0x00,   // FSCAL1    Frequency synthesizer calibration.
+  FSCAL0,    0x1F,   // FSCAL0    Frequency synthesizer calibration.
+  FSTEST,    0x59,   // FSTEST    Frequency synthesizer calibration.
+  TEST2,     0x81,   // TEST2     Various test settings.
+  TEST1,     0x35,   // TEST1     Various test settings.
+  TEST0,     0x09,   // TEST0     Various test settings.
+  FIFOTHR,   0x47,   // FIFOTHR   RXFIFO and TXFIFO thresholds.
+  IOCFG2,    0x29,   // IOCFG2    GDO2 output pin configuration.
+  IOCFG0,    0x06,   // IOCFG0    GDO0 output pin configuration. Refer to SmartRF? Studio User Manual for detailed pseudo register explanation.
+  PKTCTRL1,  0x04,   // PKTCTRL1  Packet automation control.
+  PKTCTRL0,  0x04,   // PKTCTRL0  Packet automation control.
+  ADDR,      0x00,   // ADDR      Device address.
+  PKTLEN,    0x64,   // PKTLEN    Packet length.
+  0, 0
 };
 
 //! Writes a table of radio settings until the first null pair.
-void radio_writesettingstable(const uint8_t *settings){
+void radio_writesettings(const uint8_t *settings){
   int i=0;
-  printf("Packetlen was %d.\n",
-	 radio_readreg(PKTLEN));
+
+  /* If there are no settings, we default to sending Morse code.
+   */
+  if(!settings)
+    settings=morsesettings;
 
   while(settings[i]!=0 || settings[i+1]!=0){
     radio_writereg(settings[i],settings[i+1]);
-    printf("cc1110[0x%02x]:=0x%02x\n",
-	   settings[i],
-	   settings[i+1]);
     i+=2;
   }
-  printf("Packetlen is %d.\n",
-	 radio_readreg(PKTLEN));
 }
 
-//! Writes a radio settings structure.
-void radio_writesettings(RF_SETTINGS *pRfSettings) {
-  if(!pRfSettings)
-    pRfSettings= &rfSettingsDefault;
-  
-  radio_writereg(FSCTRL1,  pRfSettings->fsctrl1);
-  radio_writereg(FSCTRL0,  pRfSettings->fsctrl0);
-  radio_writereg(FREQ2,    pRfSettings->freq2);
-  radio_writereg(FREQ1,    pRfSettings->freq1);
-  radio_writereg(FREQ0,    pRfSettings->freq0);
-  radio_writereg(MDMCFG4,  pRfSettings->mdmcfg4);
-  radio_writereg(MDMCFG3,  pRfSettings->mdmcfg3);
-  radio_writereg(MDMCFG2,  pRfSettings->mdmcfg2);
-  radio_writereg(MDMCFG1,  pRfSettings->mdmcfg1);
-  radio_writereg(MDMCFG0,  pRfSettings->mdmcfg0);
-  radio_writereg(CHANNR,   pRfSettings->channr);
-  radio_writereg(DEVIATN,  pRfSettings->deviatn);
-  radio_writereg(FREND1,   pRfSettings->frend1);
-  radio_writereg(FREND0,   pRfSettings->frend0);
-  radio_writereg(MCSM0 ,   pRfSettings->mcsm0);
-  radio_writereg(FOCCFG,   pRfSettings->foccfg);
-  radio_writereg(BSCFG,    pRfSettings->bscfg);
-  radio_writereg(AGCCTRL2, pRfSettings->agcctrl2);
-  radio_writereg(AGCCTRL1, pRfSettings->agcctrl1);
-  radio_writereg(AGCCTRL0, pRfSettings->agcctrl0);
-  radio_writereg(FSCAL3,   pRfSettings->fscal3);
-  radio_writereg(FSCAL2,   pRfSettings->fscal2);
-  radio_writereg(FSCAL1,   pRfSettings->fscal1);
-  radio_writereg(FSCAL0,   pRfSettings->fscal0);
-  radio_writereg(FSTEST,   pRfSettings->fstest);
-  radio_writereg(TEST2,    pRfSettings->test2);
-  radio_writereg(TEST1,    pRfSettings->test1);
-  radio_writereg(TEST0,    pRfSettings->test0);
-  radio_writereg(FIFOTHR,  pRfSettings->fifothr);
-  radio_writereg(IOCFG2,   pRfSettings->iocfg2);
-  radio_writereg(IOCFG0,   pRfSettings->iocfg0);
-  radio_writereg(PKTCTRL1, pRfSettings->pktctrl1);
-  radio_writereg(PKTCTRL0, pRfSettings->pktctrl0);
-  radio_writereg(ADDR,     pRfSettings->addr);
-  radio_writereg(PKTLEN,   pRfSettings->pktlen);
-}
 
 
 //! Strobe a radio register.

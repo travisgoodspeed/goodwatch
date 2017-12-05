@@ -42,7 +42,7 @@ void lcd_init() {
   LCDBVCTL = LCDCPEN | VLCD_3_44 | LCD2B; //Highest contrast, 1/2 BIAS
   //LCDBVCTL = LCDCPEN | VLCD_2_60 | LCD2B; //Weakest contrast.
   LCDBCTL0 |= LCDON + LCDSON;
-  REFCTL0 &= ~REFMSTR;
+  REFCTL0 &= ~REFMSTR;// //Disable legacy mode.
   
   //Select LCD Segments 0-9
   LCDBPCTL0 = 0xFFFF;

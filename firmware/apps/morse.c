@@ -61,7 +61,34 @@ void morse_draw(){
     lcd_postdraw();
     radio_morse("K");
     break;
-    
+
+  case '=':
+    /* Pressing the equals button switches to raw Morse mode, where the
+       mode button causes a carrier to be transmitted.  Exit by pressing
+       the button again.
+       
+       Set-button is a straight key.
+    */
+    lcd_string(" RAW CW ");
+    lcd_postdraw();
+    __delay_cycles(6000);
+    do{
+      if(sidebutton_mode() || getchar()=='+'){
+	if(radio_getstate()==1){
+	  radio_strobe(RF_STX);
+	  __delay_cycles(300);
+	}
+      }else{
+	if(radio_getstate()!=1){
+	  radio_strobe(RF_SIDLE);
+	  __delay_cycles(300);
+	}
+      }
+    }while(getchar()!='=');//!sidebutton_set());
+    lcd_string("RAW EXIT");
+    lcd_postdraw();
+    __delay_cycles(6000);
+    break;
     
   case '/':
     lcd_string("        ");
@@ -74,6 +101,7 @@ void morse_draw(){
     lcd_string("  NNORSE");
     break;
   }
+
 
 }
 
