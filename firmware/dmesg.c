@@ -23,7 +23,10 @@ char *dmesg_buffer=(char*)0x2400;
 
 //! Writes a character to the dmesg buffer.
 int putchar(int c){
-  return dmesg_buffer[dmesg_index++%DMESGLEN]=(char) c;
+  dmesg_index++;
+  while(dmesg_index>DMESGLEN)
+    dmesg_index-=DMESGLEN;
+  return dmesg_buffer[dmesg_index]=(char) c;
 }
 
 //! Clears the dmesg buffer.
@@ -35,7 +38,9 @@ void dmesg_clear(){
 
 //! I ain't never initialized a buffer that didn't need initializin'.
 void dmesg_init(){
-  if(dmesg_magic!=0xdeadbeef || dmesg_index>=DMESGLEN)
+  if(dmesg_magic!=0xdeadbeef){
     dmesg_clear();
+    printf("Zeroed buffer for bad magic.");
+  }
   printf("\n\n----\n");
 }
