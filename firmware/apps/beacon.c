@@ -12,15 +12,20 @@
 //Clicker packet length.  (9)
 #define LEN 0x3E
 
-const uint8_t faradayrf_settings[]={
+/* I believe these to be the settings used by the FaradayRF project,
+   but have not yet verified it.
+*/
+
+static const uint8_t faradayrf_settings[]={
   FSCTRL1, 0x08,   // FSCTRL1   Frequency synthesizer control.
   FSCTRL0, 0x00,   // FSCTRL0   Frequency synthesizer control.
   FREQ2,  0x23,   // FREQ2     Frequency control word, high byte.
   FREQ1,  0x62,   // FREQ1     Frequency control word, middle byte.
   FREQ0,  0x76,   // FREQ0     Frequency control word, low byte.
+  //38.4 kbaud GFSK
   MDMCFG4,  0xCA,   // MDMCFG4   Modem configuration.
   MDMCFG3,  0x83,   // MDMCFG3   Modem configuration.
-  MDMCFG2,  0x93,   // MDMCFG2   Modem configuration.
+  MDMCFG2,  0x93, // MDMCFG2   Modem configuration.
   MDMCFG1,  0x62,   // MDMCFG1   Modem configuration.
   MDMCFG0,  0xF8,   // MDMCFG0   Modem configuration.
   CHANNR,  0x00,   // CHANNR    Channel number.
@@ -53,6 +58,33 @@ const uint8_t faradayrf_settings[]={
   0,0
 };
 
+/* Settings for the GoodWatch, similar to 1.2kbaud SimpliciTI.
+ */
+static const uint8_t goodwatch_settings[]={
+  IOCFG0,0x06,  //GDO0 Output Configuration
+  FIFOTHR,0x47, //RX FIFO and TX FIFO Thresholds
+  PKTCTRL0,0x05,//Packet Automation Control
+  FSCTRL1,0x06, //Frequency Synthesizer Control
+  FREQ2,0x21,   //Frequency Control Word, High Byte
+  FREQ1,0x62,   //Frequency Control Word, Middle Byte
+  FREQ0,0x76,   //Frequency Control Word, Low Byte
+  MDMCFG4,0xF5, //Modem Configuration
+  MDMCFG3,0x83, //Modem Configuration
+  MDMCFG2,0x13, //Modem Configuration
+  DEVIATN,0x15, //Modem Deviation Setting
+  MCSM0,0x10,   //Main Radio Control State Machine Configuration
+  FOCCFG,0x16,  //Frequency Offset Compensation Configuration
+  WORCTRL,0xFB, //Wake On Radio Control
+  FSCAL3,0xE9,  //Frequency Synthesizer Calibration
+  FSCAL2,0x2A,  //Frequency Synthesizer Calibration
+  FSCAL1,0x00,  //Frequency Synthesizer Calibration
+  FSCAL0,0x1F,  //Frequency Synthesizer Calibration
+  TEST2,0x81,   //Various Test Settings
+  TEST1,0x35,   //Various Test Settings
+  TEST0,0x09,   //Various Test Settings
+  0,0
+};
+
 
 
 //! Enter the Beacon application.
@@ -63,7 +95,8 @@ void beacon_init(){
     printf("Tuning the beacon.\n");
     radio_on();
     radio_strobe(RF_SIDLE);
-    radio_writesettings(faradayrf_settings);
+    //radio_writesettings(faradayrf_settings);
+    radio_writesettings(goodwatch_settings);
     radio_writepower(0x25);
     codeplug_setfreq();
     radio_strobe(RF_SIDLE);
@@ -98,7 +131,7 @@ void beacon_draw(){
   
 
   switch(state){
-    /*
+
   case 17: //RX_OVERFLOW
     printf("RX Overflow.\n");
     radio_strobe(RF_SIDLE);
@@ -108,6 +141,7 @@ void beacon_draw(){
     radio_strobe(RF_SIDLE);
     break;
 
+    /*
   case 1: //IDLE
     printf("Strobing RX.\n");
     radio_strobe(RF_SRX);
@@ -117,10 +151,14 @@ void beacon_draw(){
   case 13: //RX Mode
     /* While receiving, the LCD glitches out a bit, so we need to stop
        and resume the reception to allow the charge pump time to
-       settle.  This produces a blind-spot in our reception.
+       settle.  This produces a blind-spot in our reception, but it allows the
+       screen to remain visible.
      */
+
     radio_strobe( RF_SIDLE );
+    __delay_cycles(850);
     radio_strobe( RF_SRX );
+    
     break;
   }
 
@@ -137,11 +175,11 @@ void beacon_draw(){
     }
     break;
   case '/':
-    /* Receiving packets isn't yet supported.
+    /* Receiving packets isn't yet supported.*/
     if(radio_getstate()==1){
       packet_rxon();
     }
-    */
+    
     break;
   case '0':
     packet_rxoff();

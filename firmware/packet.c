@@ -63,9 +63,6 @@ void packet_tx(uint8_t *buffer, uint8_t length){
   //Strobe into transmit mode.
   radio_strobe( RF_STX );
   transmitting=1;
-
-  printf("Transmitting on %ld.\n",
-	 radio_getfreq());
 }
 
 
@@ -90,19 +87,21 @@ packet_isr (void) {
     case 16: break;                         // RFIFG7
     case 18: break;                         // RFIFG8
     case 20:                                // RFIFG9
-      printf("RFIFG9 handler\n");
+      //printf("RFIFG9 handler\n");
       if(receiving){//End of RX packet.
         // Read the length byte from the FIFO.
         rxlen = radio_readreg( RXBYTES );
-	printf("Received %d byte packet.\n", rxlen);
+	printf("RX %d byte packet.\n", rxlen);
 	
-        radio_readburstreg(RF_RXFIFORD, rxbuffer, rxlen);
-
-	for(i=0;i<16;i++){
+        /* We read no more than our buffer. */
+	radio_readburstreg(RF_RXFIFORD, rxbuffer,
+			   rxlen>PACKETLEN?PACKETLEN:rxlen);
+	
+	for(i=0;i<rxlen;i++){
 	  printf("%02x ", rxbuffer[i]);
 	}
 	printf("\n");
-
+	
         
         // Stop here to see contents of RxBuffer
         __no_operation();
