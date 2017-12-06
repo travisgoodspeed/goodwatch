@@ -130,8 +130,9 @@ void radio_on(){
 void radio_resetcore(){
   //Reset the core.
   radio_strobe(RF_SRES);
-  //Wait for ready.
-  while(radio_strobe(RF_SIDLE)&0x70);
+  
+  //Wait for readiness, or give up if there's no radio.
+  while(has_radio && radio_strobe(RF_SIDLE)&0x70);
 }
 
 
@@ -309,6 +310,9 @@ uint8_t radio_strobe(uint8_t strobe){
   uint8_t  statusByte = 0;
   uint16_t count=0;
   uint16_t gdo_state;
+
+  if(!has_radio)
+    return 0xFF;
   
   // Check for valid strobe command 
   if((strobe == 0xBD) || ((strobe >= RF_SRES) && (strobe <= RF_SNOP))){
