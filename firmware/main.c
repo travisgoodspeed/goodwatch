@@ -44,6 +44,7 @@ int post(){
        see the response at the right angle.
     */
     lcd_string("lcd  lcd");
+    printf("LCD Error.\n");
   }else if(UCSCTL7&2){
     /* This flag is triggered when the 32kHz crystal has a fault, such
        as if it is not populated or if a little drag of solder reaches
@@ -52,7 +53,7 @@ int post(){
        non-watch functions still work.
      */
     lcd_string(" crystal");
-
+    printf("32kHz crystal error.");
   /*Can't run this test because of an unfixed errata.
   }else if(has_radio && RF1AIFERR & 1){
     lcd_string("RF  LOWV");
@@ -69,7 +70,8 @@ int post(){
     lcd_string("all good");
     return 0;
   }
-  
+
+  printf("POST failure.\n");
   //We had a failure, indicated above.
   return 1;
 }
@@ -106,9 +108,9 @@ int main(void) {
   lcd_zero();
   lcd_string("RAD INIT");
   radio_init();
-
   
   
+  printf("Beginning POST.\n");
   lcd_string("POSTPOST");
   // Run the POST until it passes.
   while(post());
@@ -122,6 +124,7 @@ int main(void) {
   WDTCTL = WDT_ADLY_250;
   SFRIE1 |= WDTIE;
 
+  printf("Booted.\n");
   __bis_SR_register(LPM3_bits + GIE);        // Enter LPM3
   //__bis_SR_register(LPM2_bits + GIE);        // Enter LPM2
   //__bis_SR_register(LPM0_bits + GIE);	     // Enter LPM0 w/interrupt
