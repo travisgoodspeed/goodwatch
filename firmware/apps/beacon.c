@@ -6,64 +6,21 @@
 */
 
 #include<stdio.h>
+#include<string.h>
 #include<msp430.h>
 #include "api.h"
 
-//Clicker packet length.  (9)
-#define LEN 0x3E
-
-/* I believe these to be the settings used by the FaradayRF project,
-   but have not yet verified it.
-*/
-
-static const uint8_t faradayrf_settings[]={
-  FSCTRL1, 0x08,   // FSCTRL1   Frequency synthesizer control.
-  FSCTRL0, 0x00,   // FSCTRL0   Frequency synthesizer control.
-  FREQ2,  0x23,   // FREQ2     Frequency control word, high byte.
-  FREQ1,  0x62,   // FREQ1     Frequency control word, middle byte.
-  FREQ0,  0x76,   // FREQ0     Frequency control word, low byte.
-  //38.4 kbaud GFSK
-  MDMCFG4,  0xCA,   // MDMCFG4   Modem configuration.
-  MDMCFG3,  0x83,   // MDMCFG3   Modem configuration.
-  MDMCFG2,  0x93, // MDMCFG2   Modem configuration.
-  MDMCFG1,  0x62,   // MDMCFG1   Modem configuration.
-  MDMCFG0,  0xF8,   // MDMCFG0   Modem configuration.
-  CHANNR,  0x00,   // CHANNR    Channel number.
-  DEVIATN,  0x34,   // DEVIATN   Modem deviation setting (when FSK modulation is enabled).
-  FREND1,  0x56,   // FREND1    Front end RX configuration.
-  FREND0,  0x10,   // FREND0    Front end TX configuration.
-  MCSM1, 0x0C,	// MCSM1  (Or this with 2 to keep a carrier after packet.)
-  MCSM0,  0x18,   // MCSM0     Main Radio Control State Machine configuration.
-  FOCCFG,  0x16,   // FOCCFG    Frequency Offset Compensation Configuration.
-  BSCFG,  0x6C,   // BSCFG     Bit synchronization Configuration.
-  AGCCTRL2,  0x43,   // AGCCTRL2  AGC control.
-  AGCCTRL1,  0x50,   // AGCCTRL1  AGC control.
-  AGCCTRL0,  0x91,   // AGCCTRL0  AGC control.
-  FSCAL3,  0xE9,   // FSCAL3    Frequency synthesizer calibration.
-  FSCAL2,  0x2A,   // FSCAL2    Frequency synthesizer calibration.
-  FSCAL1,  0x00,   // FSCAL1    Frequency synthesizer calibration.
-  FSCAL0,  0x1F,   // FSCAL0    Frequency synthesizer calibration.
-  FSTEST,  0x59,   // FSTEST    Frequency synthesizer calibration.
-  TEST2,  0x81,   // TEST2     Various test settings.
-  TEST1,  0x35,   // TEST1     Various test settings.
-  TEST0,  0x09,   // TEST0     Various test settings.
-  FIFOTHR,  0x47,   // FIFOTHR   RXFIFO and TXFIFO thresholds.
-  IOCFG2,  0x29,   // IOCFG2    GDO2 output pin configuration.
-  IOCFG0,  0x06,   // IOCFG0    GDO0 output pin configuration.
-  //Refer to SmartRF Studio User Manual for detailed pseudo register explanation.
-  PKTCTRL1,  0x04,   // PKTCTRL1  Packet automation control.
-  PKTCTRL0,  0x04,   // PKTCTRL0  Packet automation control.
-  ADDR,  0x00,   // ADDR      Device address.
-  PKTLEN,  LEN,    // PKTLEN    Packet length.  //0x3e
-  0,0
-};
+//Fixed packet length is easier on our packet library.
+#define LEN 32
 
 /* Settings for the GoodWatch, similar to 1.2kbaud SimpliciTI.
  */
 static const uint8_t goodwatch_settings[]={
   IOCFG0,0x06,  //GDO0 Output Configuration
   FIFOTHR,0x47, //RX FIFO and TX FIFO Thresholds
-  PKTCTRL0,0x05,//Packet Automation Control
+  PKTCTRL1, 0x04, //No address check.
+  //PKTCTRL0, 0x05,//Packet Automation Control, variable length.
+  PKTCTRL0, 0x04, //Packet automation control, fixed length.
   FSCTRL1,0x06, //Frequency Synthesizer Control
   FREQ2,0x21,   //Frequency Control Word, High Byte
   FREQ1,0x62,   //Frequency Control Word, Middle Byte
@@ -82,9 +39,25 @@ static const uint8_t goodwatch_settings[]={
   TEST2,0x81,   //Various Test Settings
   TEST1,0x35,   //Various Test Settings
   TEST0,0x09,   //Various Test Settings
+  ADDR,  0x00,   // ADDR      Device address.
+  MCSM1, 0x30,   //MCSM1, return to IDLE after packet.  Or with 2 for TX carrier test.
+  MCSM0,  0x18,   // MCSM0     Main Radio Control State Machine configuration.
+  IOCFG2,  0x29,   // IOCFG2    GDO2 output pin configuration.
+  IOCFG0,  0x06,   // IOCFG0    GDO0 output pin configuration.
+  PKTLEN,  LEN,    // PKTLEN    Packet length.  //0x3e
   0,0
 };
 
+
+static char lastpacket[]=" BEACON ";
+
+//! Handle an incoming packet.
+void beacon_packetrx(uint8_t *packet, int len){
+  /* Quickly change the idle screen to the first eight bytes of the
+     packet.  We'll do something fancier later.
+   */
+  memcpy(lastpacket,packet,8);
+}
 
 
 //! Enter the Beacon application.
@@ -94,15 +67,9 @@ void beacon_init(){
   if(has_radio){
     printf("Tuning the beacon.\n");
     radio_on();
-    radio_strobe(RF_SIDLE);
-    //radio_writesettings(faradayrf_settings);
     radio_writesettings(goodwatch_settings);
     radio_writepower(0x25);
     codeplug_setfreq();
-    radio_strobe(RF_SIDLE);
-    radio_strobe(RF_SCAL);
-    //radio_strobe(RF_SRX);
-    //packet_rxon();
   }else{
     app_next();
   }
@@ -124,7 +91,8 @@ void beacon_draw(){
 
   //lcd_hex(LCDBVCTL);
   if(state==1){
-    lcd_string(" beacon ");
+    /* Draw the last incoming packet on the screen. */
+    lcd_string(lastpacket);
   }else{
     lcd_number(state);
   }
@@ -143,21 +111,37 @@ void beacon_draw(){
 
     /*
   case 1: //IDLE
-    printf("Strobing RX.\n");
-    radio_strobe(RF_SRX);
+    //Idling receive.
+    //break;
+    packet_rxon();
     break;
     */
-    
+
+    /*
+  case 1: //IDLE
+    //Idling transmit.
+    //break;
+    packet_tx((uint8_t*)
+	      "KK4VCZ IDLE TEST K"
+	      "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+	      ,LEN);
+    break;
+    */
+
   case 13: //RX Mode
     /* While receiving, the LCD glitches out a bit, so we need to stop
        and resume the reception to allow the charge pump time to
-       settle.  This produces a blind-spot in our reception, but it allows the
-       screen to remain visible.
+       settle.
      */
-
+    
+    /*
+      Unfortunately, we need to either schedule this with the packet
+      library or we'll screw up communications by ending packets early.
+      
     radio_strobe( RF_SIDLE );
     __delay_cycles(850);
     radio_strobe( RF_SRX );
+    */
     
     break;
   }
@@ -168,9 +152,14 @@ void beacon_draw(){
     if(radio_getstate()==1){
       //Schedule packet.
       packet_tx((uint8_t*)
-		" BEACON BEACON BEACON de " CALLSIGN " " CALLSIGN " " CALLSIGN "\n"
-		" BEACON BEACON BEACON de " CALLSIGN " " CALLSIGN " " CALLSIGN "\n"
-		" BEACON BEACON BEACON de " CALLSIGN " " CALLSIGN " " CALLSIGN "\n"
+		//Actual message.
+		CALLSIGN " BEACON BEACON BEACON\n"
+		//Pad the extra with NULLs.
+		"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+		//But only send the proper length.
 		,LEN);
     }
     break;

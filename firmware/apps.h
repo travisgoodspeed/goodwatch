@@ -17,7 +17,7 @@ struct app {
   int (*exit)(void);
 
   /* Callbacks for packets being sent and received.  Set to null if unused. */
-  void (*packetrx)(void); //A packet has arrived.
+  void (*packetrx)(uint8_t *packet, int len); //A packet has arrived.
   void (*packettx)(void); //A packet has been sent.
 };
 
@@ -32,3 +32,5 @@ void app_next();
 void app_cleartimer();
 //! Drop the power usage and return to the Clock.
 void app_forcehome();
+//! Provide an incoming packet.
+void app_packetrx(uint8_t *packet, int len);

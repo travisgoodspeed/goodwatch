@@ -36,7 +36,10 @@ static struct app apps[]={
   {.name="morse", .init=morse_init, .draw=morse_draw, .exit=morse_exit},
 
   //Beacon
-  {.name="beacon", .init=beacon_init, .draw=beacon_draw, .exit=beacon_exit},
+  {.name="beacon",
+   .init=beacon_init, .draw=beacon_draw, .exit=beacon_exit,
+   .packetrx=beacon_packetrx
+  },
 
   //iClicker
   //{.name="iclicker", .init=iclicker_init, .draw=iclicker_draw, .exit=iclicker_exit},

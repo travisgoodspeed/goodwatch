@@ -93,3 +93,14 @@ void app_next(){
   apps[appindex].init();
   return;
 }
+
+//! Provide an incoming packet.
+void app_packetrx(uint8_t *packet, int len){
+  if(!apps[appindex].packetrx){
+    printf("No packet RX handler for %s.",
+	   apps[appindex].name);
+    return;
+  }
+
+  apps[appindex].packetrx(packet,len);
+}

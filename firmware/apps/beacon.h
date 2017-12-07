@@ -11,3 +11,6 @@ int beacon_exit();
 
 //! Draw the Beacon screen.
 void beacon_draw();
+
+//! Handle an incoming packet.
+void beacon_packetrx(uint8_t *packet, int len);
