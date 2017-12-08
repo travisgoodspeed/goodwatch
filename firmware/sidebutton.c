@@ -1,17 +1,23 @@
 /*! \file sidebutton.c
   \brief Sidebutton driver.
- */
+
+  P1.5 is the Mode button and P1.6 is the Set button.  We leave them
+  in input mode, then briefly check by direct scanning.
+   
+  Additionally, the buttons need to be emulated on the keypad, as
+  they are taken by the serial port on debugging units.  Hold / and *
+  for Mode, + and - for Set.
+  
+  The sidebuttons will be deactivated when the UART's first
+  transaction occurs.
+*/
+
+#include <stdint.h>
 #include <msp430.h>
 
 #include "keypad.h"
+#include "uart.h"
 
-/* P1.5 is the Mode button and P1.6 is the Set button.  We leave them
-   in input mode, then briefly check by direct scanning.
-   
-   Additionally, the buttons need to be emulated on the keypad, as
-   they are taken by the serial port on debugging units.  Hold / and *
-   for Mode, + and - for Set.
- */
 
 //! Activate the side butons.
 void sidebutton_init(){
@@ -25,18 +31,24 @@ void sidebutton_init(){
 
 //! Test the Mode button.
 int sidebutton_mode(){
-  if(!(P1IN&BIT5))      //Side button.
+  //Side button.
+  if(!uartactive && !(P1IN&BIT5))
     return 1;
-  if(key_scan()==0x31)  //Emulation.
+
+  //Emulation.
+  if(key_scan()==0x31)
     return 1;
   return 0;
 }
 
 //! Test the Set button.
 int sidebutton_set(){
-  if(!(P1IN&BIT6))       //Side button.
+  //Side button.
+  if(!uartactive && !(P1IN&BIT6))
     return 1;
-  if(key_scan()==0xC1)   //Emulation.
+
+  //Emulation.
+  if(key_scan()==0xC1)
     return 1;
   return 0;
 }

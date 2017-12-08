@@ -37,28 +37,17 @@ static void rtc_loadtime(){
     memcpy(ramsavetime,romsavetime,8);
   }
   
-  //Default clock comes from flash.
-  /* Older implementation, sometimes fails for linking alignment.
-  RTCHOUR = ramsavetime[0]   %24;
-  RTCMIN =  ramsavetime[1]   %60;
-  RTCSEC =  ramsavetime[2]   %60;
-  RTCYEAR = (ramsavetime[4]+(ramsavetime[5]<<8)) % 4096;
-  RTCMON = ramsavetime[6];
-  RTCDAY = ramsavetime[7];  //Not sure why, but we have to set
-  RTCDAY = ramsavetime[7];  //the day twice.  RTC Errata?
-  */
-
+  /* We need to call these functions for safety, as there are some
+     awful RTC errata to work around. */
   SetRTCHOUR(ramsavetime[0]   %24);
   SetRTCMIN(ramsavetime[1]   %60);
   SetRTCSEC(ramsavetime[2]   %60);
   
   SetRTCYEAR((ramsavetime[4]+(ramsavetime[5]<<8)) % 4096);
   SetRTCMON(ramsavetime[6]);
-  //printf("Setting RTCMON to %d yielded %d.\n",
-  //ramsavetime[6], RTCMON);
   SetRTCDAY(ramsavetime[7]);
-  printf("Setting RTCDAY to %d yielded %d.\n",
-  ramsavetime[7], RTCDAY);
+  //printf("Setting RTCDAY to %d yielded %d.\n",
+  //ramsavetime[7], RTCDAY);
 }
 
 

@@ -20,6 +20,7 @@ static int codeplugi=0;
 //! Initialize the codeplug at boot.
 void codeplug_init(){
   do{
+    /*
     printf("Codeplug entry '%s': %02x 0x%02x%02x%02x\n",
 	   codeplug_name(),
 	   codeplug[codeplugi].flags,
@@ -27,6 +28,7 @@ void codeplug_init(){
 	   codeplug[codeplugi].freq1,
 	   codeplug[codeplugi].freq0
 	   );
+    */
     codeplug_next();
   }while(codeplugi);
   

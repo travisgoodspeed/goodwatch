@@ -7,13 +7,15 @@
 */
 
 #include <stdint.h>
-
+#include <msp430.h>
 
 #include "config.h"
 #include "configdefault.h"
 
 //GoodWatch modules.
 #include "lcd.h"
+#include "uart.h"
+//#include "monitor.h"
 #include "lcdtext.h"
 #include "keypad.h"
 #include "apps.h"

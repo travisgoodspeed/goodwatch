@@ -81,34 +81,44 @@ int main(void) {
   WDTCTL = WDTPW + WDTHOLD; // Stop WDT
 
   //Initialize the various modules.
-  dmesg_init();  
+  dmesg_init();
+  printf("Initializing LCD ");
   lcd_init();
   
   lcd_zero();
+  printf("rtc ");
   lcd_string("RTC INIT");
   rtc_init();
-  
+
   lcd_zero();
+  printf("key ");
   lcd_string("KEY INIT");
   key_init();
   
   lcd_zero();
+  printf("but ");
   lcd_string("BUT INIT");
   sidebutton_init();
   
   lcd_zero();
+  printf("osc ");
   lcd_string("OSC INIT");
   xtal_init();
 
   lcd_zero();
+  lcd_string("UARTINIT");
+  uart_init();
+
+  lcd_zero();
+  printf("cp ");
   lcd_string("CP  INIT");
   codeplug_init();
   
 
   lcd_zero();
+  printf("rad ");
   lcd_string("RAD INIT");
   radio_init();
-  
   
   printf("Beginning POST.\n");
   lcd_string("POSTPOST");
@@ -130,6 +140,7 @@ int main(void) {
   //__bis_SR_register(LPM0_bits + GIE);	     // Enter LPM0 w/interrupt
   while(1){
     //printf("main while().\n");
+    //uart_tx('T');
   }
 }
 
@@ -137,7 +148,12 @@ int main(void) {
 void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
   static int latch=0;
 
-  
+  /* When the UART is in use, we don't want to hog interrupt time, so
+     we will silently return.
+  */
+  if(uartactive)
+    return;
+
   if(sidebutton_mode()){
     /* So if the side button is being pressed, we increment the latch
        and move to the next application.  Some applications, such as the

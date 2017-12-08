@@ -4,9 +4,11 @@ CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os
 
 BSL = ../bin/cc430-bsl.py -r 38400
 
-modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o sidebutton.o power.o \
+modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o \
+	sidebutton.o power.o uart.o monitor.o \
 	radio.o packet.o dmesg.o codeplug.o \
 	libs/assembler.o libs/morse.o
+
 apps= apps/clock.o apps/rpn.o apps/hex.o apps/stopwatch.o \
 	apps/tuner.o apps/morse.o apps/beacon.o apps/iclicker.o
 
