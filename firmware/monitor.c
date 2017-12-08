@@ -16,7 +16,7 @@ enum {
   SETTURBOMODE = 0x00,
   PEEK         = 0x01,
   POKE         = 0x02,
-  LCD          = 0x03,
+  LCDSTRING    = 0x03,
   DMESG        = 0x04
 } monitor_verb;
 
@@ -50,6 +50,11 @@ int monitor_handle(uint8_t *buffer, int len){
     }
     break;
 
+  case LCDSTRING:
+    lcd_zero();
+    lcd_string((char*) buffer+1);
+    break;
+    
   case DMESG:
     
     break;

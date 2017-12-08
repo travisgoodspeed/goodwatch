@@ -111,14 +111,19 @@ class GoodWatch:
         """Peeks a 16-bit word from memory."""
         s=self.transact("\x01\x00"+chr16(adr));
         return ord16(s[2:4]);
+    def lcdstring(self,string):
+        """Writes an 8-letter string to the LCD."""
+        self.transact("\x03"+string+"\x00");
+        return;
         
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='GoodWatch Client')
     parser.add_argument('-p','--port',
                         help='Serial Port',default='/dev/ttyUSB0');
     parser.add_argument('-r','--peek',
-                        help='Serial Port');
-    
+                        help='Peek');
+    parser.add_argument('-l','--lcd',
+                        help='Write a string the LCD.');
     parser.add_argument('-d','--dump',
                         help='Produce a core dump.',action='count');
     parser.add_argument('-D','--dmesg',
@@ -141,6 +146,10 @@ if __name__=='__main__':
         adr=int(args.peek,16);
         val=goodwatch.peek(adr);
         print "0x%04x: %04x\n" % (adr,val);
+
+    if args.lcd!=None:
+        goodwatch.lcdstring(args.lcd);
+    
     #Exit turbomode when we're done.
     #goodwatch.turbomode(0);
     
