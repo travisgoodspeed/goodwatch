@@ -145,7 +145,12 @@ static void handle_rxbyte(uint8_t byte){
   case LH:
     length|= ((uint16_t)byte)<<8;
     index=0;
-    state=MSG;
+    if(length>UARTBUFLEN){
+      printf("Buffer length error.\n");
+      state=IDLE;
+    }else{
+      state=MSG;
+    }
     break;
   case MSG:
     uart_buffer[index++]=byte;
