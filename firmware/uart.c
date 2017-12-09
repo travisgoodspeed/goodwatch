@@ -49,7 +49,6 @@ void uart_init(){
   UCA0IE |= UCRXIE;                    // Enable USCI_A0 RX interrupt
   //UCA0IE |= UCTXIE;                    // Enable USCI_A0 TX interrupt
 
-  printf("Done.\n");
 }
 
 //! Transmit a byte to the UART.
@@ -79,8 +78,11 @@ static void handle_txbyte(){
   
   //State machine.
   static enum {IDLE,LL,LH,MSG,CRCL,CRCH} state=IDLE;
+
+  //Do nothing whne the length is null.
+  if(outlength==0)
+    return;
   
-  printf("Sending packet.\n");
   do{
     switch(state){
     case IDLE:
@@ -111,11 +113,9 @@ static void handle_txbyte(){
       uart_tx((outcrc>>8));
       state=IDLE;
       
-      printf("Sent %d byte packet.\n",outlength);
       break;
     }
   }while(state!=IDLE);
-  printf("Done, state=%d.\n",state);
 }
 
 //! Handle a UART byte.
@@ -160,7 +160,6 @@ static void handle_rxbyte(uint8_t byte){
     crc|= ((uint16_t)byte)<<8;
     state=IDLE;
     
-    printf("Got %d byte packet.\n",length);
     outlength=monitor_handle(uart_buffer, length);
     outindex=0;
     outcrc=crc;

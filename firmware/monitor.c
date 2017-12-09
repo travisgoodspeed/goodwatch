@@ -21,6 +21,27 @@ enum {
 } monitor_verb;
 
 
+//! Local command to send the dmesg buffer.
+static void send_dmesg(){
+  uint16_t i;
+  char *dmesg_buffer=(char*)0x2400;
+  
+  //Start the frame.
+  uart_tx(0x00);
+  uart_tx(0x80);
+  //Length
+  uart_tx(DMESGLEN&0xFF);
+  uart_tx(DMESGLEN>>8);
+  
+  //dmesg
+  for(i=0;i<DMESGLEN;i++){
+    uart_tx(dmesg_buffer[i]);
+  }
+  //checksum
+  uart_tx(0x00);
+  uart_tx(0x00);
+}
+
 //! Handle a monitor command.
 int monitor_handle(uint8_t *buffer, int len){
   uint16_t *buffer16=(uint16_t*) buffer;
@@ -56,7 +77,8 @@ int monitor_handle(uint8_t *buffer, int len){
     break;
     
   case DMESG:
-    
+    send_dmesg();
+    len=0;
     break;
   }
   

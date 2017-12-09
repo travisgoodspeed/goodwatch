@@ -115,7 +115,10 @@ class GoodWatch:
         """Writes an 8-letter string to the LCD."""
         self.transact("\x03"+string+"\x00");
         return;
-        
+    def dmesg(self):
+        """Returns the DMESG buffer."""
+        return self.transact("\x04");
+    
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='GoodWatch Client')
     parser.add_argument('-p','--port',
@@ -149,6 +152,9 @@ if __name__=='__main__':
 
     if args.lcd!=None:
         goodwatch.lcdstring(args.lcd);
+
+    if args.dmesg>0:
+        print goodwatch.dmesg();
     
     #Exit turbomode when we're done.
     #goodwatch.turbomode(0);

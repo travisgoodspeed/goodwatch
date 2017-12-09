@@ -5,7 +5,7 @@
 #include<stdio.h>
 #include<string.h>
 
-#define DMESGLEN 2048
+#include "dmesg.h"
 
 /* These three buffers are declared to be in the .noinit section so
    that a reboot will not wipe the buffer.  Because the memory will be
@@ -16,7 +16,7 @@
 //! Ought to be 0xdeadbeef except after power loss.
 uint32_t dmesg_magic __attribute__ ((section (".noinit")));
 //! Index within that buffer.
-int dmesg_index __attribute__ ((section (".noinit")));
+uint16_t dmesg_index __attribute__ ((section (".noinit")));
 
 //! DMESG buffer itself.
 char *dmesg_buffer=(char*)0x2400;
@@ -25,7 +25,7 @@ char *dmesg_buffer=(char*)0x2400;
 int putchar(int c){
   dmesg_index++;
   while(dmesg_index>DMESGLEN)
-    dmesg_index-=DMESGLEN;
+    dmesg_index=dmesg_index-DMESGLEN;
   return dmesg_buffer[dmesg_index]=(char) c;
 }
 
