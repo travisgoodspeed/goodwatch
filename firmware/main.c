@@ -12,27 +12,6 @@
 #include "api.h"
 #include "dmesg.h"
 
-//! Initialize the XT1 crystal, and stabilize it.
-void xtal_init(){
-  P5SEL |= BIT0 + BIT1;                     // Select XT1
-  UCSCTL6 |= XCAP_3;                        // Internal load cap
-
-  // Loop until XT1 & DCO stabilizes
-  do{
-    UCSCTL7 &= ~(XT1LFOFFG + DCOFFG);
-                                            // Clear LFXT1,DCO fault flags
-    SFRIFG1 &= ~OFIFG;                      // Clear fault flags
-  }while (SFRIFG1 & OFIFG);                 // Test oscillator fault flag
-
-  UCSCTL6 &= ~(XT1DRIVE_3);                 // Xtal is now stable, reduce drive
-                                            // strength
-  //See page 125 of the family guide.
-  #ifdef TURBOMODE
-  UCSCTL4 = SELM_3 + SELS_0 + SELA_0;  //XT1 for ACLK and SMCLK, MCLK from DCO.
-  #else
-  UCSCTL4 = SELM_0 + SELS_0 + SELA_0;    //XT1 for everything; very slow CPU.
-  #endif
-}
 
 //! Power On Self Test
 int post(){
@@ -103,7 +82,7 @@ int main(void) {
   lcd_zero();
   printf("osc ");
   lcd_string("OSC INIT");
-  xtal_init();
+  ucs_init();
 
   lcd_zero();
   lcd_string("UARTINIT");

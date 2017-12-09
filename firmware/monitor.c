@@ -17,7 +17,12 @@ enum {
   PEEK         = 0x01,
   POKE         = 0x02,
   LCDSTRING    = 0x03,
-  DMESG        = 0x04
+  DMESG        = 0x04,
+
+  RADIOONOFF   = 0x10,
+  RADIOCONFIG  = 0x11,
+  RADIORX      = 0x12,
+  RADIOTX      = 0x13
 } monitor_verb;
 
 
@@ -52,10 +57,10 @@ int monitor_handle(uint8_t *buffer, int len){
       uartactive=1;
       lcd_zero();
       lcd_string("nnonitor");
-      UCSCTL4 = SELM_3 + SELS_0 + SELA_0;  //XT1 for ACLK and SMCLK, MCLK from DCO.
+      ucs_fast();
     }else{
       uartactive=0;
-      UCSCTL4 = SELM_0 + SELS_0 + SELA_0;  //XT1 for everything; very slow CPU.
+      ucs_slow();
     }
     break;
     
@@ -79,6 +84,24 @@ int monitor_handle(uint8_t *buffer, int len){
   case DMESG:
     send_dmesg();
     len=0;
+    break;
+
+
+  case RADIOONOFF: //One byte parameter, on or off.
+    if(buffer[1]){
+      radio_on();
+    }else{
+      radio_off();
+    }
+    break;
+  case RADIOCONFIG:  //Byte pairs come next.  Host must null-terminate.
+    radio_writesettings(buffer+1);
+    break;
+  case RADIORX:
+    //Not sure how to tie this in.
+    break;
+  case RADIOTX:
+    packet_tx(buffer+1,len-1);
     break;
   }
   

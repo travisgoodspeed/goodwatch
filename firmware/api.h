@@ -15,7 +15,8 @@
 //GoodWatch modules.
 #include "lcd.h"
 #include "uart.h"
-//#include "monitor.h"
+#include "monitor.h"
+#include "ucs.h"
 #include "lcdtext.h"
 #include "keypad.h"
 #include "apps.h"
