@@ -60,7 +60,7 @@ void packet_tx(uint8_t *buffer, uint8_t length){
   RF1AIE |= BIT9;                           // Enable TX end-of-packet interrupt
 
   printf("packet_tx():\n");
-  for(i=0;i<rxlen;i++){
+  for(i=0;i<length;i++){
     printf("%02x ", buffer[i]);
   }
   printf("\n");

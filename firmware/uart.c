@@ -61,7 +61,7 @@ void uart_tx(uint8_t byte){
   UCA0TXBUF = byte;
 }
 
-#define UARTBUFLEN 32
+//! UART receive buffer.
 uint8_t uart_buffer[UARTBUFLEN];
 
 

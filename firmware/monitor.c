@@ -9,6 +9,7 @@
 #include<msp430.h>
 #include<stdint.h>
 #include<stdio.h>
+#include<string.h>
 
 #include "api.h"
 
@@ -45,6 +46,61 @@ static void send_dmesg(){
   //checksum
   uart_tx(0x00);
   uart_tx(0x00);
+}
+
+
+//! Local pointer to packet.c's buffer.
+static uint8_t *packetbuf=0;
+//! Local length.
+static int packetlen=0;
+
+//! Handles packet arrival, like an application would.
+void monitor_packetrx(uint8_t *packet, int len){
+  /* This function is called by app_packetrx() in apps.c when a packet
+     arrives and the uart is active.
+   */
+  if(len<UARTBUFLEN-1){
+    packetbuf=packet;
+    packetlen=len;
+  }else{
+    packetbuf=0;
+    packetlen=0;
+    printf("Packet too large to return.\n");
+  }
+}
+
+//! Handles a monitor receive command.
+static int handlerx(uint8_t *buffer, int len){
+  switch(radio_getstate()){
+  case 13:
+  case 14:
+  case 15:
+    //Receive mode, so we are still waiting on a packet.
+    return 1; //No packet yet.
+  case 1:
+    //IDLE mode.  Return a packet if we have one, and switch to RX mode.
+    
+    if(packetbuf && packetlen){
+      //Return the waiting packet.
+      memcpy(buffer,packetbuf,packetlen);
+      len=packetlen;
+    }else{
+      len=1;
+    }
+
+    //Flush the local buffer pointers and try to receive another.
+    packetbuf=0;
+    packetlen=0;
+    packet_rxon();
+    
+    return len;
+  default:
+    //Unknown state.  Return to RX.
+    packet_rxon();
+    break;
+  }
+  
+  return 1; //No packet yet.
 }
 
 //! Handle a monitor command.
@@ -96,16 +152,29 @@ int monitor_handle(uint8_t *buffer, int len){
     break;
   case RADIOCONFIG:  //Byte pairs come next.  Host must null-terminate.
     radio_writesettings(buffer+1);
+    radio_writepower(0x25);
+    codeplug_setfreq();
     break;
   case RADIORX:
-    //Not sure how to tie this in.
+    return handlerx(buffer,len);
     break;
   case RADIOTX:
+    if(radio_getstate()==22){
+      printf("TX Overflow.\n");
+    }
+    
+    radio_strobe(RF_SIDLE);
+    //Wait for it to settle.
+    while(radio_getstate()!=1);
+    //Then transmit.
+    printf("Transmitting %d bytes.\n",len-1);
     packet_tx(buffer+1,len-1);
     break;
+  default:
+    printf("Returning unknown monitor command.\n");
   }
   
   //In the absense of something specific, we'll just return the
-  //command that we were given.
+  //command that we were given.;
   return len;
 }

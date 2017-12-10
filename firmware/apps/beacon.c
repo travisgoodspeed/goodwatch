@@ -44,7 +44,7 @@ static const uint8_t goodwatch_settings[]={
   MCSM0,  0x18,   // MCSM0     Main Radio Control State Machine configuration.
   IOCFG2,  0x29,   // IOCFG2    GDO2 output pin configuration.
   IOCFG0,  0x06,   // IOCFG0    GDO0 output pin configuration.
-  PKTLEN,  LEN,    // PKTLEN    Packet length.  //0x3e
+  PKTLEN,  LEN,    // PKTLEN    Packet length.
   0,0
 };
 
@@ -108,39 +108,11 @@ void beacon_draw(){
     printf("TX Overflow.\n");
     radio_strobe(RF_SIDLE);
     break;
-
-    /*
-  case 1: //IDLE
-    //Idling receive.
-    //break;
-    packet_rxon();
-    break;
-    */
-
-    /*
-  case 1: //IDLE
-    //Idling transmit.
-    //break;
-    packet_tx((uint8_t*)
-	      "KK4VCZ IDLE TEST K"
-	      "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
-	      ,LEN);
-    break;
-    */
-
-  case 13: //RX Mode
-    /* While receiving, the LCD glitches out a bit, so we need to stop
-       and resume the reception to allow the charge pump time to
-       settle.
-     */
     
-    /*
-      Unfortunately, we need to either schedule this with the packet
-      library or we'll screw up communications by ending packets early.
-      
-    radio_strobe( RF_SIDLE );
-    __delay_cycles(850);
-    radio_strobe( RF_SRX );
+  case 13: //RX Mode
+    /* The screen will dim down in this mode unless we power cycle it,
+       but that's not this module's responsibility.  See issue #56 on
+       Github.
     */
     
     break;

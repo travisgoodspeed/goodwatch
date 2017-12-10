@@ -23,18 +23,23 @@ void lcd_zero(){
   LCDBMEMCTL|=LCDCLRM;
 }
 
-
-
 //! Initialize the LCD memory and populate it with sample text.
 void lcd_init() {
   int i;
 
-  //Turn the LCD off to set its pins.
+
   LCDBCTL0 = 0;
   
   // Select LCD COM pins
   P5SEL |= (/*BIT5 |*/ BIT6 | BIT7);
   P5DIR |= (/*BIT5 |*/ BIT6 | BIT7);
+
+  /* This should keep the LCD charge pump on even when we are using
+     the radio, but for some reason, it doesn't work.  See issue #56
+     on the tracker.
+   */
+  LCDBCPCTL=0;
+
 
   // Configure LCD_B
   // LCD_FREQ = ACLK/32/4, LCD Mux 3, turn on LCD
@@ -54,6 +59,7 @@ void lcd_init() {
   //Select LCD Segments 0-9
   LCDBPCTL0 = 0xFFFF;
   LCDBPCTL1 = 0xFFFF;
+
 
   //Begin by blacking the whole display, for diagnostics if our clocks
   //fail.
