@@ -48,10 +48,8 @@ void packet_rxoff(){
 
 //! Transmit a packet.
 void packet_tx(uint8_t *buffer, uint8_t length){
-  int i;
-  
   if(transmitting){
-    //printf("Refusing to transmit with pending packet.\n");
+    printf("Refusing to transmit with pending packet.\n");
     return;
   }
   
@@ -59,13 +57,7 @@ void packet_tx(uint8_t *buffer, uint8_t length){
   RF1AIFG &= ~BIT9;                         // Clear pending interrupts
   RF1AIE |= BIT9;                           // Enable TX end-of-packet interrupt
 
-  printf("packet_tx():\n");
-  for(i=0;i<length;i++){
-    printf("%02x ", buffer[i]);
-  }
-  printf("\n");
-	
-
+  
   //Write the packet into the buffer.
   radio_writeburstreg(RF_TXFIFOWR, buffer, length);     
 
@@ -79,11 +71,7 @@ void packet_tx(uint8_t *buffer, uint8_t length){
 void __attribute__ ((interrupt(CC1101_VECTOR)))
 packet_isr (void) {
   int rf1aiv=RF1AIV;
-  int i;
   int state;
-  
-  printf("CC1101 interrupt: RF1AIV=%d\n",
-	 rf1aiv);
   
   switch(rf1aiv&~1){       // Prioritizing Radio Core Interrupt 
     case  0: break;                         // No RF core interrupt pending
@@ -97,7 +85,6 @@ packet_isr (void) {
     case 16: break;                         // RFIFG7
     case 18: break;                         // RFIFG8
     case 20:                                // RFIFG9
-      printf("RFIFG9 handler\n");
       if(receiving){//End of RX packet.
 	
 	//Wait for end of packet.
@@ -110,31 +97,12 @@ packet_isr (void) {
 	if(state==1){
 	  // Read the length byte from the FIFO.
 	  rxlen = radio_readreg( RXBYTES );
-	  //rxlen = radio_readreg( PKTLEN ); //Fixed packet mode.
-	  __delay_cycles(8500);
-	  printf("RX %d byte packet. (%d configured, state=%d)\n",
-		 rxlen,
-		 radio_readreg(PKTLEN),
-		 radio_getstate()
-		 );
+	  //__delay_cycles(8500);
 	  
 	  /* We read no more than our buffer. */
 	  radio_readburstreg(RF_RXFIFORD, rxbuffer,
 			     rxlen>PACKETLEN?PACKETLEN:rxlen);
 	  
-	  
-	  for(i=0;i<rxlen;i++){
-	    printf("%02x ", rxbuffer[i]);
-	  }
-	  printf("\n");
-	  for(i=0;i<rxlen;i++){
-	    if(rxbuffer[i]<0x80)
-	      printf("%c", rxbuffer[i]);
-	    else
-	      printf(".");
-	  }
-	  printf("\n");
-
 	  //Inform the application.
 	  app_packetrx(rxbuffer,rxlen);
 	}else if(state==17){
@@ -152,7 +120,7 @@ packet_isr (void) {
 	}
 	*/
       }else if(transmitting){ //End of TX packet.
-	printf("Transmitted packet.\n");
+	//printf("Transmitted packet.\n");
         RF1AIE &= ~BIT9;     // Disable TX end-of-packet interrupt
         transmitting = 0;
       }else{
@@ -166,7 +134,7 @@ packet_isr (void) {
     case 30: break;                         // RFIFG14
     case 32: break;                         // RFIFG15
   }
-
-  printf("Handled.\n");
+  
+  //printf("Handled.\n");
   //__bic_SR_register_on_exit(LPM3_bits);
 }
