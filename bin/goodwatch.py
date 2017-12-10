@@ -142,6 +142,14 @@ def packconfig(config):
     for b in config:
         strconfig+=chr(b);
     return strconfig;
+def stripnulls(msg):
+    """Strips a strings to its first null terminator."""
+    toret="";
+    for b in msg:
+        if b=='\0':
+            return toret;
+        toret+=b;
+    return toret;
 
 class GoodWatch:
     def __init__(self, port):
@@ -270,6 +278,9 @@ class GoodWatch:
             0, 0
         ]);
 
+    def radiorx(self):
+        """Sniffs for packets on the current channel."""
+        return self.transact("\x12");
     def radiotx(self,message):
         """Sends a radio packet on the current frequency."""
         while(len(message)<32):
@@ -289,6 +300,8 @@ if __name__=='__main__':
 
     parser.add_argument('-b','--beacon',
                         help='Transmits a beacon.');
+    parser.add_argument('-B','--beaconsniff',
+                        help='Sniffs for beacons.',action='count');
     
     args = parser.parse_args()
 
@@ -297,7 +310,7 @@ if __name__=='__main__':
     goodwatch.setRST(False);
 
     #Switch to turbomode for more reliable comms.
-    time.sleep(15);
+    time.sleep(5);
     try:
         goodwatch.turbomode();
     except:
@@ -323,7 +336,18 @@ if __name__=='__main__':
         while 1:
             print "Transmitting: %s" % args.beacon;
             goodwatch.radiotx(args.beacon+"\x00");
-            #print goodwatch.dmesg();
+            time.sleep(1);
+    
+    if args.beaconsniff!=None:
+        print "Turning radio on.";
+        goodwatch.radioonoff(1);
+        print "Configuring radio.";
+        goodwatch.radioconfig(beaconconfig);
+        goodwatch.radiofreq(433.0);
+        while 1:
+            packet=goodwatch.radiorx();
+            #print packet.encode('hex');
+            print stripnulls(packet);
             time.sleep(1);
             
         
