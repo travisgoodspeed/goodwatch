@@ -23,9 +23,13 @@ Our firmware is freely available in this repository, compiling with
 the standard MSP430 compiler packages that ship with Debian.  It
 consists of a Clock, a Stopwatch, an RPN Calculator, and a Hex Memory
 Viewer with Disassembler, all written in C.  It compiles in Debian
-with all of the MSP430 packages installed.  On watched with a radio,
-we have a basic Morse transmitter for now, with other radio applications
-on the way.
+with all of the MSP430 packages installed.
+
+On watches with a radio, we have a basic Morse transmitter and GFSK
+beacon transceiver for now, with other radio applications on the way.
+The radio is accessible from a host computer over the UART for
+building base stations and repeaters, or for rapidly prototyping
+radio applications in Python.
 
 Additionally, we've written out own client for the CC430's BootStrap
 Loader (BSL).  You might find it handy for other projects involving
@@ -40,20 +44,24 @@ with Doxygen.
 Our replacement board is based around the CC430F6137, which combines
 an MSP430 microcontroller with an LCD controller and a sub-GHz radio.
 
-The initial version, the GoodWatch10, lacks a filter chain for the
-radio and is only useful for verifying the correctness of the
-non-radio portion of the design.  The design is confirmed to be
-functional, and Travis is wearing one for daily use.  Assembly of the
-GoodWatch10 is a bit difficult, as components are 0201 wherever
-possible and the central chip is QFN.
+The initial version, the GoodWatch10, lacks a radio but supports all
+other features, such as the RPN calculator, hex editor, and
+disassembler.  Assembly of the GoodWatch10 is no longer recommended,
+as the PCB requires a bit of whittling to fit the case.
 
-The first GoodWatch20 boards has been constructed, which features a
-radio chain.  Software support for the radio has just begun, and
-unfortunately the chip antenna intended for this watch will not fit
-within the case.
+The GoodWatch20 is now our primary target, featuring minor corrections
+to layout and a functional radio.  The radio is in active use, and the
+filter chain is verified to work.
 
 The GoodWatch21 will be manufactured in early 2018 with a wider filter
 and other radio modifications.
 
 See `BOM.txt` in the hardware directories for a parts list, and the
 wiki for an assembly guide.
+
+
+## Related Projects
+
+[Pluto](https://github.com/carrotIndustries/pluto) is a replacement
+PCB for the Casio F-91W that is also based on an MSP430.  We are
+jealous of that project's simulator and energy monitor utility.
