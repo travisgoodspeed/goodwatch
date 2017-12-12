@@ -148,8 +148,11 @@ def stripnulls(msg):
     for b in msg:
         if b=='\0':
             return toret;
-        toret+=b;
-    return toret;
+        elif b=='\n':
+            pass;
+        else:
+            toret+=b;
+    return toret.strip();
 
 class GoodWatch:
     def __init__(self, port):
@@ -217,7 +220,8 @@ class GoodWatch:
             #assert(crc==self.crc(rep));
             return rep;
         else:
-            print "Error 0x%02x." % ord(reply[0]);
+            print "Error 0x%02x in reply to 0x%02x." % (
+                ord(reply[0]), ord(msg[0]));
             #Not sure whether data is coming, so grab a chunk just in case.
             self.serial.read(10);
     def turbomode(self,enable=1):
@@ -346,8 +350,9 @@ if __name__=='__main__':
         goodwatch.radiofreq(433.0);
         while 1:
             packet=goodwatch.radiorx();
-            #print packet.encode('hex');
-            print stripnulls(packet);
+            p=stripnulls(packet);
+            if len(p)>1:
+                print p;
             time.sleep(1);
             
         
