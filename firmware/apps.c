@@ -99,8 +99,10 @@ void app_packetrx(uint8_t *packet, int len){
   /* In monitor mode, we forward the packet to the monitor, rather
      than to the application.
    */
-  if(uartactive)
+  if(uartactive){
     monitor_packetrx(packet,len);
+    return;
+  }
 
   /* Otherwise, we send it to the active application, but only if that
      application has a handler.
