@@ -1,7 +1,7 @@
 +++
 categories = []
-date = "2017-12-12T16:01:17-05:00"
-description = ""
+date = "2017-12-13T16:01:17-05:00"
+description = "GoodWatch replacement for the Casio calculator watches."
 draft = false
 tags = []
 thumbnail = "images/goodwatch.jpg"
@@ -118,10 +118,11 @@ application in host-side python, then rather directly port to C.
 
 {{% img src="images/usbradio.jpg" w="600" %}}
 
-Full hardware CAD and source code are available on Github.  PCBs will
-be available soon.
-
-[https://github.com/travisgoodspeed/goodwatch/](https://github.com/travisgoodspeed/goodwatch/)
+Full hardware CAD and source code are available on
+[github](https://github.com/travisgoodspeed/goodwatch/).  PCBs will be
+available soon.  See the
+[wiki](https://github.com/travisgoodspeed/goodwatch/wiki) for assembly
+instructions.
 
 
 Your neighbor,
