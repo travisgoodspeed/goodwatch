@@ -66,3 +66,10 @@ wiki for an assembly guide.
 [Pluto](https://github.com/carrotIndustries/pluto) is a replacement
 PCB for the Casio F-91W that is also based on an MSP430.  We are
 jealous of that project's simulator and energy monitor utility.
+
+[FaradayRF](https://faradayrf.com/) is a CC430 radio board intended
+for amateur use, with a 500mW amplifier and GPS receiver.
+
+[openchronos-ng-elf](https://github.com/BenjaminSoelberg/openchronos-ng-elf)
+seems to be the most recently maintained firmware for TI's OpenChronos
+devkit, which uses the CC430.
