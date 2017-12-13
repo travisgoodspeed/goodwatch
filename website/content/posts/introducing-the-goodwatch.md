@@ -122,7 +122,10 @@ Full hardware CAD and source code are available on
 [github](https://github.com/travisgoodspeed/goodwatch/).  PCBs will be
 available soon.  See the
 [wiki](https://github.com/travisgoodspeed/goodwatch/wiki) for assembly
-instructions.
+instructions.  A lecture on the GoodWatch will be presented in the
+Build It track at [ShmooCon
+2017](http://shmoocon.org/2017/12/13/speaker-lineup-shmoocon-2018/) in
+Washngton, DC the weekend of January 19th.
 
 
 Your neighbor,
