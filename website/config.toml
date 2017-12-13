@@ -3,7 +3,7 @@ title = "A Good Watch"
 theme = "hugo_theme_robust"
 
 #googleAnalytics = "UA-XXXXXXXX-XX" # Optional
-disqusShortname = "XYW"
+#disqusShortname = "XYW"
 
 [params]
   description = "A neighborly watch for radio engineers."
