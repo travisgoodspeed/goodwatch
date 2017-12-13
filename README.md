@@ -11,8 +11,9 @@ In the rare case that you find this project to be useful, you owe me a
 pint of good, hoppy pale ale.  All license to use this project is
 revoked if you try to pass off a pilsner instead.
 
-This project is not yet public, but it will eventually be open source.
-Please give me time to verify it first.
+In addition to the source code, there is handy documentation in the
+[wiki](https://github.com/travisgoodspeed/goodwatch/wiki) and a
+general interest website at [goodwatch.org](https://goodwatch.org/).
 
 73 from Pizza Rat City,
 --Travis
