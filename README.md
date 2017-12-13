@@ -18,6 +18,8 @@ general interest website at [goodwatch.org](https://goodwatch.org/).
 73 from Pizza Rat City,
 --Travis
 
+[[website/static/images/gfskbeacon.jpg]]
+
 ## Software Status
 
 Our firmware is freely available in this repository, compiling with
