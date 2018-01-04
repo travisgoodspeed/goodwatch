@@ -26,6 +26,7 @@ C8,C9   02016D104KAT2A          478-5266-1-ND       0201     2     0.1uF  (Same 
 L1      BLM15HG102SN1D          490-3999-1-ND       0402     1     Ferrite Bead
 
 
+For conveniece, there is a readymade BOM on Digikey that includes a minimum of
+10 units of each part with additional quantities on cheaper parts -
 
-
-
+http://www.digikey.com/short/q87ncn
