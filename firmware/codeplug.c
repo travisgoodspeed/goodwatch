@@ -49,7 +49,7 @@ void codeplug_prev(){
     //Walk to the end.
     while(codeplug[++codeplugi].flags!=0xFF);
     //Jump back one.
-    codeplug--;
+    codeplugi--;
   }
 }
 
