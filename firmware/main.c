@@ -14,7 +14,12 @@
 
 
 //! Power On Self Test
-int post(){
+/*
+ * Run the tests for the POST
+ * @return result of each test
+ */
+post_status post() {
+  post_status status = {0, 0, 0, 0, 0, 0};
   if(LCDBIV || (LCDBCTL1&LCDNOCAPIFG)){
     /* When the LCD cap is missing, of the wrong value, or
        mis-soldered, the charge pump will be disabled out of
@@ -22,37 +27,91 @@ int post(){
        abruptly fading to nothing, but you might still be able to
        see the response at the right angle.
     */
-    lcd_string("lcd  lcd");
-    printf("LCD Error.\n");
-  }else if(UCSCTL7&2){
+    status.failed = 1;
+    status.lcd_bad = 1;
+  }
+  if(UCSCTL7 & 2){
     /* This flag is triggered when the 32kHz crystal has a fault, such
        as if it is not populated or if a little drag of solder reaches
        ground.  Watches with this problem will lose minutes a day, but
        the '430 will fall back to an internal oscillator so that
        non-watch functions still work.
      */
-    lcd_string(" crystal");
-    printf("32kHz crystal error.");
-  /*Can't run this test because of an unfixed errata.
-  }else if(has_radio && RF1AIFERR & 1){
-    lcd_string("RF  LOWV");
-  */
-  }else if(has_radio && RF1AIFERR & 2){
-    lcd_string("RF OPERR");
-  }else if(has_radio && RF1AIFERR & 4){
-    lcd_string("RFOUTERR");
-  }else if(has_radio && RF1AIFERR & 8){
-    lcd_string("RF OVERW");
-  }else{
-    /* Return zero if everything is hunky dory.
-     */
-    lcd_string("all good");
-    return 0;
+    status.failed = 1;
+    status.crystal_bad = 1;
+
+    UCSCTL7 &= ~(XT1LFOFFG + DCOFFG);    // Clear LFXT1,DCO fault flags
+    SFRIFG1 &= ~OFIFG;                   // Clear fault flags
+  }
+/*Can't run this test because of an unfixed errata, RF1A6.
+  if(has_radio && RF1AIFERR & 1) {
+    status.failed = 1;
+    status.rf_low_vcore = 1;
+  }
+    */
+
+  if(has_radio && RF1AIFERR & 2) {
+    status.failed = 1;
+    status.rf_operand_err = 1;
   }
 
-  printf("POST failure.\n");
-  //We had a failure, indicated above.
-  return 1;
+  if(has_radio && RF1AIFERR & 4) {
+    status.failed = 1;
+    status.rf_out_data_err = 1;
+  }
+
+  if(has_radio && RF1AIFERR & 8) {
+    status.failed = 1;
+    status.rf_operand_overrite_err = 1;
+  }
+
+  // Clear radio fault flags
+  if(has_radio) {
+    RF1AIFERR = 0;
+  }
+
+  return status;
+}
+
+//! Display a post_status to the LCD
+void display_post(post_status status) {
+  if (status.lcd_bad) {
+    lcd_string("lcd  lcd");
+    printf("POST fail: LCD \n");
+    __delay_cycles(16000);
+  }
+  if (status.crystal_bad) {
+    lcd_string(" crystal");
+    printf("POST fail: 32kHz crystal\n");
+    __delay_cycles(16000);
+  }
+  if (status.rf_low_vcore) {
+    lcd_string("RF  LOWV");
+    printf("POST fail: Low RF core voltage");
+    __delay_cycles(16000);
+  }
+  if (status.rf_operand_err) {
+    lcd_string("RF OPERR");
+    printf("POST fail: RF operand error\n");
+    __delay_cycles(16000);
+  }
+  if (status.rf_out_data_err) {
+    lcd_string("RFOUTERR");
+    printf("POST fail: RF data out error\n");
+    __delay_cycles(16000);
+  }
+  if (status.rf_operand_overrite_err) {
+    lcd_string("RF OVERW");
+    printf("POST fail: RF operand overrite error\n");
+    __delay_cycles(16000);
+  }
+
+  if (status.failed) {
+    lcd_string("err err");
+  } else {
+    lcd_string("all good");
+  }
+  __delay_cycles(16000);
 }
 
 //! Main method.
@@ -101,8 +160,13 @@ int main(void) {
   
   printf("Beginning POST.\n");
   lcd_string("POSTPOST");
+
   // Run the POST until it passes.
-  while(post());
+  post_status status;
+  do {
+    status = post();
+    display_post(status);
+  } while(status.failed);
 
   lcd_zero();
   lcd_string("APP INIT");

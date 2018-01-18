@@ -35,5 +35,17 @@
 
 //Standalone functions.
 
+typedef struct post_status {
+  uint8_t failed: 1;  // Have any tests failed?
+  uint8_t lcd_bad: 1;
+  uint8_t crystal_bad: 1;
+  uint8_t rf_low_vcore: 1;
+  uint8_t rf_operand_err: 1;
+  uint8_t rf_out_data_err: 1;
+  uint8_t rf_operand_overrite_err: 1;
+} post_status;
+
 //! Power On Self Test
-int post();
+post_status post();
+
+void display_post(post_status status);

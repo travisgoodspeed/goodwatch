@@ -282,7 +282,7 @@ void clock_draw(){
     case '7':
       //Hold 7 to run the self-test after startup.  Response codes try to
       //roughly describe the fault.
-      post();
+      display_post(post());
       break;
     case '8':
       //8 shows the callsign.
