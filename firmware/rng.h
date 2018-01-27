@@ -1,3 +1,7 @@
+/*! \file rng.h
+  \brief A better random number generator.
+ */
+
 #ifndef __RAND_H
 #define __RAND_H
 

@@ -1,5 +1,12 @@
+/*! \file dicewords.h
+  \brief Table of diceware words.  Smaller than it ought to be.
+*/
+
+#define NUMDICEWORDS 610
+
 // a rather limited dictionary
-char *word_array[] = {"a",
+const char * const word_array[] = {
+"a",
 "adieu",
 "atomic",
 "atone",
