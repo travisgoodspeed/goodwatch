@@ -115,3 +115,11 @@ void app_packetrx(uint8_t *packet, int len){
 
   apps[appindex].packetrx(packet,len);
 }
+
+//! Handles a keypress, if a handler is registered.
+void app_keypress(char ch){
+  /* We only pass it to applications that have a handler.
+   */
+  if(apps[appindex].keypress)
+    apps[appindex].keypress(ch);
+}

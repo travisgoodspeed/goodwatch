@@ -100,56 +100,56 @@ int rpn_exit(){
 
 //! Draws the RPN calculator.
 void rpn_draw(){
+  //We just draw the stack.  All input comes from they keypress
+  //callback.
+  rpn_drawstack();
+}
+
+//! A button has been pressed for the calculator.
+void rpn_keypress(char ch){
   unsigned long i, j;
-  char ch=getchar();
 
-  //Do nothing unless a key has been pressed.
-  if(oldch!=ch)
-    lcd_zero();
+  //Do nothing on a keyup event.
+  if(!ch)
+    return;
   
-  //Handle key input only when first pressed.
-  if(oldch==0){
-    //Operators
-    switch(ch){
-    case '=':
-      if(bufferdirty)
-	rpn_pushbuffer();
-      else
-	rpn_push(rpn_peek());
-      break;
-    case '.':
-      //What should this do?
-      //It's out only free button.
-      break;
-    case '+':
+  //Operators
+  switch(ch){
+  case '=':
+    if(bufferdirty)
       rpn_pushbuffer();
-      rpn_push(rpn_pop()+rpn_pop());
-      break;
-    case '-':
-      rpn_pushbuffer();
-      j=rpn_pop();
-      i=rpn_pop();
-      rpn_push(i-j);
-      break;
-    case '*':
-      rpn_pushbuffer();
-      rpn_push(rpn_pop()*rpn_pop());
-      break;
-    case '/':
-      rpn_pushbuffer();
-      j=rpn_pop();
-      i=rpn_pop();
-      rpn_push(i/j);
-      break;
-    }
-
-    /* Numbers are special.  They modify a buffer, and the buffer is
-       pushed onto the stack before an operator or when = is pressed.
-     */
-    if(ch>='0' && ch<='9')
-      rpn_updatebuffer(ch&0xf);
+    else
+      rpn_push(rpn_peek());
+    break;
+  case '.':
+    //What should this do?
+    //It's out only free button.
+    break;
+  case '+':
+    rpn_pushbuffer();
+    rpn_push(rpn_pop()+rpn_pop());
+    break;
+  case '-':
+    rpn_pushbuffer();
+    j=rpn_pop();
+    i=rpn_pop();
+    rpn_push(i-j);
+    break;
+  case '*':
+    rpn_pushbuffer();
+    rpn_push(rpn_pop()*rpn_pop());
+    break;
+  case '/':
+    rpn_pushbuffer();
+    j=rpn_pop();
+    i=rpn_pop();
+    rpn_push(i/j);
+    break;
   }
   
-  oldch=ch;
-  rpn_drawstack();
+  /* Numbers are special.  They modify a buffer, and the buffer is
+     pushed onto the stack before an operator or when = is pressed.
+  */
+  if(ch>='0' && ch<='9')
+    rpn_updatebuffer(ch&0xf);
 }

@@ -6,6 +6,6 @@
 unsigned int key_scan();
 //! Initialize the keypad GPIO pins.
 void key_init();
-//! Get the currently pressed button as a char.
+//! Gets the currently held button as ASCII.  Don't use for typing.
 char getchar();
 

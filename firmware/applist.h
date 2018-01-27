@@ -28,7 +28,9 @@ static struct app apps[]={
   {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit},
 
   //RPN Calculator
-  {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit},
+  {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit,
+   .keypress=rpn_keypress
+  },
   //Hex Viewer.
   {.name="memory", .init=hex_init, .draw=hex_draw, .exit=hex_exit},
   // Diceware - passphrase generator

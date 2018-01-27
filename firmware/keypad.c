@@ -3,6 +3,7 @@
  */
 
 #include <stdint.h>
+#include <stdio.h>
 #include <msp430.h>
 
 #include "apps.h"
@@ -25,6 +26,9 @@ void key_init(){
   P1DIR|=0x80; //P1.7 is output.
   P1REN|=0x80;
   P1OUT|=0x80;  //Output high.
+
+  //Trigger interrupts for keypresses so we needn't scan.
+  P2IE|=BIT2|BIT1|BIT0;
 }
 
 //! Quickly checks to see if a key is pressed.
@@ -132,7 +136,8 @@ unsigned int key_chr(code){
   return 00;
 }
 
-//! Gets a character as ASCII.
+
+//! Gets the currently held button as ASCII.  Don't use for typing.
 char getchar(){
   char c=key_chr(key_scan());
   if(c)
@@ -140,3 +145,19 @@ char getchar(){
     app_cleartimer();
   return c;
 }
+
+//! Interrupt handler for Port2.
+void __attribute__ ((interrupt(PORT2_VECTOR))) PORT2_ISR(void){
+  static char lastchar=0x00;
+  char newchar=key_chr(key_scan());
+
+  //Bail quickly when the key is the same.
+  if(lastchar==newchar) return;
+  lastchar=newchar;
+  app_cleartimer(); //Clear the idle timer.
+  
+  printf("PORT2 fired, got character 0x%02x.\n",
+	 newchar);
+  app_keypress(newchar);
+}
+
