@@ -8,10 +8,11 @@
 #include <msp430.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "api.h"
 #include "dmesg.h"
-
+#include "rng.h"
 
 //! Power On Self Test
 int post(){
@@ -61,7 +62,11 @@ int main(void) {
 
   //Initialize the various modules.
   dmesg_init();
-  printf("Initializing LCD ");
+
+  printf("Initializing RNG ");
+  srand(true_rand()); // we do this as early as possible, because it messes with clocks
+
+  printf("LCD ");
   lcd_init();
   
   lcd_zero();
