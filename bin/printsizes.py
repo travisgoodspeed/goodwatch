@@ -37,7 +37,7 @@ def printsizes(stream):
     print("%d bytes of .data, %d bytes of .bss, %d bytes of .noinit (%d %%)"
           %(datalen,bsslen,noinitlen,dataperc));
     if dataperc>80:
-        print("WARNING: %d percent of code is used!"%codeperc);
+        print("WARNING: %d percent of data is used!"%dataperc);
 
 
 if __name__ == '__main__':
