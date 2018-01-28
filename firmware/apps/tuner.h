@@ -1,4 +1,4 @@
-/*! \file rssi.h
+/*! \file tuner.h
   \brief Tuning application and RSSI tool.
 */
 

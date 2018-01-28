@@ -47,3 +47,6 @@ void app_packetrx(uint8_t *packet, int len);
 
 //! Handles a keypress, if a handler is registered.
 void app_keypress(char ch);
+
+//! Sets an app by a pointer to its structure.  Used for submenus.
+void app_set(const struct app *newapplet);

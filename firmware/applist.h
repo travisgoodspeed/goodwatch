@@ -2,6 +2,8 @@
   \brief Table of all active applications.  Add yours here.
 */
 
+#include "apps/submenu.h"
+
 //Non-radio apps first.
 #include "apps/clock.h"
 #include "apps/stopwatch.h"
@@ -16,39 +18,15 @@
 #include "apps/beacon.h"
 
 
-/*  For each application, the init() function is called at entry.  The
-    draw() function is called 4 times per second.  The exit() function
-    is called when the mode button is pressed, but returns 1 to reject
-    a mode switch or 0 to allow it.
+/* For each application, the init() function is called at entry.  The
+   draw() function is called four times per second.  The exit()
+   function is called when the mode button is pressed, but returns 1
+   to reject a mode switch or 0 to allow it.
  */
-static struct app apps[]={
-  //Clock
-  {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit},
-  //Stopwatch
-  {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit},
+extern const struct app apps[];
 
-  //RPN Calculator
-  {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit,
-   .keypress=rpn_keypress
-  },
-  //Hex Viewer.
-  {.name="memory", .init=hex_init, .draw=hex_draw, .exit=hex_exit},
-  // Diceware - passphrase generator
-  {.name="diceware", .init=dice_init, .draw=dice_draw, .exit=dice_exit},  
-  //Tuner Tool
-  {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit},
-  //Morse transmitter.
-  {.name="morse", .init=morse_init, .draw=morse_draw, .exit=morse_exit},
-
-  //Beacon
-  {.name="beacon",
-   .init=beacon_init, .draw=beacon_draw, .exit=beacon_exit,
-   .packetrx=beacon_packetrx
-  },
-
-  //iClicker
-  //{.name="iclicker", .init=iclicker_init, .draw=iclicker_draw, .exit=iclicker_exit},
-  
-  //End on null entry.
-  {.name=0, .init=0, .draw=0, .exit=0} 
-};
+/* Because we had too many applications in the main menu, it became
+   necessary to break them out into a submenu.  These behave just like
+   the main menu once selected.
+ */
+extern const struct app subapps[];

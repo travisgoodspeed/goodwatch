@@ -9,11 +9,13 @@
 #include <stdio.h>
 
 #include "api.h"
-
 #include "applist.h"
 
 //! We begin on the clock.
 static int appindex=DEFAULTAPP, idlecount=0;
+
+//! The currently selected application.
+const struct app *applet;
 
 //! Every 3 minutes we return to the clock unless this is called.
 void app_cleartimer(){
@@ -24,8 +26,6 @@ void app_cleartimer(){
 void app_draw(){
   static int lastmin=0;;
   
-  void (*tocall)(void)=apps[appindex].draw;
-
   //If we go three minutes without action, return to main screen.
   if(lastmin!=RTCMIN){
     lastmin=RTCMIN;
@@ -38,8 +38,8 @@ void app_draw(){
   
   //Call the cap if it exists, or switch to the clock if we're at the
   //end of the list.
-  if(tocall)
-    tocall();
+  if(applet->draw)
+    applet->draw();
   else
     app_forcehome();
   return;
@@ -48,29 +48,35 @@ void app_draw(){
 //! Force return to the home app.
 void app_forcehome(){
   //First we try to exit politely.
-  if(apps[appindex].exit)
-    apps[appindex].exit();
+  if(applet->exit)
+    applet->exit();
 
   //And force it if that doesn't work.
   appindex=0;
-  apps[appindex].init();
+  applet = &apps[appindex];
+  applet->init();
 }
 
 //! Initializes the set of applications.
 void app_init(){
-  void (*tocall)(void)=apps[appindex].init;
-  if(tocall)
-    tocall();
-  else
+  if(applet->init)
+    applet->init();
+  else if(!applet->name){
     appindex=0;
+    applet = &apps[appindex];
+  }
 
   return;
 }
 
+//! Sets an app by a pointer to its structure.  Used for submenus.
+void app_set(const struct app *newapplet){
+  applet=newapplet;
+  app_init();
+}
+
 //! Move to the next application if the current allows it.
 void app_next(){
-  void (*tocall)(void)=apps[appindex].draw;
-  
   //Clear the 3-minute timer when we switch apps.  This is also
   //cleared by keypresses.
   app_cleartimer();
@@ -81,16 +87,20 @@ void app_next(){
      been cancelled.  For example, this is done by the RPN calculator
      when the item on the stack is not zero.
   */
+  
   //Return if there is an exit function and it returns non-zero.
-  if(apps[appindex].exit && apps[appindex].exit())
+  if(applet->exit && applet->exit())
     return;
-
-  tocall=apps[++appindex].draw;
-  if(!tocall)
+  
+  applet = &apps[++appindex];
+  if(!applet->draw){
     appindex=0;
+    applet = &apps[appindex];
+  }
 
   //Initialize the new application.
-  apps[appindex].init();
+  if(applet->init)
+    applet->init();
   return;
 }
 
@@ -107,19 +117,19 @@ void app_packetrx(uint8_t *packet, int len){
   /* Otherwise, we send it to the active application, but only if that
      application has a handler.
    */
-  if(!apps[appindex].packetrx){
+  if(!applet->packetrx){
     printf("No packet RX handler for %s.",
-	   apps[appindex].name);
+	   applet->name);
     return;
   }
 
-  apps[appindex].packetrx(packet,len);
+  applet->packetrx(packet,len);
 }
 
 //! Handles a keypress, if a handler is registered.
 void app_keypress(char ch){
   /* We only pass it to applications that have a handler.
    */
-  if(apps[appindex].keypress)
-    apps[appindex].keypress(ch);
+  if(applet->keypress)
+    applet->keypress(ch);
 }
