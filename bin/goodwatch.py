@@ -259,11 +259,17 @@ class GoodWatch:
     def dmesg(self):
         """Returns the DMESG buffer."""
         return self.transact("\x04");
-    def randint(self,n):
-	"""Returns n random 16bit integer. """
+    def randint(self,count):
+	"""Returns count random 16bit integers. """
 	import struct
-	r = struct.unpack("<"+"H"*n,self.transact("\x05\x00"+chr16(n)));
-	return "%04x "*n%r
+	
+	samples=();
+        while count>0:
+            n=min(4,count);
+	    samples=samples+struct.unpack("<"+"H"*n,self.transact("\x05\x00"+chr16(n)));
+            count=count-n;
+        return samples;
+    
     def radioonoff(self,on=1):
         """Turns the radio on or off."""
         return self.transact("\x10"+chr(on));
@@ -307,7 +313,11 @@ if __name__=='__main__':
     parser.add_argument('-D','--dmesg',
                         help='Prints the dmesg.',action='count');
     parser.add_argument('-R','--randint',
+                        type=int,
 			help='Get RANDINT random 16bit integers.');
+    parser.add_argument('--randdump',
+                        type=str,
+			help='Dump many RNG samples to a textfile.');
     parser.add_argument('-b','--beacon',
                         help='Transmits a beacon.');
     parser.add_argument('-B','--beaconsniff',
@@ -337,7 +347,14 @@ if __name__=='__main__':
     if args.dmesg>0:
         print goodwatch.dmesg();
     if args.randint != None:
-	print goodwatch.randint(int(args.randint));
+        samples=goodwatch.randint(int(args.randint));
+        print "%04x "*len(samples)%samples
+    if args.randdump != None:
+        print "Fetching samples."
+        samples=goodwatch.randint(1024);
+        f=open(args.randdump,'w');
+        for s in samples:
+            f.write("%d, %d\n" % (s>>8, s&0xFF));
 
     if args.beacon!=None:
         print "Turning radio on.";
