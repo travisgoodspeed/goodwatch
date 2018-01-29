@@ -259,6 +259,11 @@ class GoodWatch:
     def dmesg(self):
         """Returns the DMESG buffer."""
         return self.transact("\x04");
+    def randint(self,n):
+	"""Returns n random 16bit integer. """
+	import struct
+	r = struct.unpack("<"+"H"*n,self.transact("\x05\x00"+chr16(n)));
+	return "%04x "*n%r
     def radioonoff(self,on=1):
         """Turns the radio on or off."""
         return self.transact("\x10"+chr(on));
@@ -301,7 +306,8 @@ if __name__=='__main__':
                         help='Write a string the LCD.');
     parser.add_argument('-D','--dmesg',
                         help='Prints the dmesg.',action='count');
-
+    parser.add_argument('-R','--randint',
+			help='Get RANDINT random 16bit integers.');
     parser.add_argument('-b','--beacon',
                         help='Transmits a beacon.');
     parser.add_argument('-B','--beaconsniff',
@@ -330,6 +336,8 @@ if __name__=='__main__':
 
     if args.dmesg>0:
         print goodwatch.dmesg();
+    if args.randint != None:
+	print goodwatch.randint(int(args.randint));
 
     if args.beacon!=None:
         print "Turning radio on.";
