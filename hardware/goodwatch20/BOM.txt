@@ -30,3 +30,7 @@ For conveniece, there is a readymade BOM on Digikey that includes a minimum of
 10 units of each part with additional quantities on cheaper parts -
 
 http://www.digikey.com/short/q87ncn
+
+A similar BOM from Mouser:
+
+https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=6053f78fb3
