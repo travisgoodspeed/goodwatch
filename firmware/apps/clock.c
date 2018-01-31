@@ -197,14 +197,16 @@ int clock_exit(){
   }
 }
 
+static char lastchar=0;
+
 //! Draws the clock face in the main application.
 void clock_draw(){
-  static char oldch=0;
-  char ch=getchar();
+  static char ch=0;
 
-
-  if(oldch!=ch)
+  if(ch!=lastchar)
     lcd_zero();
+  
+  ch=lastchar;
 
   /* The SET button will move us into the programming mode. */
   if(sidebutton_set()){
@@ -260,14 +262,13 @@ void clock_draw(){
       lcd_hex(ch);
     }
 
-  oldch=ch;
 }
-
 
 
 //! A button has been pressed for the clock.
 void clock_keypress(char ch){
   unsigned char inputdigit=0;
+  lastchar=ch;
   
   if(settingclock){
     //We only handle numbers here.

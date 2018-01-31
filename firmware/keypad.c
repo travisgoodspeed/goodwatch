@@ -152,7 +152,12 @@ char getchar(){
 //! Interrupt handler for Port2.
 void __attribute__ ((interrupt(PORT2_VECTOR))) PORT2_ISR(void){
   static char lastchar=0x00;
-  char newchar=key_chr(key_scan());
+  char newchar;
+
+  //It's important that we clear the flags, and *then* scan, to catch
+  //keyups.
+  P2IFG=0;
+  newchar=key_chr(key_scan());
 
   //Bail quickly when the key is the same.
   if(lastchar!=newchar){
@@ -165,6 +170,5 @@ void __attribute__ ((interrupt(PORT2_VECTOR))) PORT2_ISR(void){
   }else{
     //printf(".");
   }
-  P2IFG=0;
 }
 
