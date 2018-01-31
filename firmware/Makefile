@@ -1,8 +1,11 @@
 
+#set default flashing serial port, dont override if passed in as an argument
+PORT = /dev/ttyUSB0
+
 #Standard Debian gcc-msp430 and msp430mcu packages.
 CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os
 
-BSL = ../bin/cc430-bsl.py -r 38400
+BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
 modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o applist.o \
 	sidebutton.o power.o uart.o monitor.o ucs.o \
@@ -38,7 +41,7 @@ dmesg:
 #Same as dmesg, but it gives the target some time to boot first.
 run:
 	sleep 5
-	../bin/cc430-bsl.py -P goodwatch.hex -uD
+	../bin/cc430-bsl.py -p $(PORT) -P goodwatch.hex -uD
 
 codeplug.hex: codeplug.txt
 	../bin/goodwatch-txt2cp.py -i codeplug.txt -o codeplug.hex

@@ -72,13 +72,13 @@ const int letterfont[]={
   E|G|C|D|B,     //D
   A|F|E|G|D,     //E
   A|G|F|E,       //F
-  A|F|G|E|C|D,   //G, looks like a six.
+  A|F|E|C|D,     //G
   F|G|E|C,       //h
   F|E,           //I, distinguished from a 1 by being on the left side.
   E|B|C|D,       //J
   F|E|B|C|G|DP,  //K, distinguished from an X by the DP.
   F|E|D,         //L
-  F|G|B|C,       //M  (Think mu.)
+  A|E|C,         //M  (Less nerdy than mu, but more readable.)
   E|G|C,         //n
   A|B|C|D|E|F,   //O
   F|A|B|G|E,     //P

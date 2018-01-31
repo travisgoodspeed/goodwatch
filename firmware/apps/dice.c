@@ -1,4 +1,4 @@
- /*! \file tuner.c
+ /*! \file dice.c
   \brief Demo passphrase generator app
   
   This app will display random words on the desplay. With bigger dictionary,
@@ -23,7 +23,7 @@ const char *last_string = NULL;
 void dice_init(){
   last_string = "diceware";
 }
-//! Exit the radio tool.
+//! Exit the dice tool.
 int dice_exit(){
   last_string = "diceware"; //clean up last displayed word
   return 0;
