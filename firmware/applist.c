@@ -12,7 +12,9 @@
  */
 const struct app apps[]={
   //Clock
-  {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit},
+  {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
+   .keypress=clock_keypress
+  },
   //Stopwatch
   {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit},
   //RPN Calculator

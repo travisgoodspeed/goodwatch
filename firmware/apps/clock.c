@@ -102,17 +102,11 @@ static void draw_date_rom(){
 
 
 //! Draws whatever is being set
-static void draw_settingtime(char ch){
+static void draw_settingtime(){
   static int flicker=0;
-  unsigned char inputdigit=0;
+  
 
   flicker^=1;
-
-  //We only handle numbers here.
-  if((ch&0x30)==0x30)
-    inputdigit=ch&0x0F;
-  else
-    ch=0;
 
   //Zero the second hand if we're not yet to the date.  ("Hacking.")
   if(settingclock<7)
@@ -129,34 +123,18 @@ static void draw_settingtime(char ch){
   case 1:         //Hour
     if(flicker)
       lcd_cleardigit(7);
-    if(ch){
-      SetRTCHOUR(inputdigit*10+RTCHOUR%10);
-      settingclock++;
-    }
     break;
   case 2:
     if(flicker)
       lcd_cleardigit(6);
-    if(ch){
-      SetRTCHOUR(RTCHOUR-RTCHOUR%10+inputdigit);
-      settingclock++;
-    }
     break;
   case 3:         //Minute
     if(flicker)
       lcd_cleardigit(4);
-    if(ch){
-      SetRTCMIN(inputdigit*10+RTCMIN%10);
-      settingclock++;
-    }
     break;
   case 4:
     if(flicker)
       lcd_cleardigit(3);
-    if(ch){
-      SetRTCMIN(RTCMIN-RTCMIN%10+inputdigit);
-      settingclock++;
-    }
     break;
     
   case 5:        //Second
@@ -164,84 +142,42 @@ static void draw_settingtime(char ch){
        until the user moves back them into the date.  Mechanical watch
        experts call this 'hacking.'
      */
-    settingclock=7;
     
   case 7:        //Year
     if(flicker)
       lcd_cleardigit(7);
-    if(ch){
-      SetRTCYEAR(inputdigit*1000+RTCYEAR%1000);
-      settingclock++;
-    }
     break;
   case 8:
     if(flicker)
       lcd_cleardigit(6);
-    if(ch){
-      SetRTCYEAR(RTCYEAR-RTCYEAR%1000+inputdigit*100+RTCYEAR%100);
-      settingclock++;
-    }
     break;
   case 9:
     if(flicker)
       lcd_cleardigit(5);
-    if(ch){
-      SetRTCYEAR(RTCYEAR-RTCYEAR%100+inputdigit*10+RTCYEAR%10);
-      settingclock++;
-    }
     break;
   case 10:
     if(flicker)
       lcd_cleardigit(4);
-    if(ch){
-      SetRTCYEAR(RTCYEAR-RTCYEAR%10+inputdigit);
-      settingclock++;
-    }
     break;
     
   case 11:        //Month
     if(flicker)
       lcd_cleardigit(3);
-    if(ch){
-      SetRTCMON(inputdigit*10+RTCMON%10);
-      settingclock++;
-    }
     break;
   case 12:
     if(flicker)
       lcd_cleardigit(2);
-    if(ch){
-      SetRTCMON(RTCMON-RTCMON%10+inputdigit);
-      settingclock++;
-    }
     break;
     
   case 13:       //Day
     if(flicker) 
       lcd_cleardigit(1);
-    if(ch){
-      SetRTCDAY(inputdigit*10+RTCDAY%10);
-      settingclock++;
-    }
     break;
   case 14:
     if(flicker)
       lcd_cleardigit(0);
-    if(ch){
-      SetRTCDAY(RTCDAY-RTCDAY%10+inputdigit);
-      settingclock++;
-    }
     break;
-  default:
-    /* Once we've exceeded the count, it's time to return to the
-       normal mode.
-     */
-    settingclock=0;
   }
-
-  //Update the DOW.  We could save some cycles by only doing this if
-  //the date changes, but we don't.
-  rtc_setdow();
 }
 
 
@@ -276,7 +212,7 @@ void clock_draw(){
   }
 
   if(settingclock)
-    draw_settingtime(ch);
+    draw_settingtime();
   else
     switch(ch){
     case '7':
@@ -327,3 +263,85 @@ void clock_draw(){
   oldch=ch;
 }
 
+
+
+//! A button has been pressed for the clock.
+void clock_keypress(char ch){
+  unsigned char inputdigit=0;
+  
+  if(settingclock){
+    //We only handle numbers here.
+    if((ch&0x30)==0x30)
+      inputdigit=ch&0x0F;
+    else
+      return;
+    
+    switch(settingclock){
+    case 1:         //Hour
+      SetRTCHOUR(inputdigit*10+RTCHOUR%10);
+      settingclock++;
+      break;
+    case 2:
+      SetRTCHOUR(RTCHOUR-RTCHOUR%10+inputdigit);
+      settingclock++;
+      break;
+    case 3:         //Minute
+      SetRTCMIN(inputdigit*10+RTCMIN%10);
+      settingclock++;
+      break;
+    case 4:
+      SetRTCMIN(RTCMIN-RTCMIN%10+inputdigit);
+      settingclock=7;
+      break;
+    
+      /* We no longer set the seconds, but rather hold them at zero
+	 until the user moves back them into the date.  Mechanical watch
+	 experts call this 'hacking.'
+      */
+    
+    case 7:        //Year
+      SetRTCYEAR(inputdigit*1000+RTCYEAR%1000);
+      settingclock++;
+      break;
+    case 8:
+      SetRTCYEAR(RTCYEAR-RTCYEAR%1000+inputdigit*100+RTCYEAR%100);
+      settingclock++;
+      break;
+    case 9:
+      SetRTCYEAR(RTCYEAR-RTCYEAR%100+inputdigit*10+RTCYEAR%10);
+      settingclock++;
+      break;
+    case 10:
+      SetRTCYEAR(RTCYEAR-RTCYEAR%10+inputdigit);
+      settingclock++;
+      break;
+    
+    case 11:        //Month
+      SetRTCMON(inputdigit*10+RTCMON%10);
+      settingclock++;
+      break;
+    case 12:
+      SetRTCMON(RTCMON-RTCMON%10+inputdigit);
+      settingclock++;
+      break;
+    
+    case 13:       //Day
+      SetRTCDAY(inputdigit*10+RTCDAY%10);
+      settingclock++;
+      break;
+    case 14:
+      SetRTCDAY(RTCDAY-RTCDAY%10+inputdigit);
+      settingclock++;
+      break;
+    default:
+      /* Once we've exceeded the count, it's time to return to the
+	 normal mode.
+      */
+      settingclock=0;
+    }
+
+    //Update the DOW.  We could save some cycles by only doing this if
+    //the date changes, but we don't bother.
+    rtc_setdow();
+  }
+}
