@@ -16,7 +16,9 @@ const struct app apps[]={
    .keypress=clock_keypress
   },
   //Stopwatch
-  {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit},
+  {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit,
+   .keypress=stopwatch_keypress
+  },
   //RPN Calculator
   {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit,
    .keypress=rpn_keypress
