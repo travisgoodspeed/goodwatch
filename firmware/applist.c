@@ -38,7 +38,9 @@ const struct app apps[]={
  */
 const struct app subapps[]={
   //Hex Viewer.
-  {.name="memory", .init=hex_init, .draw=hex_draw, .exit=hex_exit},
+  {.name="hex edit", .init=hex_init, .draw=hex_draw, .exit=hex_exit,
+   .keypress=hex_keypress
+  },
   // Diceware - passphrase generator
   {.name="diceware", .init=dice_init, .draw=dice_draw, .exit=dice_exit},  
   //Tuner Tool
