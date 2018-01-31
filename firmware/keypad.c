@@ -14,6 +14,9 @@ void key_init(){
      together by rows and columns, which requires active scanning for
      a read but can allow for an initial wakeup on an interrupt. */
 
+  //Disable interrupts first.
+  P2IE=0;
+
   /* Columns 2.2, 2.1, 2.0, and 1.7 are set to output mode pulled
      high, so that any low row indicates a button press. */
 
@@ -152,12 +155,16 @@ void __attribute__ ((interrupt(PORT2_VECTOR))) PORT2_ISR(void){
   char newchar=key_chr(key_scan());
 
   //Bail quickly when the key is the same.
-  if(lastchar==newchar) return;
-  lastchar=newchar;
-  app_cleartimer(); //Clear the idle timer.
-  
-  printf("PORT2 fired, got character 0x%02x.\n",
-	 newchar);
-  app_keypress(newchar);
+  if(lastchar!=newchar){
+    lastchar=newchar;
+    app_cleartimer(); //Clear the idle timer.
+    
+    printf(" got character 0x%02x.\n",
+	   newchar);
+    app_keypress(newchar);
+  }else{
+    //printf(".");
+  }
+  P2IFG=0;
 }
 
