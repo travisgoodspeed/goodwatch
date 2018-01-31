@@ -2,9 +2,12 @@
   \brief Tuning application and RSSI tool.
 */
 
-//! Enter the radio tool.
+//! Enter the dice tool.
 void dice_init();
-//! Exit the radio tool.
+//! Exit the dice tool.
 int dice_exit();
-//! Draw the screen and increase the count.
+//! Draw the screen
 void dice_draw();
+
+//! Handle a keypress in the dice application.
+void dice_keypress(char ch);

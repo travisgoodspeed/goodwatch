@@ -42,7 +42,9 @@ const struct app subapps[]={
    .keypress=hex_keypress
   },
   // Diceware - passphrase generator
-  {.name="diceware", .init=dice_init, .draw=dice_draw, .exit=dice_exit},  
+  {.name="diceware", .init=dice_init, .draw=dice_draw, .exit=dice_exit,
+   .keypress=dice_keypress
+  },  
   //Tuner Tool
   {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit,
    .keypress=tuner_keypress
