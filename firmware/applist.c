@@ -44,7 +44,9 @@ const struct app subapps[]={
   // Diceware - passphrase generator
   {.name="diceware", .init=dice_init, .draw=dice_draw, .exit=dice_exit},  
   //Tuner Tool
-  {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit},
+  {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit,
+   .keypress=tuner_keypress
+  },
   //Morse transmitter.
   {.name="morse", .init=morse_init, .draw=morse_draw, .exit=morse_exit},
 

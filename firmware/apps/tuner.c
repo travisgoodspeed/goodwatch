@@ -43,24 +43,15 @@ int tuner_exit(){
   //Allow the exit.
   return 0;
 }
-//! Draw the screen and increase the count.
-void tuner_draw(){
-  char ch=getchar();
-  static int i=0;
-  static int rssi=0x5;
-  
-  
+
+//! Last character pressed in the tuner.
+static char lastchar;
+
+//! Tuner keypress callback.
+void tuner_keypress(char ch){
+  lastchar=ch;
+
   switch(ch){
-  default: //Show the channel name
-    lcd_string(codeplug_name());
-    break;
-
-  case '/': //Show the frequency.
-    lcd_number(radio_getfreq()/10000);
-    setperiod(2,1);
-    
-    break;
-
   case '+':  //Next channel.
     codeplug_next();
     codeplug_setfreq();
@@ -70,6 +61,24 @@ void tuner_draw(){
     codeplug_setfreq();
     break;
 
+  }
+}
+
+//! Draw the screen and increase the count.
+void tuner_draw(){
+  static int i=0;
+  static int rssi=0x5;
+  
+  switch(lastchar){
+  default: //Show the channel name
+    lcd_string(codeplug_name());
+    break;
+
+  case '/': //Show the frequency.
+    lcd_number(radio_getfreq()/10000);
+    setperiod(2,1);
+    
+    break;
   case '7': //Show scalar RSSI.
     //Update the RSSI if appropriate.
     if((i++&0x04)==4){
