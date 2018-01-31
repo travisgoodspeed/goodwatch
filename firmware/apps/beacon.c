@@ -49,7 +49,7 @@ static const uint8_t goodwatch_settings[]={
 };
 
 
-static char lastpacket[]=" BEACON ";
+static char lastpacket[]="IDLE    ";
 
 //! Handle an incoming packet.
 void beacon_packetrx(uint8_t *packet, int len){
@@ -118,8 +118,11 @@ void beacon_draw(){
     break;
   }
 
+}
 
-  switch(getchar()){
+//! Keypress handler for the beacon applet.
+void beacon_keypress(char ch){
+  switch(ch){
   case '7':
     if(radio_getstate()==1){
       //Schedule packet.

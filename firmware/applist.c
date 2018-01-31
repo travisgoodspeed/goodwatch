@@ -53,7 +53,7 @@ const struct app subapps[]={
   //Beacon
   {.name="beacon",
    .init=beacon_init, .draw=beacon_draw, .exit=beacon_exit,
-   .packetrx=beacon_packetrx
+   .packetrx=beacon_packetrx, .keypress=beacon_keypress
   },
 
   //iClicker
