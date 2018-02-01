@@ -14,31 +14,26 @@
 #include "rng.h"
 #include "dicewords.h"
 
-const char *rand_word(){
+static const char *rand_word(){
   unsigned int r = ((unsigned int)true_rand()) % NUMDICEWORDS;
   return word_array[r];
 }
 
-const char *last_string = NULL;
+static const char *last_string = NULL;
+
+//! Enter the dice tool.
 void dice_init(){
-  last_string = "diceware";
+  last_string = "press 0 "; //clean up last displayed word
 }
 //! Exit the dice tool.
 int dice_exit(){
-  last_string = "diceware"; //clean up last displayed word
+  last_string = "press 0 "; //leave only your footprints!
   return 0;
 }
 
-//! Draw the screen 
-void dice_draw(){
-  char ch=getchar();
-
+//! Handle a keypress in the dice application.
+void dice_keypress(char ch){
   switch(ch){
-  default: //Show the word
-    lcd_string("        ");
-    lcd_string(last_string);
-    break;
-
   case '7': 
   case '4':
   case '1':
@@ -46,5 +41,11 @@ void dice_draw(){
     last_string = rand_word();
     break;
   }
+}
+
+//! Draw the screen 
+void dice_draw(){
+  lcd_string("        ");
+  lcd_string(last_string);
 }
 

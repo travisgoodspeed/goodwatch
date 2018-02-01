@@ -73,9 +73,6 @@ static void rpn_updatebuffer(int i){
 }
 
 
-//! Last character pressed.
-static char oldch=0;
-
 //! Initializes the calculator.
 void rpn_init(){
   int i;
@@ -83,8 +80,6 @@ void rpn_init(){
   //Fresh stack when we enter the calculator.
   for(i=0;i<STACKSIZE;i++)
     rpn_push(0);
-  
-  oldch=getchar();
 }
 
 //! RPN handler for sidebutton.

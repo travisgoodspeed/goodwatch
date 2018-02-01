@@ -8,3 +8,6 @@ void tuner_init();
 int tuner_exit();
 //! Draw the screen and increase the count.
 void tuner_draw();
+
+//! Tuner keypress callback.
+void tuner_keypress(char ch);

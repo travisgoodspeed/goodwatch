@@ -9,6 +9,10 @@ int clock_exit();
 //! Draw the clock.
 void clock_draw();
 
+//! A button has been pressed for the clock.
+void clock_keypress(char ch);
+
+
 
 //! Draw the time.
 void draw_time();

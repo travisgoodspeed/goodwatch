@@ -41,24 +41,13 @@ int stopwatch_exit(){
   return 0;
 }
 
-//! Draws the time.
-void stopwatch_draw_time(){
-  static char oldch=0;
-  char ch;
-  unsigned int min, sec, subsec;
-
-  /* The stopwatch is special in that it never times out.  Be very
-     careful when doing this, because a minor bug might kill the
-     battery.
-   */
-  app_cleartimer();
-  
+//! A button has been pressed for the stopwatch.
+void stopwatch_keypress(char ch){
   /* For now, we support only two buttons.  + stops and starts the
      count, while 0 resets the counter.
    */
-  ch=getchar();
-  if(oldch==0)
-    switch(ch){
+  
+  switch(ch){
     case '+':
       counting=!counting;
       break;
@@ -68,7 +57,18 @@ void stopwatch_draw_time(){
       hour=0;
       break;
     }
-  oldch=ch;
+}
+
+//! Draws the time.
+void stopwatch_draw_time(){
+  unsigned int min, sec, subsec;
+
+  /* The stopwatch is special in that it never times out.  Be very
+     careful when doing this, because a minor bug might kill the
+     battery.
+   */
+  app_cleartimer();
+ 
 
   //Increment the count if we're counting.
   if(counting)

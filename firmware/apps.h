@@ -16,11 +16,11 @@ struct app {
    */
   int (*exit)(void);
 
-  /* I/O can work either by interrupts or by polling.  The current
-     convention is to call getchar() to poll during the rendering loop
-     if you are checking to see if a button is held down, but to take
-     this interrupt callback when taking number entry, such as in the
-     calculator.
+  /* I/O can work either by interrupts or by polling.  The old
+     convention was to call getchar() to poll during the rendering
+     loop if you are checking to see if a button is held down, but to
+     take this interrupt callback when taking number entry, such as in
+     the calculator.
      
      Called once per unique keypress.
   */

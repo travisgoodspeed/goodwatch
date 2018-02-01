@@ -8,3 +8,6 @@ void hex_init();
 int hex_exit();
 //! Draw the screen.
 void hex_draw();
+
+//! A button has been pressed for the hex editor.
+void hex_keypress(char ch);

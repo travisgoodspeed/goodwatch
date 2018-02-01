@@ -12,9 +12,13 @@
  */
 const struct app apps[]={
   //Clock
-  {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit},
+  {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
+   .keypress=clock_keypress
+  },
   //Stopwatch
-  {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit},
+  {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit,
+   .keypress=stopwatch_keypress
+  },
   //RPN Calculator
   {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit,
    .keypress=rpn_keypress
@@ -34,18 +38,24 @@ const struct app apps[]={
  */
 const struct app subapps[]={
   //Hex Viewer.
-  {.name="memory", .init=hex_init, .draw=hex_draw, .exit=hex_exit},
+  {.name="hex edit", .init=hex_init, .draw=hex_draw, .exit=hex_exit,
+   .keypress=hex_keypress
+  },
   // Diceware - passphrase generator
-  {.name="diceware", .init=dice_init, .draw=dice_draw, .exit=dice_exit},  
+  {.name="diceware", .init=dice_init, .draw=dice_draw, .exit=dice_exit,
+   .keypress=dice_keypress
+  },  
   //Tuner Tool
-  {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit},
+  {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit,
+   .keypress=tuner_keypress
+  },
   //Morse transmitter.
   {.name="morse", .init=morse_init, .draw=morse_draw, .exit=morse_exit},
 
   //Beacon
   {.name="beacon",
    .init=beacon_init, .draw=beacon_draw, .exit=beacon_exit,
-   .packetrx=beacon_packetrx
+   .packetrx=beacon_packetrx, .keypress=beacon_keypress
   },
 
   //iClicker

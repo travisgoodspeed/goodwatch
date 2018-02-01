@@ -51,6 +51,13 @@ int hex_exit(){
   return 0;
 }
 
+static char lastch;
+//! A button has been pressed for the hex editor.
+void hex_keypress(char ch){
+  lastch=ch;
+}
+
+
 //! Draw the hex editor app.
 void hex_draw(){
   /* This is called four times per second to render the display.  The
@@ -62,14 +69,9 @@ void hex_draw(){
    */
   
   static int adr=0x8000; //Beginning of Flash.
-  char ch=getchar();
 
-  //Do nothing if no key is pressed.
-  //if(!ch)
-  // return;
-
-  //Handle the input that we sampled above.
-  switch(ch){
+  //Handle the input that we received by an event.
+  switch(lastch){
     /* The top button on each column increases that nybble of the address.
        The bottom button reduces it.
     */
@@ -116,9 +118,8 @@ void hex_draw(){
     lcd_cleardigit(1);
     lcd_cleardigit(0);
     return;
-  }else if(getchar()=='4'){
+  }else if(lastch=='4'){
     /* Holding the 4 button will disassemble the current instruction.
-       This should probably be handled with the rest of the input.
      */
     asm_dis(adr,
 	    ((unsigned int*)adr)[0],
