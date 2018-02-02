@@ -57,7 +57,8 @@ void rtc_init(){
 
   // Calendar Mode, RTC1PS, 8-bit ovf
   // overflow interrupt enable
-  RTCCTL01 = RTCTEVIE + RTCSSEL_2 + RTCTEV_0 + RTCMODE;
+  // alarm interrupt enable
+  RTCCTL01 = RTCTEVIE + RTCSSEL_2 + RTCTEV_0 + RTCMODE + RTCAIE;
   RTCPS0CTL = RT0PSDIV_2;                   // ACLK, /8, start timer
   RTCPS1CTL = RT1SSEL_2 + RT1PSDIV_3;       // out from RT0PS, /16, start timer
 
@@ -157,7 +158,10 @@ void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
     case 0: break;                          // No interrupts
     case 2: break;                          // RTCRDYIFG
     case 4: break;                          // RTCTEVIFG
-    case 6: break;                          // RTCAIFG Alarm
+    case 6:                                 // RTCAIFG Alarm
+      //beep beep
+
+      break;
     case 8: break;                          // RT0PSIFG
     case 10: break;                         // RT1PSIFG
     case 12: break;                         // Reserved
