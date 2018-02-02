@@ -1,4 +1,4 @@
- /*! \file tuner.c
+ /*! \file dice.c
   \brief Demo passphrase generator app
   
   This app will display random words on the desplay. With bigger dictionary,
