@@ -13,7 +13,7 @@ modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o applist.o \
 	libs/assembler.o libs/morse.o 
 
 apps= apps/clock.o apps/rpn.o apps/hex.o apps/stopwatch.o apps/dice.o \
-	apps/tuner.o apps/morse.o apps/beacon.o apps/iclicker.o \
+	apps/rngapp.o apps/tuner.o apps/morse.o apps/beacon.o apps/iclicker.o \
 	apps/submenu.o
 
 all: goodwatch.hex
