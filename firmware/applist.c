@@ -15,6 +15,10 @@ const struct app apps[]={
   {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
    .keypress=clock_keypress
   },
+  //Alarm
+  {.name="alarm", .init=alarm_init, .draw=alarm_draw, .exit=alarm_exit,
+   .keypress=alarm_keypress
+  },
   //Stopwatch
   {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit,
    .keypress=stopwatch_keypress

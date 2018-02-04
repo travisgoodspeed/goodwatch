@@ -16,7 +16,7 @@
 
 enum rng_disp_format_enum {DECIMAL, HEX};
 enum rng_disp_format_enum rng_disp_format; 
-static unsigned int last_num = NULL;
+static unsigned int last_num = 0;
 
 //! Enter the rng tool.
 void rngapp_init(){
@@ -24,7 +24,7 @@ void rngapp_init(){
 }
 //! Exit the rng tool.
 int rngapp_exit(){
-  last_num = NULL; //leave only your footprints!
+  last_num = 0; //leave only your footprints!
   return 0;
 }
 

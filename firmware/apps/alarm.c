@@ -3,6 +3,9 @@
   
 */
 
+// for some reason this isn't in the msp430-gcc packages, but is in TI source
+#define RTCAE (0x80) /* Real Time Clock Alarm enable */
+
 #include <msp430.h>
 #include "api.h"
 
@@ -13,10 +16,10 @@ static int settingalarm=0;
 
 //! Gets alarm set status
 static int alarm_enabled() {
-  return (RTCAHOUR & (1<<RTCAE) && RTCAMIN & (1<<RTCAE));
+  return (RTCAHOUR & RTCAE && RTCAMIN & RTCAE);
 }
 
-
+//! Toggle alarm enable bits
 static void toggle_alarm(int enable) {
   if (enable){
     RTCAHOUR |= RTCAE;
@@ -27,10 +30,11 @@ static void toggle_alarm(int enable) {
   }
 }
 
+
 //! Draws the alarm.
 static void draw_alarm(){
-  unsigned int hour=RTCAHOUR;
-  unsigned int min=RTCAMIN;
+  unsigned int hour=RTCAHOUR & ~RTCAE;
+  unsigned int min=RTCAMIN & ~RTCAE;
   
   lcd_digit(7,hour/10);
   lcd_digit(6,hour%10);
@@ -39,8 +43,8 @@ static void draw_alarm(){
   lcd_digit(4,min/10);
   lcd_digit(3,min%10);
   lcd_cleardigit(2); //Space
-  lcd_char(1, 'a'); //Space
-  lcd_char(0, 'l'); //Space
+  lcd_char(1, 'a');
+  lcd_char(0, 'l');
   
   if(alarm_enabled())
     setplus(1);
@@ -54,6 +58,23 @@ static void draw_alarm(){
 
 //! Draws whatever is being set
 static void draw_settingalarm(){
+
+  unsigned int hour=RTCAHOUR & ~RTCAE;
+  unsigned int min=RTCAMIN & ~RTCAE;
+  
+  lcd_digit(7,hour/10);
+  lcd_digit(6,hour%10);
+  lcd_cleardigit(5); //Space
+  setcolon(1);
+  lcd_digit(4,min/10);
+  lcd_digit(3,min%10);
+  lcd_cleardigit(2); //Space
+  lcd_cleardigit(1); //Space
+  lcd_cleardigit(0); //Space
+
+  setam(hour<12);
+  setpm(hour>=12);
+
   static int flicker=0;
   
   flicker^=1;
@@ -88,6 +109,8 @@ int alarm_exit(){
   if(settingalarm){
     //Setting the alarm, so jump to next digit.
     settingalarm++;
+    if (settingalarm > 4)
+      settingalarm=0;
     return 1;
   }else{
     //Not setting the alarm, so just move on to next app.
@@ -115,14 +138,7 @@ void alarm_draw(){
   if(settingalarm)
     draw_settingalarm();
   else
-    switch(ch){
-     case '4':
-      if (alarm_enabled())
-        alarm_toggle(0);
-      else
-        alarm_toggle(1);
-      break;
-  }
+    draw_alarm();
 }
 
 //! A button has been pressed for the alarm.
@@ -160,9 +176,14 @@ void alarm_keypress(char ch){
       */
       settingalarm=0;
     }
-
-    //Update the DOW.  We could save some cycles by only doing this if
-    //the date changes, but we don't bother.
-    rtc_setdow();
+  } else {
+    switch(ch){
+     case '4':
+      if (alarm_enabled())
+        toggle_alarm(0);
+      else
+        toggle_alarm(1);
+      break;
+    }
   }
 }
