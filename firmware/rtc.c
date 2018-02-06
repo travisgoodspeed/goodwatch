@@ -9,6 +9,7 @@
 #include "rtc.h"
 #include "lcd.h"
 #include "lcdtext.h"
+#include "buzzer.h"
 
 //! If this is 0xdeadbeef, the ram time is good.
 static unsigned long magicword __attribute__ ((section (".noinit")));
@@ -16,6 +17,9 @@ static unsigned long magicword __attribute__ ((section (".noinit")));
 static unsigned char ramsavetime[8] __attribute__ ((section (".noinit")));
 //! ROM copy of the manufacturing time.
 unsigned char *romsavetime=(unsigned char*) 0xFF00;
+
+//! Alarm ringing status indicator
+static int alarm_ringing=0;
 
 //! Save the times to RAM.  Must be fast.
 static void rtc_savetime(){
@@ -159,9 +163,11 @@ void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
     case 2: break;                          // RTCRDYIFG
     case 4: break;                          // RTCTEVIFG
     case 6:                                 // RTCAIFG Alarm
-      //beep beep
-      lcd_string("alarm");
-      __delay_cycles(2000);
+      if (!alarm_ringing) {
+        //! Sound the alarm
+        alarm_trigger();
+      }
+      
       break;
     case 8: break;                          // RT0PSIFG
     case 10: break;                         // RT1PSIFG

@@ -14,3 +14,6 @@ void alarm_keypress(char ch);
 
 //! Toggle the alarm
 void toggle_alarm(int enable);
+
+//! Alarm ringing status indicator
+static int alarm_ringing;

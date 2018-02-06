@@ -9,7 +9,6 @@
 #include <msp430.h>
 #include "api.h"
 
-
 //! If non-zero, we are setting the alarm.
 static int settingalarm=0;
 
