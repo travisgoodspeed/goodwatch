@@ -858,4 +858,58 @@ Wire Wire Line
 	5400 3950 5650 3950
 Text Label 5400 3950 0    60   ~ 0
 BUZZ
+Wire Notes Line
+	8500 1500 9200 1500
+Wire Notes Line
+	9200 1500 9200 2200
+Wire Notes Line
+	9200 2200 8500 2200
+Wire Notes Line
+	8500 2200 8500 1500
+Wire Notes Line
+	8500 2150 8550 2200
+Wire Notes Line
+	9150 2200 9200 2150
+Wire Notes Line
+	9200 1550 9150 1500
+Wire Notes Line
+	8550 1500 8500 1550
+Wire Notes Line
+	8650 2050 8650 1800
+Wire Notes Line
+	8650 1800 8900 1800
+Wire Notes Line
+	8900 1800 8900 2050
+Wire Notes Line
+	8900 2050 8650 2050
+Wire Notes Line
+	9100 2150 9100 2300
+Wire Notes Line
+	8600 2150 8600 2300
+Wire Notes Line
+	7950 2100 8550 2100
+Wire Notes Line
+	9150 2100 10150 2100
+Wire Notes Line
+	9150 1850 10150 1850
+Wire Notes Line
+	8800 1550 8800 1350
+Wire Notes Line
+	8800 1350 8950 1350
+Text Notes 8800 1350 0    60   ~ 0
+VCC
+Text Notes 9100 2300 0    60   ~ 0
+GND
+Wire Notes Line
+	9100 2300 9300 2300
+Wire Notes Line
+	8600 2300 9050 2300
+Text Notes 8600 2300 0    60   ~ 0
+RTS (TST)
+Text Notes 8450 2100 2    60   ~ 0
+DTR (!RST)
+Text Notes 9250 2100 0    60   ~ 0
+Device TX (Host RX)
+Text Notes 9250 1850 0    60   ~ 0
+Device RX (Host TX)
 $EndSCHEMATC
