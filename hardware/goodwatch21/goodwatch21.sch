@@ -29,6 +29,7 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:goodwatch21
+LIBS:goodwatch21-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -83,7 +84,7 @@ F 3 "" H 6050 3550 60  0001 C CNN
 	1    0    0    1   
 $EndComp
 Text Notes 7450 1100 0    60   ~ 0
-NOTE WELL:\n1. Both LCD and Keypad pin 1 must be on the West of the board.\n2. Some LCD segments can't be mapped due to pin limits.  Sorry.\n3. P1.5 and P1.6 double as a UART for the BSL. (!RST and TST also required.)\n4. See pages 86 and 88 of CC430F6137 datasheet for component values.
+NOTE WELL:\n1. Both LCD and Keypad pin 1 must be on the West of the board.\n2. Some LCD segments can't be mapped due to pin limits.  Sorry.\n3. P1.5 and P1.6 double as a UART for the BSL. (!RST and TST also required.)\n4. See pages 86 and 88 of CC430F6137 datasheet for component values.\n5. Manufacture with 0.6mm thickness. 
 $Comp
 L CA53BOARD BRD1
 U 1 1 58F257A1
