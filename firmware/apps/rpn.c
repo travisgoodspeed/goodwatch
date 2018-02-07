@@ -95,7 +95,7 @@ int rpn_exit(){
 
 //! Draws the RPN calculator.
 void rpn_draw(){
-  //We just draw the stack.  All input comes from they keypress
+  //We just draw the stack.  All input comes from the keypress
   //callback.
   rpn_drawstack();
 }

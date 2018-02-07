@@ -10,6 +10,9 @@ static unsigned int subindex=0;
 
 //! Draw the submenu selection.
 void submenu_draw(){
+  // indicate that we're in the submenu by setting the plus and minus digits
+  setplus(1); 
+  setminus(1);
   lcd_string("        ");
   lcd_string(subapps[subindex].name);
 }
@@ -31,6 +34,9 @@ void submenu_keypress(char c){
 
 //! On exit, set the submenu app.
 int submenu_exit(){
+  // unset the signs on submenu exit
+  setplus(0); 
+  setminus(0);
   //Set the new app.
   app_set(&subapps[subindex]);
   //Return 1 so app_next() won't move us to the next major app.

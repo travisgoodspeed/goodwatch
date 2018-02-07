@@ -1,5 +1,5 @@
-/*! \file rssi.h
-  \brief Tuning application and RSSI tool.
+/*! \file dice.h
+  \brief Demo passphrase generator app
 */
 
 //! Enter the dice tool.

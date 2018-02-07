@@ -44,7 +44,11 @@ const struct app subapps[]={
   // Diceware - passphrase generator
   {.name="diceware", .init=dice_init, .draw=dice_draw, .exit=dice_exit,
    .keypress=dice_keypress
-  },  
+  },
+  // RNG App - random number generator
+  {.name="rng", .init=rngapp_init, .draw=rngapp_draw, .exit=rngapp_exit,
+   .keypress=rngapp_keypress
+  },
   //Tuner Tool
   {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit,
    .keypress=tuner_keypress
