@@ -1,0 +1,37 @@
+Howdy y'all,
+
+This is a textfile BOM for the GoodWatch21.  Some substitutions will
+be handy, allowing for supplier availability.
+
+
+Base parts, required for all watches.
+
+        MfgrPartNo              Digikey             Pkg      Qty   Cmt
+U1      CC430F6137IRGCR         296-25822-1-ND      VQFN64   1     CPU
+R1      RC0201FR-0775KL         YAG2795CT-ND        0201     1     75K
+C1      CL10A476MR8NZNE         1276-6528-1-ND      0603     1     47uF
+C2,C3   GRM033R61A104ME15D      490-5405-1-ND       0201     2     0.1uF
+C4      GRJ155R60J106ME11D      490-13211-1-ND      0402     1     10uF
+C5      GRM033R60J474KE90D      490-10409-1-ND      0201     1     0.47uF
+Y1      ABS07-120-32.768KHZ-T   535-11937-1-ND      SMDXTAL  1     32.768kHz6pF
+
+Radio parts, only required for the optional SubGHz radio.
+
+R2      RC0201FR-0756KL         YAG2732CT-ND        0201     1     56k, 1%
+Y2      FA-128.26.0000MF10Z-W5  SER4186CT-ND                 1     26MHz SMD Xtal, 12pF
+A1      ANT1204F002R0433A       311-1570-1-ND                1     430MHz Chip Antenna, you probably won't populate this.
+B1      0433BM15A0001E          712-1540-1-ND                1     430MHz Balun/Filter
+C6,C7   GRM0335C1E180JA01D      490-9659-1-ND       0201     2     18pF  (19pF are unavailable.)
+C8,C9   02016D104KAT2A          478-5266-1-ND       0201     2     0.1uF  (Same as C2,C3.)
+L1      BLM15HG102SN1D          490-3999-1-ND       0402     1     Ferrite Bead
+
+
+For conveniece, there is a readymade BOM on Digikey that includes a
+minimum of 10 units of each part with additional quantities on cheaper
+parts.  It might be slightly out of date.
+
+http://www.digikey.com/short/q87ncn
+
+A similar BOM from Mouser.
+
+https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=6053f78fb3
