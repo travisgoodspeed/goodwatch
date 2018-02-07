@@ -72,7 +72,7 @@ const int letterfont[]={
   E|G|C|D|B,     //D
   A|F|E|G|D,     //E
   A|G|F|E,       //F
-  A|F|E|C|D,     //G
+  A|F|G|E|C|D,   //G
   F|G|E|C,       //h
   F|E,           //I, distinguished from a 1 by being on the left side.
   E|B|C|D,       //J

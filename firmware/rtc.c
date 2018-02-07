@@ -160,8 +160,7 @@ void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
     case 4: break;                          // RTCTEVIFG
     case 6:                                 // RTCAIFG Alarm
       //beep beep
-      lcd_string("alarm");
-      __delay_cycles(2000);
+
       break;
     case 8: break;                          // RT0PSIFG
     case 10: break;                         // RT1PSIFG
