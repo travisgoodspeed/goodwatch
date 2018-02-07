@@ -253,7 +253,9 @@ void clock_draw(){
       //0 shows the current working channel.
       lcd_string(codeplug_name());
       break;
-      
+    case '.':
+      tone(120, 500);
+      break;
     case 0:
       // Draw the time by default.
       draw_time();
