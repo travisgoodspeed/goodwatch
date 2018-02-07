@@ -18,9 +18,6 @@ static unsigned char ramsavetime[8] __attribute__ ((section (".noinit")));
 //! ROM copy of the manufacturing time.
 unsigned char *romsavetime=(unsigned char*) 0xFF00;
 
-//! Alarm ringing status indicator
-static int alarm_ringing=0;
-
 //! Save the times to RAM.  Must be fast.
 static void rtc_savetime(){
   ramsavetime[0]=RTCHOUR;
