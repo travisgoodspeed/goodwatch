@@ -20,15 +20,18 @@ void key_init(){
   /* Columns 2.2, 2.1, 2.0, and 1.7 are set to output mode pulled
      high, so that any low row indicates a button press. */
 
-  P2SEL=0x00;  //All of port 2 are IO.
-  P2DIR=BIT2|BIT1|BIT0;  //Rows are input, columns are  output.
+  P2SEL&=~0x7F;  //All of port 2 except the buzzer are IO.
+  P2DIR=BIT2|BIT1|BIT0;  //These columns are  output.
   P2REN|=0xFF; //All resistor.
   P2OUT=BIT2|BIT1|BIT0; //Pull all of them down.
 
   P1SEL&=~0x80; //P1.7 is IO.
-  P1DIR|=0x80; //P1.7 is output.
+  P1DIR|=0x80;  //P1.7 is output.
   P1REN|=0x80;
   P1OUT|=0x80;  //Output high.
+
+
+  P2DIR|=BIT7; // Buzzer is on P2.7.
 
   //Trigger interrupts for keypresses so we needn't scan.
   P2IE|=BIT2|BIT1|BIT0;
@@ -44,8 +47,8 @@ int key_row(){
   int row;
   P1DIR|=0x80; //P1.7 out.
   P1OUT|=0x80; //P1.7 high.
-  P2DIR= 0x07;  //P2.0, 2.1, 2.2 out.
-  P2OUT= 0x07;  //P2.0, 2.1, 2.2 high.
+  P2DIR|=0x07;  //P2.0, 2.1, 2.2 out.
+  P2OUT|=0x07;  //P2.0, 2.1, 2.2 high.
 
   //We'll return this result, but after cleaning up.
   row=(P2IN>>3)&0x0F;
@@ -60,8 +63,11 @@ int key_col(){
   int col;
   P1DIR&=~0x80; //Input
   P1OUT&=~0x80; //Low
-  P2DIR= 0xF8;  //P2.1.3, 2.4, 2.5, 2.6 out
-  P2OUT= 0xF8;  //P2.1.3, 2.4, 2.5, 2.6 high
+
+  P2DIR&=~0x07; //P2.3, 2.4, 2.5, 2.6 out
+  P2DIR|= 0x78;
+  P2OUT&=~0x07; //P2.3, 2.4, 2.5, 2.6 high
+  P2OUT|= 0x78;  
 
   //We'll return this result, but after cleaning up.
   col=((P2IN&0x7)<<1) | ((P2IN&0x80)>>7);
