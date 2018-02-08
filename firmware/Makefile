@@ -7,12 +7,12 @@ CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os
 
 BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
-modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o applist.o buzzer.o \
-	sidebutton.o power.o uart.o monitor.o ucs.o \
+modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o applist.o \
+	sidebutton.o power.o uart.o monitor.o ucs.o buzz.o \
 	radio.o packet.o dmesg.o codeplug.o rng.o \
 	libs/assembler.o libs/morse.o 
 
-apps= apps/clock.o apps/alarm.o apps/rpn.o apps/hex.o apps/stopwatch.o apps/dice.o \
+apps= apps/clock.o apps/rpn.o apps/hex.o apps/stopwatch.o apps/dice.o \
 	apps/rngapp.o apps/tuner.o apps/morse.o apps/beacon.o apps/iclicker.o \
 	apps/submenu.o
 

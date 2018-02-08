@@ -164,7 +164,6 @@ void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
         //! Sound the alarm
         alarm_trigger();
       }
-      
       break;
     case 8: break;                          // RT0PSIFG
     case 10: break;                         // RT1PSIFG
