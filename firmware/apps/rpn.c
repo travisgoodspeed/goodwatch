@@ -101,12 +101,12 @@ void rpn_draw(){
 }
 
 //! A button has been pressed for the calculator.
-void rpn_keypress(char ch){
+int rpn_keypress(char ch){
   unsigned long i, j;
 
   //Do nothing on a keyup event.
   if(!ch)
-    return;
+    return 0;
   
   //Operators
   switch(ch){
@@ -147,4 +147,6 @@ void rpn_keypress(char ch){
   */
   if(ch>='0' && ch<='9')
     rpn_updatebuffer(ch&0xf);
+
+  return 1;//Redraw.
 }

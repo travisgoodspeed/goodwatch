@@ -18,7 +18,7 @@ void submenu_draw(){
 }
 
 //! Change the selected applet.
-void submenu_keypress(char c){
+int submenu_keypress(char c){
   switch(c){
   case '+':
     subindex++;
@@ -30,6 +30,8 @@ void submenu_keypress(char c){
       subindex--;
     break;
   }
+
+  return 1;//Redraw.
 }
 
 //! On exit, set the submenu app.

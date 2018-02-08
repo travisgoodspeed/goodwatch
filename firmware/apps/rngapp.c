@@ -29,7 +29,7 @@ int rngapp_exit(){
 }
 
 //! Handle a keypress in the rng application.
-void rngapp_keypress(char ch){
+int rngapp_keypress(char ch){
   switch(ch){
   case '0':
     last_num = true_rand();
@@ -41,6 +41,7 @@ void rngapp_keypress(char ch){
     rng_disp_format = DECIMAL;
     break;
   }
+  return 1; //Redraw.
 }
 
 //! Draw the screen 

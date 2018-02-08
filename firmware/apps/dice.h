@@ -10,4 +10,4 @@ int dice_exit();
 void dice_draw();
 
 //! Handle a keypress in the dice application.
-void dice_keypress(char ch);
+int dice_keypress(char ch);

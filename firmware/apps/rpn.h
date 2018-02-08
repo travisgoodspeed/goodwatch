@@ -10,4 +10,4 @@ void rpn_draw();
 int rpn_exit();
 
 //! A button has been pressed for the calculator.
-void rpn_keypress(char ch);
+int rpn_keypress(char ch);

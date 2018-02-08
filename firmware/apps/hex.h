@@ -10,4 +10,4 @@ int hex_exit();
 void hex_draw();
 
 //! A button has been pressed for the hex editor.
-void hex_keypress(char ch);
+int hex_keypress(char ch);

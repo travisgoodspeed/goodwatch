@@ -10,7 +10,7 @@ int clock_exit();
 void clock_draw();
 
 //! A button has been pressed for the clock.
-void clock_keypress(char ch);
+int clock_keypress(char ch);
 
 
 

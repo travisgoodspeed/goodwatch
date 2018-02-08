@@ -10,4 +10,4 @@ int tuner_exit();
 void tuner_draw();
 
 //! Tuner keypress callback.
-void tuner_keypress(char ch);
+int tuner_keypress(char ch);

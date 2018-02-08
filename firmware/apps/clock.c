@@ -245,10 +245,6 @@ void clock_draw(){
       //5 shows the git date from Flash.
       draw_date_rom();
       break;
-    case '6':
-      //6 toggles the CPU load indicator.
-      flickermode=(flickermode?0:-1);
-      break;
     case '0':
       //0 shows the current working channel.
       lcd_string(codeplug_name());
@@ -266,7 +262,7 @@ void clock_draw(){
 
 
 //! A button has been pressed for the clock.
-void clock_keypress(char ch){
+int clock_keypress(char ch){
   unsigned char inputdigit=0;
   lastchar=ch;
   
@@ -275,7 +271,7 @@ void clock_keypress(char ch){
     if((ch&0x30)==0x30)
       inputdigit=ch&0x0F;
     else
-      return;
+      return 0;
     
     switch(settingclock){
     case 1:         //Hour
@@ -344,5 +340,13 @@ void clock_keypress(char ch){
     //Update the DOW.  We could save some cycles by only doing this if
     //the date changes, but we don't bother.
     rtc_setdow();
+  }else{
+    switch(ch){
+    case '6':
+      //6 toggles the CPU load indicator.
+      flickermode=(flickermode?0:-1);
+      break;
+    }
   }
+  return 1;
 }

@@ -121,7 +121,7 @@ void beacon_draw(){
 }
 
 //! Keypress handler for the beacon applet.
-void beacon_keypress(char ch){
+int beacon_keypress(char ch){
   switch(ch){
   case '7':
     if(radio_getstate()==1){
@@ -148,4 +148,6 @@ void beacon_keypress(char ch){
   case '0':
     packet_rxoff();
   }
+
+  return 0;
 }
