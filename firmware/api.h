@@ -21,7 +21,6 @@
 #include "keypad.h"
 #include "apps.h"
 #include "rtc.h"
-#include "buzzer.h"
 #include "sidebutton.h"
 #include "radio.h"
 #include "packet.h"

@@ -93,11 +93,11 @@ int main(void) {
   printf("buzz ");
   lcd_string("BUZZINIT");
   buzz_init();
-  tone(523, 500);
-  tone(659, 500);
-  tone(784, 500);
-  tone(988, 500);
-  tone(1500, 500);
+  tone(NOTE_C7, 500);
+  tone(NOTE_E7, 500);
+  tone(NOTE_G7, 500);
+  tone(NOTE_B8, 500);
+  tone(NOTE_C8, 500);
 
   lcd_zero();
   lcd_string("UARTINIT");
@@ -113,11 +113,6 @@ int main(void) {
   printf("rad ");
   lcd_string("RAD INIT");
   radio_init();
-
-  lcd_zero();
-  printf("buz ");
-  lcd_string("BUZ INIT");
-  buzzer_init();
   
   printf("Beginning POST.\n");
   lcd_string("POSTPOST");
@@ -142,12 +137,6 @@ int main(void) {
     //uart_tx('T');
   }
 }
-
-// Timer A0 interrupt service routine
-// Here we call possible routines that might user Timer A
-void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) TIMER0_A0_ISR (void){   
-   buzzer_interrupt_routine();
-} 
 
 //! Watchdog Timer interrupt service routine, calls back to handler functions.
 void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
