@@ -96,7 +96,7 @@ int main(void) {
   tone(NOTE_C7, 500);
   tone(NOTE_E7, 500);
   tone(NOTE_G7, 500);
-  tone(NOTE_B8, 500);
+  tone(NOTE_A8, 500);
   tone(NOTE_C8, 500);
 
   lcd_zero();

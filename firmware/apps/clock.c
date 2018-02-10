@@ -16,6 +16,7 @@
 
 #include "api.h"
 
+#define RTCAE (0x80) /* Real Time Clock Alarm enable */
 
 //! If non-zero, we are setting the time.
 static int settingclock=0;
@@ -39,6 +40,12 @@ static void draw_time(){
 
   setam(hour<12);
   setpm(hour>=12);
+
+  // get alarm status
+  if (RTCAHOUR & RTCAE && RTCAMIN & RTCAE)
+    setplus(1);
+  else
+    setplus(0);
 }
 
 //! Draws the date as yyyy.mm.dd

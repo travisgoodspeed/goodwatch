@@ -174,7 +174,7 @@ void alarm_keypress(char ch){
       break;
     case 4:
       RTCAMIN = RTCAMIN-RTCAMIN%10+inputdigit;
-      settingalarm++;
+      settingalarm = 0;
       break;
     default:
       /* Once we've exceeded the count, it's time to return to the
