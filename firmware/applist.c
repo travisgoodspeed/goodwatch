@@ -17,7 +17,7 @@ const struct app apps[]={
   },
   //Alarm    
   {.name="alarm", .init=alarm_init, .draw=alarm_draw, .exit=alarm_exit,   
-   .keypress=alarm_keypress   
+   .keypress=alarm_keypress
   },
   //Stopwatch
   {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit,

@@ -256,9 +256,6 @@ void clock_draw(){
       //0 shows the current working channel.
       lcd_string(codeplug_name());
       break;
-    case '.':
-      tone(120, 500);
-      break;
     case 0:
       // Draw the time by default.
       draw_time();
@@ -354,6 +351,10 @@ int clock_keypress(char ch){
     case '6':
       //6 toggles the CPU load indicator.
       flickermode=(flickermode?0:-1);
+      break;
+    case '.':
+      // beep a little
+      tone(2048, 250);
       break;
     }
   }

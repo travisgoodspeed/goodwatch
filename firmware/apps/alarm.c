@@ -158,7 +158,7 @@ int alarm_keypress(char ch){
     if((ch&0x30)==0x30)
       inputdigit=ch&0x0F;
     else
-      return;
+      return 1;
     
     switch(settingalarm){
     case 1:         //Hour

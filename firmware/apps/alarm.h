@@ -10,7 +10,7 @@ int alarm_exit();
 void alarm_draw();
 
 //! A button has been pressed for the alarm.
-void alarm_keypress(char ch);
+int alarm_keypress(char ch);
 
 //! Toggle the alarm
 void toggle_alarm(int enable);
