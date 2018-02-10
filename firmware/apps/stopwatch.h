@@ -3,7 +3,7 @@
  */
 
 //! A button has been pressed for the stopwatch.
-void stopwatch_keypress(char ch);
+int stopwatch_keypress(char ch);
 
 //! Enter the stopwatch.
 void stopwatch_init();

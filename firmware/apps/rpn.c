@@ -77,6 +77,9 @@ static void rpn_updatebuffer(int i){
 void rpn_init(){
   int i;
 
+  //Jump up the clock rate for those pesky divisions.
+  ucs_fast();
+  
   //Fresh stack when we enter the calculator.
   for(i=0;i<STACKSIZE;i++)
     rpn_push(0);
@@ -85,8 +88,12 @@ void rpn_init(){
 //! RPN handler for sidebutton.
 int rpn_exit(){
   // Exit if zero is the latest number.
-  if(rpn_peek()==0)
+  if(rpn_peek()==0){
+    //Jump up the clock rate for those pesky divisions.
+    ucs_slow();
+    
     return 0;
+  }
 
   //Otherwise push a zero and return.
   rpn_push(0);
@@ -101,12 +108,12 @@ void rpn_draw(){
 }
 
 //! A button has been pressed for the calculator.
-void rpn_keypress(char ch){
+int rpn_keypress(char ch){
   unsigned long i, j;
 
   //Do nothing on a keyup event.
   if(!ch)
-    return;
+    return 0;
   
   //Operators
   switch(ch){
@@ -147,4 +154,6 @@ void rpn_keypress(char ch){
   */
   if(ch>='0' && ch<='9')
     rpn_updatebuffer(ch&0xf);
+
+  return 1;//Redraw.
 }

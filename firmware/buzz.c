@@ -34,6 +34,22 @@ void buzz(unsigned int count){
   }
 }
 
+//! blocking tone generation function with duration of 500 millis
+void tone(unsigned int freq) {
+  // output select mode for P2.7.
+  P2DIR|=0x80;
+  P2SEL|=0x80;
+  // set timer for desired frequency
+  TA1CCR0 = 32768 / freq;
+  TA1CTL |= MC__UP;
+  // delay until we want to stop the tone
+  __delay_cycles(32768 / 4);
+  // stop the tone and reset the pin
+  TA1CTL = TACLR | TASSEL__SMCLK | MC__STOP;
+  P2DIR&=~0x80;
+  P2SEL&=~0x80;
+}
+
 
 //! Initializes the buzzer port.
 void buzz_init(){

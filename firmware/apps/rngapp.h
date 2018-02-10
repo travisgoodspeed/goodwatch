@@ -12,4 +12,4 @@ int rngapp_exit();
 void rngapp_draw();
 
 //! Handle a keypress in the rngapp application.
-void rngapp_keypress(char ch);
+int rngapp_keypress(char ch);

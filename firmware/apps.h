@@ -22,9 +22,9 @@ struct app {
      take this interrupt callback when taking number entry, such as in
      the calculator.
      
-     Called once per unique keypress.
+     Called once per unique keypress.  Return non-zero to immediately redraw.
   */
-  void (*keypress)(char ch);//A keypress has arrived.
+  int (*keypress)(char ch);//A keypress has arrived.
 
   /* Callbacks for packets being sent and received.  Set to null if unused. */
   void (*packetrx)(uint8_t *packet, int len); //A packet has arrived.

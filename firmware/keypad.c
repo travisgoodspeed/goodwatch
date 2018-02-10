@@ -8,6 +8,20 @@
 
 #include "apps.h"
 
+static void setdirections(){
+  /* Columns 2.2, 2.1, 2.0, and 1.7 are set to output mode pulled
+     high, so that any low row indicates a button press. */
+  P2SEL&=~0x7F;  //All of port 2 except the buzzer are IO.
+  P2DIR=BIT2|BIT1|BIT0;  //These columns are  output.
+  P2REN|=0x7F; //All resistor.
+  P2OUT=BIT2|BIT1|BIT0; //Pull columns up.
+
+  P1SEL&=~0x80; //P1.7 is IO.
+  P1DIR|=0x80;  //P1.7 is output.
+  P1REN|=0x80;
+  P1OUT|=0x80;  //Output high.
+}
+
 //! Initializes the keypad pin directions.
 void key_init(){
   /* The keypad uses P1.7 and all of Port 2.  Pins are bridged
@@ -17,24 +31,13 @@ void key_init(){
   //Disable interrupts first.
   P2IE=0;
 
-  /* Columns 2.2, 2.1, 2.0, and 1.7 are set to output mode pulled
-     high, so that any low row indicates a button press. */
-
-  P2SEL&=~0x7F;  //All of port 2 except the buzzer are IO.
-  P2DIR=BIT2|BIT1|BIT0;  //These columns are  output.
-  P2REN|=0xFF; //All resistor.
-  P2OUT=BIT2|BIT1|BIT0; //Pull all of them down.
-
-  P1SEL&=~0x80; //P1.7 is IO.
-  P1DIR|=0x80;  //P1.7 is output.
-  P1REN|=0x80;
-  P1OUT|=0x80;  //Output high.
-
+  setdirections();
 
   P2DIR|=BIT7; // Buzzer is on P2.7.
 
   //Trigger interrupts for keypresses so we needn't scan.
-  P2IE|=BIT2|BIT1|BIT0;
+  //P2IE|=BIT2|BIT1|BIT0;
+  P2IE=BIT3|BIT4|BIT5|BIT6;
 }
 
 //! Quickly checks to see if a key is pressed.
@@ -53,8 +56,7 @@ int key_row(){
   //We'll return this result, but after cleaning up.
   row=(P2IN>>3)&0x0F;
   
-  key_init();
-  
+  printf("Row %d.\n",row);
   return row;
 }
 
@@ -64,22 +66,15 @@ int key_col(){
   P1DIR&=~0x80; //Input
   P1OUT&=~0x80; //Low
 
-  P2DIR&=~0x07; //P2.3, 2.4, 2.5, 2.6 out
-  P2DIR|= 0x78;
-  P2OUT&=~0x07; //P2.3, 2.4, 2.5, 2.6 high
-  P2OUT|= 0x78;  
+  P2DIR&=~0x07; //P2.0, 2.1, 2.2 in
+  P2DIR|= 0x78; //P2.3, 2.4, 2.5, 2.6 out
+  P2OUT&=~0x07; //P2.0, 2.1, 2.2 low.
+  P2OUT|= 0x78; //P2.3, 2.4, 2.5, 2.6 high
 
   //We'll return this result, but after cleaning up.
-  col=((P2IN&0x7)<<1) | ((P2IN&0x80)>>7);
-
-
-  //Temporary workaround for what I think is hardware damage in my
-  //prototype.
-  if(col&~1)
-    return col&0xFE;
-
-  key_init();
+  col=((P2IN&0x7)<<1) | ((P1IN&0x80)>>7);
   
+  printf("Column %d.\n",col);
   return col;
 }
 
@@ -111,13 +106,20 @@ unsigned int key_scan(){
   
   //Some button is pressed, so do an active scan to figure out which
   //one.
-  scan=(key_row()<<4)|key_col();
-  key_init();
+  scan=0;
+  scan|=(key_row()<<4);
+  scan|=key_col();
+  //scan=(key_row()<<4)|key_col();
+  //key_init();
+
+  setdirections();
 
   if(scan&0xF0)
     return scan;
-  else
+  else{
+    printf("%02x is an incomplete scancode.\n",scan);
     return 0;
+  }
 }
 
 
@@ -176,5 +178,8 @@ void __attribute__ ((interrupt(PORT2_VECTOR))) PORT2_ISR(void){
   }else{
     //printf(".");
   }
+
+  //Fix the pin directions before we return.
+  setdirections();
 }
 

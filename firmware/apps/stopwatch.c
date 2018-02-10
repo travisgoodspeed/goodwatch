@@ -42,7 +42,7 @@ int stopwatch_exit(){
 }
 
 //! A button has been pressed for the stopwatch.
-void stopwatch_keypress(char ch){
+int stopwatch_keypress(char ch){
   /* For now, we support only two buttons.  + stops and starts the
      count, while 0 resets the counter.
    */
@@ -56,7 +56,11 @@ void stopwatch_keypress(char ch){
       count=0;
       hour=0;
       break;
-    }
+  }
+  
+  //Stopwatch uses rendering frequency to count time, so we don't
+  //redraw after a keypress.
+  return 0;
 }
 
 //! Draws the time.

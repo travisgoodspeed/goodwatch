@@ -48,7 +48,7 @@ int tuner_exit(){
 static char lastchar;
 
 //! Tuner keypress callback.
-void tuner_keypress(char ch){
+int tuner_keypress(char ch){
   lastchar=ch;
 
   switch(ch){
@@ -60,8 +60,9 @@ void tuner_keypress(char ch){
     codeplug_prev();
     codeplug_setfreq();
     break;
-
   }
+
+  return 1;//Redraw.
 }
 
 //! Draw the screen and increase the count.

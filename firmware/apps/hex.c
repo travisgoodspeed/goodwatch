@@ -51,10 +51,13 @@ int hex_exit(){
   return 0;
 }
 
+//Last character pressed, interpreted on every frame.
 static char lastch;
+
 //! A button has been pressed for the hex editor.
-void hex_keypress(char ch){
+int hex_keypress(char ch){
   lastch=ch;
+  return 0;
 }
 
 

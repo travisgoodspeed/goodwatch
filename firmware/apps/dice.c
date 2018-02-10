@@ -32,7 +32,7 @@ int dice_exit(){
 }
 
 //! Handle a keypress in the dice application.
-void dice_keypress(char ch){
+int dice_keypress(char ch){
   switch(ch){
   case '7': 
   case '4':
@@ -41,6 +41,7 @@ void dice_keypress(char ch){
     last_string = rand_word();
     break;
   }
+  return 1;
 }
 
 //! Draw the screen 

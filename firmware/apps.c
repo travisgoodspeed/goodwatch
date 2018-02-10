@@ -128,8 +128,17 @@ void app_packetrx(uint8_t *packet, int len){
 
 //! Handles a keypress, if a handler is registered.
 void app_keypress(char ch){
-  /* We only pass it to applications that have a handler.
-   */
-  if(applet->keypress)
-    applet->keypress(ch);
+  //We only pass it to applications that have a handler.
+  if(applet->keypress){
+    if(applet->keypress(ch)){
+      /* Some applets need to visually respond at the moment of their
+	 keypress, while others need to be drawn at a predictable
+	 framerate.  So if--any only if--the keypress() function tells
+	 us to do we redraw it.
+       */
+      lcd_predraw();
+      app_draw();
+      lcd_postdraw();
+    }
+  }
 }
