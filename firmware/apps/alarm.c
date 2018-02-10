@@ -103,6 +103,7 @@ static void draw_settingalarm(){
 void alarm_init(){
   lcd_zero();
 }
+
 //! Exit alarm when the sidebutton is pressed, unless we are programming.
 int alarm_exit(){
   if(settingalarm){
@@ -141,7 +142,7 @@ void alarm_draw(){
 }
 
 //! A button has been pressed for the alarm.
-void alarm_keypress(char ch){
+int alarm_keypress(char ch){
   int enabled_flag=0;
   unsigned char inputdigit=0;
   lastchar=ch;
@@ -196,4 +197,5 @@ void alarm_keypress(char ch){
       break;
     }
   }
+  return 1;
 }
