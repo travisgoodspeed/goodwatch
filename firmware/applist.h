@@ -9,7 +9,7 @@
 #include "apps/stopwatch.h"
 #include "apps/rpn.h"
 #include "apps/hex.h"
-#include "apps/dice.h"
+#include "apps/phrase.h"
 #include "apps/rngapp.h"
 
 //Then radio apps.
