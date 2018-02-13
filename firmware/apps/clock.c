@@ -335,7 +335,7 @@ int clock_keypress(char ch){
     case 14:
       SetRTCDAY(RTCDAY-RTCDAY%10+inputdigit);
       settingclock++;
-      break;
+      ////Do not break, or we'll be stuck in the setting mode afer compltion.
     default:
       /* Once we've exceeded the count, it's time to return to the
 	 normal mode.
