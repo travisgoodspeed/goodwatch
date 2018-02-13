@@ -52,6 +52,7 @@ void app_forcehome(){
     applet->exit();
 
   //And force it if that doesn't work.
+  ucs_slow();  //Gotta drop the clock rate, in case it was high.
   appindex=0;
   applet = &apps[appindex];
   applet->init();
