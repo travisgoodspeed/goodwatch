@@ -56,7 +56,6 @@ int key_row(){
   //We'll return this result, but after cleaning up.
   row=(P2IN>>3)&0x0F;
   
-  printf("Row %d.\n",row);
   return row;
 }
 
@@ -74,7 +73,6 @@ int key_col(){
   //We'll return this result, but after cleaning up.
   col=((P2IN&0x7)<<1) | ((P1IN&0x80)>>7);
   
-  printf("Column %d.\n",col);
   return col;
 }
 

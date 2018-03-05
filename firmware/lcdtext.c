@@ -85,12 +85,12 @@ const int letterfont[]={
   F|A|B|C|D|E|DP,//Q
   E|G,           //R
   A|F|G|C|D,     //S  (Looks like a 5.)
-  F|E|G,         //T
-  F|E|D|C|B,     //U
-  F|E|D|C|B,     //V  (Same as U.  Blame Rome.)
-  F|E|D|C|B,     //W  (Same as U and V.  Blame Germany.)
+  F|E|G|D,       //T
+  E|D|C,         //U  (Like a lowercase V)
+  F|E|D|C|B,     //V  (Like U.  Blame Rome.)
+  F|B|D,         //W  (Inverted M)
   F|G|E|B|C,     //X
-  F|G|B|E,       //Y
+  F|G|B|C|D,     //Y  
   A|B|G|E|D      //Z
 };
 

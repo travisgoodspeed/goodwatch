@@ -89,14 +89,15 @@ int main(void) {
   lcd_string("OSC INIT");
   ucs_init();
 
-  /* TODO Enable this once we have hardware with a working buzzer.
-     
   lcd_zero();
   printf("buzz ");
   lcd_string("BUZZINIT");
   buzz_init();
-  buzz(1024);
-  */
+  tone(NOTE_C7, 500);
+  tone(NOTE_E7, 500);
+  tone(NOTE_G7, 500);
+  tone(NOTE_A8, 500);
+  tone(NOTE_C8, 500);
 
   lcd_zero();
   lcd_string("UARTINIT");

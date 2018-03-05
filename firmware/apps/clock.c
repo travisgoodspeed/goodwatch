@@ -16,6 +16,7 @@
 
 #include "api.h"
 
+#define RTCAE (0x80) /* Real Time Clock Alarm enable */
 
 //! If non-zero, we are setting the time.
 static int settingclock=0;
@@ -39,6 +40,12 @@ static void draw_time(){
 
   setam(hour<12);
   setpm(hour>=12);
+
+  // get alarm status
+  if (RTCAHOUR & RTCAE && RTCAMIN & RTCAE)
+    setplus(1);
+  else
+    setplus(0);
 }
 
 //! Draws the date as yyyy.mm.dd
@@ -249,7 +256,6 @@ void clock_draw(){
       //0 shows the current working channel.
       lcd_string(codeplug_name());
       break;
-      
     case 0:
       // Draw the time by default.
       draw_time();
@@ -329,7 +335,7 @@ int clock_keypress(char ch){
     case 14:
       SetRTCDAY(RTCDAY-RTCDAY%10+inputdigit);
       settingclock++;
-      break;
+      ////Do not break, or we'll be stuck in the setting mode afer compltion.
     default:
       /* Once we've exceeded the count, it's time to return to the
 	 normal mode.
@@ -345,6 +351,10 @@ int clock_keypress(char ch){
     case '6':
       //6 toggles the CPU load indicator.
       flickermode=(flickermode?0:-1);
+      break;
+    case '.':
+      // beep a little
+      tone(2048, 250);
       break;
     }
   }

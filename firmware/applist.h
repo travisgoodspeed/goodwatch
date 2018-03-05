@@ -6,6 +6,7 @@
 
 //Non-radio apps first.
 #include "apps/clock.h"
+#include "apps/alarm.h"
 #include "apps/stopwatch.h"
 #include "apps/rpn.h"
 #include "apps/hex.h"
