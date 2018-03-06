@@ -45,9 +45,9 @@ const struct app subapps[]={
   {.name="hex edit", .init=hex_init, .draw=hex_draw, .exit=hex_exit,
    .keypress=hex_keypress
   },
-  // Diceware - passphrase generator
-  {.name="diceware", .init=dice_init, .draw=dice_draw, .exit=dice_exit,
-   .keypress=dice_keypress
+  // Phrase - passphrase generator
+  {.name="phrase", .init=phrase_init, .draw=phrase_draw, .exit=phrase_exit,
+   .keypress=phrase_keypress
   },
   // RNG App - random number generator
   {.name="rng", .init=rngapp_init, .draw=rngapp_draw, .exit=rngapp_exit,
