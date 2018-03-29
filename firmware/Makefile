@@ -1,9 +1,64 @@
 
+ALARM_APP = 1
+RPN_APP = 1
+HEX_APP = 1
+STOPWATCH_APP = 1
+PHRASE_APP = 0
+RNG_APP = 1
+TUNER_APP = 1
+MORSE_APP = 1
+BEACON_APP = 1
+ICLICKER_APP = 1
+
 #set default flashing serial port, dont override if passed in as an argument
 PORT = /dev/ttyUSB0
+APPS_OBJ += apps/clock.o apps/submenu.o 
+
+#add optional apps
+ifeq ($(ALARM_APP),1)
+APPS_OBJ += apps/alarm.o 
+APPS_DEFINES += ALARM_APP
+endif
+ifeq ($(RPN_APP),1)
+APPS_OBJ += apps/rpn.o 
+APPS_DEFINES += RPN_APP
+endif
+ifeq ($(HEX_APP),1)
+APPS_OBJ += apps/hex.o 
+APPS_DEFINES += HEX_APP
+endif
+ifeq ($(STOPWATCH_APP),1)
+APPS_OBJ += apps/stopwatch.o 
+APPS_DEFINES += STOWWATCH_APP
+endif 
+ifeq ($(PHRASE_APP),1)
+APPS_OBJ += apps/phrase.o 
+APPS_DEFINES += PHRASE_APP
+endif
+ifeq ($(RNG_APP),1)
+APPS_OBJ += apps/rngapp.o 
+APPS_DEFINES += RNG_APP
+endif 
+ifeq ($(TUNER_APP),1)
+APPS_OBJ += apps/tuner.o
+APPS_DEFINES += TUNER_APP 
+endif
+ifeq ($(MORSE_APP),1)
+APPS_OBJ += apps/morse.o 
+APPS_DEFINES += MORSE_APP
+endif
+ifeq ($(BEACON_APP),1)
+APPS_OBJ += apps/beacon.o
+APPS_DEFINES += BEACON_APP 
+endif
+ifeq ($(ICLICKER_APP),1)
+APPS_OBJ += apps/iclicker.o 
+APPS_DEFINES += ICLICKER_APP
+endif
+
 
 #Standard Debian gcc-msp430 and msp430mcu packages.
-CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os
+CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os 
 
 BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
@@ -12,9 +67,7 @@ modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o applist.o \
 	radio.o packet.o dmesg.o codeplug.o rng.o \
 	libs/assembler.o libs/morse.o 
 
-apps= apps/clock.o apps/alarm.o apps/rpn.o apps/hex.o apps/stopwatch.o apps/phrase.o \
-	apps/rngapp.o apps/tuner.o apps/morse.o apps/beacon.o apps/iclicker.o \
-	apps/submenu.o
+apps= $(APPS_OBJ)
 
 all: goodwatch.hex
 
@@ -22,8 +75,8 @@ all: goodwatch.hex
 
 gittag.h:
 	echo "#define GITTAG" 0x`git describe --always` >gittag.h
-goodwatch: $(modules) $(apps) *.h
-	$(CC) -T msp430.x -o goodwatch $(modules) $(apps)
+goodwatch: $(modules) $(apps) *.h  
+	$(CC) -T msp430.x -o goodwatch $(modules) $(apps) $(addprefix -D, $(APPS_DEFINES))
 	../bin/printsizes.py goodwatch || echo "Please install python-pyelftools."
 
 goodwatch.hex: goodwatch
