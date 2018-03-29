@@ -15,19 +15,24 @@ const struct app apps[]={
   {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
    .keypress=clock_keypress
   },
+#ifdef ALARM_APP
   //Alarm    
   {.name="alarm", .init=alarm_init, .draw=alarm_draw, .exit=alarm_exit,   
    .keypress=alarm_keypress
   },
+#endif
+#ifdef  STOPWATCH_APP
   //Stopwatch
   {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit,
    .keypress=stopwatch_keypress
   },
+#endif
+#ifdef RPN_APP
   //RPN Calculator
   {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit,
    .keypress=rpn_keypress
   },
-
+#endif
   //Submenu selection.
   {.name="submenu", .draw=submenu_draw, .keypress=submenu_keypress, .exit=submenu_exit},
   //Selected submenu comes here in sequence, but isn't in the array.
@@ -41,34 +46,45 @@ const struct app apps[]={
    the main menu once selected.
  */
 const struct app subapps[]={
+#ifdef HEX_APP
   //Hex Viewer.
   {.name="hex edit", .init=hex_init, .draw=hex_draw, .exit=hex_exit,
    .keypress=hex_keypress
   },
+#endif
+#ifdef PHRASE_APP
   // Phrase - passphrase generator
   {.name="phrase", .init=phrase_init, .draw=phrase_draw, .exit=phrase_exit,
    .keypress=phrase_keypress
   },
+#endif
+#ifdef RNG_APP
   // RNG App - random number generator
   {.name="rng", .init=rngapp_init, .draw=rngapp_draw, .exit=rngapp_exit,
    .keypress=rngapp_keypress
   },
+#endif
+#ifdef TUNER_APP
   //Tuner Tool
   {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit,
    .keypress=tuner_keypress
   },
+#endif 
+#ifdef MORSE_APP
   //Morse transmitter.
   {.name="morse", .init=morse_init, .draw=morse_draw, .exit=morse_exit},
-
+#endif
+#ifdef BEACON_APP
   //Beacon
   {.name="beacon",
    .init=beacon_init, .draw=beacon_draw, .exit=beacon_exit,
    .packetrx=beacon_packetrx, .keypress=beacon_keypress
   },
-
+#endif
+#ifdef ICLICKER_APP
   //iClicker
   //{.name="iclicker", .init=iclicker_init, .draw=iclicker_draw, .exit=iclicker_exit},
-  
+#endif  
   //End on null entry.
   {.name=0, .init=0, .draw=0, .exit=0} 
 };
