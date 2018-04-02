@@ -50,11 +50,11 @@ other features, such as the RPN calculator, hex editor, and
 disassembler.  Assembly of the GoodWatch10 is no longer recommended,
 as the PCB requires a bit of whittling to fit the case.
 
-The GoodWatch20 is now our primary target, featuring minor corrections
+The GoodWatch21 is now our primary target, featuring minor corrections
 to layout and a functional radio.  The radio is in active use, and the
 filter chain is verified to work.
 
-The GoodWatch21 will be manufactured in early 2018 with a wider filter
+The GoodWatch30 will be manufactured in early 2018 with a wider filter
 and other radio modifications.
 
 See `BOM.txt` in the hardware directories for a parts list, and the
