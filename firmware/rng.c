@@ -43,8 +43,10 @@ unsigned int true_rand(void) {
     seed <<= 1;  
     if (ones >= 3) //majority of 5 samples 
       seed |= 1;
-    UCSCTL1 += 5; // update DCORSEL to change speed
-    UCSCTL5 ^= ((seed & 3) << 8); // update ALCK divider
+    // even though SLA338 recomends changing dividers and speed to increase 
+    // uniformity, tests have shown better results with these two lines disabled
+    //UCSCTL1 += 5; // update DCORSEL to change speed
+    //UCSCTL5 ^= ((seed & 3) << 8); // update ALCK divider
   }
 
   // restore everything we've been messing with
