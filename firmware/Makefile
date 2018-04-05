@@ -1,5 +1,5 @@
 
-ALARM_APP = 1
+ALARM_APP = 0
 RPN_APP = 1
 HEX_APP = 1
 STOPWATCH_APP = 1
@@ -8,7 +8,8 @@ RNG_APP = 1
 TUNER_APP = 1
 MORSE_APP = 1
 BEACON_APP = 1
-ICLICKER_APP = 1
+OOK_APP = 1
+ICLICKER_APP = 0
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT = /dev/ttyUSB0
@@ -50,6 +51,10 @@ endif
 ifeq ($(BEACON_APP),1)
 APPS_OBJ += apps/beacon.o
 APPS_DEFINES += BEACON_APP 
+endif
+ifeq ($(OOK_APP),1)
+APPS_OBJ += apps/ook.o
+APPS_DEFINES += OOK_APP 
 endif
 ifeq ($(ICLICKER_APP),1)
 APPS_OBJ += apps/iclicker.o 
