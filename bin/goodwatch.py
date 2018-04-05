@@ -101,13 +101,13 @@ RF_SFTX             =0x3B    #SFTX    - Flush the TX FIFO buffer.
 RF_SWORRST          =0x3C    #SWORRST - Reset real time clock.
 RF_SNOP             =0x3D    #SNOP    - No operation. Returns status byte.
 
-
+# Standard mode for GoodWatch packets.  Needs to be better defined.
 beaconconfig=[
   IOCFG0,0x06,   #GDO0 Output Configuration
   FIFOTHR,0x47,  #RX FIFO and TX FIFO Thresholds
   PKTCTRL1, 0x04, #No address check.
   #PKTCTRL0, 0x05,#Packet Automation Control, variable length.
-  PKTCTRL0, 0x04, #Packet automation control, fixed length.
+  PKTCTRL0, 0x04, #Packet automation control, fixed length with CRC.
   FSCTRL1,0x06,  #Frequency Synthesizer Control
   #FREQ2,0x21,    #Frequency Control Word, High Byte
   #FREQ1,0x62,    #Frequency Control Word, Middle Byte
@@ -116,9 +116,10 @@ beaconconfig=[
   MDMCFG3,0x83,  #Modem Configuration
   MDMCFG2,0x13,  #Modem Configuration
   DEVIATN,0x15,  #Modem Deviation Setting
-  MCSM0,0x10,    #Main Radio Control State Machine Configuration
+#  MCSM0,0x10,    #Main Radio Control State Machine Configuration
   FOCCFG,0x16,   #Frequency Offset Compensation Configuration
   WORCTRL,0xFB,  #Wake On Radio Control
+  FREND0 , 0x11,      #  Front End TX Configuration
   FSCAL3,0xE9,   #Frequency Synthesizer Calibration
   FSCAL2,0x2A,   #Frequency Synthesizer Calibration
   FSCAL1,0x00,   #Frequency Synthesizer Calibration
@@ -134,6 +135,30 @@ beaconconfig=[
   PKTLEN,  32,   # PKTLEN    Packet length.
   0,0  #Null terminator.
 ];
+
+
+# Example configuration from a cheap 4-button keychain remote. 
+ookconfig=[
+    MDMCFG4, 0x86,      #  Modem Configuration
+    MDMCFG3, 0xD9,      #  Modem Configuration
+    MDMCFG2, 0x30,      #  Modem Configuration, no sync
+    FREND0 , 0x11,      #  Front End TX Configuration
+    FSCAL3 , 0xE9,      #  Frequency Synthesizer Calibration
+    FSCAL2 , 0x2A,      #  Frequency Synthesizer Calibration
+    FSCAL1 , 0x00,      #  Frequency Synthesizer Calibration
+    FSCAL0 , 0x1F,      #  Frequency Synthesizer Calibration
+    PKTCTRL0, 0x00,     #Packet automation control, fixed length without CRC.
+    PKTLEN,  32,   # PKTLEN    Packet length.
+    0, 0 
+];
+# Might be unique to Travis's set.
+ookpackets=[
+    "0000e8e8ee88e88ee888eee8888e8000", #A
+    "0000e8e8ee88e88ee888eee888e88000", #B
+    "0000e8e8ee88e88ee888eee88e888000", #C
+    "0000e8e8ee88e88ee888eee8e8888000"  #D
+];
+
 
 
 def packconfig(config):
@@ -300,6 +325,7 @@ class GoodWatch:
         """Sends a radio packet on the current frequency."""
         while(len(message)<32):
             message+='\x00';
+        #print("Sending %d bytes: %s\n"% (len(message),message.encode('hex')));
         self.transact("\x13"+message);
         
 if __name__=='__main__':
@@ -322,6 +348,9 @@ if __name__=='__main__':
                         help='Transmits a beacon.');
     parser.add_argument('-B','--beaconsniff',
                         help='Sniffs for beacons.',action='count');
+    parser.add_argument('-O','--ook',
+                        help='Transmits an OOK example packet.');
+
     
     args = parser.parse_args()
 
@@ -365,6 +394,20 @@ if __name__=='__main__':
         while 1:
             print "Transmitting: %s" % args.beacon;
             goodwatch.radiotx(args.beacon+"\x00");
+            time.sleep(1);
+
+    if args.ook!=None:
+        print "Turning radio on.";
+        time.sleep(1);
+        goodwatch.radioonoff(1);
+        print "Configuring radio.";
+        goodwatch.radioconfig(beaconconfig);
+        goodwatch.radioconfig(ookconfig);
+        #Docs say 433.920, but there's a lot of drift.
+        goodwatch.radiofreq(433.920);
+        while 1:
+            print "Transmitting packet %d" % int(args.ook);
+            goodwatch.radiotx(ookpackets[int(args.ook)].decode('hex'));
             time.sleep(1);
     
     if args.beaconsniff!=None:

@@ -1,5 +1,5 @@
 
-ALARM_APP = 0
+ALARM_APP = 1
 RPN_APP = 1
 HEX_APP = 1
 STOPWATCH_APP = 1
@@ -30,7 +30,7 @@ APPS_DEFINES += HEX_APP
 endif
 ifeq ($(STOPWATCH_APP),1)
 APPS_OBJ += apps/stopwatch.o 
-APPS_DEFINES += STOWWATCH_APP
+APPS_DEFINES += STOPWATCH_APP
 endif 
 ifeq ($(PHRASE_APP),1)
 APPS_OBJ += apps/phrase.o 

@@ -45,7 +45,7 @@ const uint8_t iclicker_settings[]={
   DEVIATN   , 0x72,
 
   FREND1    , 0x56,   // Front end RX configuration.
-  FREND0    , 0x10,   // Front end RX configuration.
+  FREND0    , 0x11,   // Front end RX configuration, power level 1.
 
   /* automatic frequency calibration */
   MCSM0     , 0x14,

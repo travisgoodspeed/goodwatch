@@ -44,6 +44,8 @@ void app_cleartimer();
 void app_forcehome();
 //! Provide an incoming packet.
 void app_packetrx(uint8_t *packet, int len);
+//! Callback after a packet has been sent.
+void app_packettx();
 
 //! Handles a keypress, if a handler is registered.
 void app_keypress(char ch);

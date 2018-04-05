@@ -18,6 +18,7 @@
 #include "apps/tuner.h"
 #include "apps/iclicker.h"
 #include "apps/beacon.h"
+#include "apps/ook.h"
 
 
 /* For each application, the init() function is called at entry.  The

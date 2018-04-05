@@ -170,8 +170,6 @@ void __attribute__ ((interrupt(PORT2_VECTOR))) PORT2_ISR(void){
     lastchar=newchar;
     app_cleartimer(); //Clear the idle timer.
     
-    printf(" got character 0x%02x.\n",
-	   newchar);
     app_keypress(newchar);
   }else{
     //printf(".");

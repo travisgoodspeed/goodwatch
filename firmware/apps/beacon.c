@@ -22,6 +22,7 @@ static const uint8_t goodwatch_settings[]={
   //PKTCTRL0, 0x05,//Packet Automation Control, variable length.
   PKTCTRL0, 0x04, //Packet automation control, fixed length.
   FSCTRL1,0x06, //Frequency Synthesizer Control
+  FREND0,    0x11,   // FREND0    Front end TX configuration, use PA_TABLE[1]
   FREQ2,0x21,   //Frequency Control Word, High Byte
   FREQ1,0x62,   //Frequency Control Word, Middle Byte
   FREQ0,0x76,   //Frequency Control Word, Low Byte

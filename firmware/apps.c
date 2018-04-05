@@ -102,6 +102,7 @@ void app_next(){
   //Initialize the new application.
   if(applet->init)
     applet->init();
+  
   return;
 }
 
@@ -125,6 +126,20 @@ void app_packetrx(uint8_t *packet, int len){
   }
 
   applet->packetrx(packet,len);
+}
+
+//! Callback after sending a packet.
+void app_packettx(uint8_t *packet, int len){
+  /* We send it to the active application, but only if that
+     application has a handler.
+   */
+  if(!applet->packetrx){
+    printf("No packet TX handler for %s.",
+	   applet->name);
+    return;
+  }
+
+  applet->packettx();
 }
 
 //! Handles a keypress, if a handler is registered.

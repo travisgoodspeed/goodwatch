@@ -84,6 +84,9 @@ uint32_t radio_getfreq(){
 }
 
 
+// Only called from here.
+extern void packet_init();
+
 //! Called at boot.  Gracefully fails if no radio.
 void radio_init(){
   /* If the radio components are missing, the AVCC_RF lines will be
@@ -108,6 +111,10 @@ void radio_on(){
   if(!has_radio){
     return;
   }
+
+  //Be sure to reset the radio variables, in case the state machine is
+  //out of whack.  This should only be called from here, nowhere else.
+  packet_init();
 
   //Enable high power mode so that LPM3 can be used with an active
   //radio.
@@ -263,7 +270,7 @@ const uint8_t morsesettings[]={
   CHANNR,    0x00,   // CHANNR    Channel number.
   DEVIATN,   0x34,   // DEVIATN   Modem deviation setting (when FSK modulation is enabled).
   FREND1,    0x56,   // FREND1    Front end RX configuration.
-  FREND0,    0x10,   // FREND0    Front end TX configuration.
+  FREND0,    0x11,   // FREND0    Front end TX configuration.
   MCSM0,     0x18,   // MCSM0     Main Radio Control State Machine configuration.
   FOCCFG,    0x16,   // FOCCFG    Frequency Offset Compensation Configuration.
   BSCFG,     0x6C,   // BSCFG     Bit synchronization Configuration.
@@ -361,11 +368,26 @@ uint8_t radio_strobe(uint8_t strobe){
 
 //! Writes one value to the power table.
 void radio_writepower(uint8_t value) {
-  while( !(RF1AIFCTL1 & RFINSTRIFG));
-  RF1AINSTRW = 0x3E00 + value;              // PA Table single write
+  uint8_t powertable[2];
+
+  /* To make AFSK and OOK play nice with eachother, powertable[0] is
+     always zero and powertable[1] is the selected power setting.
+     
+     Use radio_writepowertable() if you need to control the entire table.
+   */
+  powertable[0]=0;
+  powertable[1]=value;
+
+  radio_writepatable(powertable, 2);
   
   while( !(RF1AIFCTL1 & RFINSTRIFG));
   RF1AINSTRB = RF_SNOP;                     // reset PA_Table pointer
+}
+
+
+//! Writes a set of values ot the power table.
+void radio_writepatable(uint8_t *table, uint8_t count) {
+  radio_writeburstreg(PATABLE, table, count);
 }
 
 //! Read the RSSI.

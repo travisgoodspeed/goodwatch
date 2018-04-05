@@ -11,10 +11,12 @@
    to reject a mode switch or 0 to allow it.
  */
 const struct app apps[]={
+
   //Clock
   {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
    .keypress=clock_keypress
   },
+
 #ifdef ALARM_APP
   //Alarm    
   {.name="alarm", .init=alarm_init, .draw=alarm_draw, .exit=alarm_exit,   
@@ -81,9 +83,17 @@ const struct app subapps[]={
    .packetrx=beacon_packetrx, .keypress=beacon_keypress
   },
 #endif
+#ifdef OOK_APP
+  //OOK
+  {.name="OOK",
+   .init=ook_init, .draw=ook_draw, .exit=ook_exit,
+   .packetrx=ook_packetrx, .packettx=ook_packettx,
+   .keypress=ook_keypress
+  },
+#endif
 #ifdef ICLICKER_APP
   //iClicker
-  //{.name="iclicker", .init=iclicker_init, .draw=iclicker_draw, .exit=iclicker_exit},
+  {.name="iclicker", .init=iclicker_init, .draw=iclicker_draw, .exit=iclicker_exit},
 #endif  
   //End on null entry.
   {.name=0, .init=0, .draw=0, .exit=0} 

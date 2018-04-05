@@ -188,10 +188,8 @@ static void draw_settingtime(){
 }
 
 
-//! Entry to the clock app.
-void clock_init(){
-  lcd_zero();
-}
+
+
 //! Exit clock when the sidebutton is pressed, unless we are programming.
 int clock_exit(){
   if(settingclock){
@@ -266,6 +264,12 @@ void clock_draw(){
 
 }
 
+
+//! Entry to the clock app.
+void clock_init(){
+  lcd_zero();
+  clock_draw();
+}
 
 //! A button has been pressed for the clock.
 int clock_keypress(char ch){
