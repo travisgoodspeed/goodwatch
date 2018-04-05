@@ -58,7 +58,7 @@ endif
 
 
 #Standard Debian gcc-msp430 and msp430mcu packages.
-CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os 
+CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os  $(addprefix -D, $(APPS_DEFINES))
 
 BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
@@ -76,7 +76,7 @@ all: goodwatch.hex
 gittag.h:
 	echo "#define GITTAG" 0x`git describe --always` >gittag.h
 goodwatch: $(modules) $(apps) *.h  
-	$(CC) -T msp430.x -o goodwatch $(modules) $(apps) $(addprefix -D, $(APPS_DEFINES))
+	$(CC) -T msp430.x -o goodwatch $(modules) $(apps)
 	../bin/printsizes.py goodwatch || echo "Please install python-pyelftools."
 
 goodwatch.hex: goodwatch
