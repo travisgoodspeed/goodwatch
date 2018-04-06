@@ -25,7 +25,7 @@ void ucs_slow(){
 //! Initialize the XT1 crystal, and stabilize it.
 void ucs_init(){
   P5SEL |= BIT0 + BIT1;                     // Select XT1
-  UCSCTL6 |= XCAP_3;                        // Internal load cap
+  UCSCTL6 |= XCAP_1;                        // Internal load cap
 
   // Loop until XT1 & DCO stabilizes
   do{
