@@ -16,7 +16,6 @@
 //Then radio apps.
 #include "apps/morse.h"
 #include "apps/tuner.h"
-#include "apps/iclicker.h"
 #include "apps/beacon.h"
 #include "apps/ook.h"
 

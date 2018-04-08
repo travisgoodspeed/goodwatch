@@ -91,10 +91,7 @@ const struct app subapps[]={
    .keypress=ook_keypress
   },
 #endif
-#ifdef ICLICKER_APP
-  //iClicker
-  {.name="iclicker", .init=iclicker_init, .draw=iclicker_draw, .exit=iclicker_exit},
-#endif  
+
   //End on null entry.
   {.name=0, .init=0, .draw=0, .exit=0} 
 };
