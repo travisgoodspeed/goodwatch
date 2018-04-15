@@ -17,6 +17,7 @@
 
 #include "keypad.h"
 #include "uart.h"
+#include "config.h"
 
 
 //! Activate the side butons.
@@ -38,6 +39,7 @@ int sidebutton_mode(){
   //Emulation.
   if(key_scan()==0x31)
     return 1;
+  
   return 0;
 }
 
@@ -47,8 +49,10 @@ int sidebutton_set(){
   if(!uartactive && !(P1IN&BIT6))
     return 1;
 
-  //Emulation.
+  //Emulation, disaabled by default.
+#ifdef EMULATESET
   if(key_scan()==0xC1)
     return 1;
+#endif
   return 0;
 }
