@@ -15,7 +15,7 @@
 struct codeplugentry *codeplug = (struct codeplugentry*) 0x1800;
 
 //! Index of entry in the codeplug.
-static int codeplugi=0;
+static unsigned int codeplugi=0;
 
 //! Initialize the codeplug at boot.
 void codeplug_init(){
@@ -80,6 +80,34 @@ void codeplug_setfreq(){
   }else{
     /* We don't have a codeplug, so default to 434.0 */
     radio_setfreq(434000000);
+  }
+}
+
+//! Gets the codeplug frequency.
+uint32_t codeplug_getfreq(){
+  static uint32_t oldhex=0, oldnum=0;
+  uint32_t hex=
+    0xFF0000l & (((uint32_t) codeplug[codeplugi].freq2)<<16);
+  hex|= (0xFF00l & (codeplug[codeplugi].freq1<<8));
+  hex|= (0xFFl & (codeplug[codeplugi].freq0));
+
+
+
+  
+  if(codeplug[codeplugi].flags!=0xFF){
+    /* We have a codeplug, so set the current entry's frequency. */
+    
+    //Return the old value if it hasn't changed.
+    if(oldhex==hex)
+      return oldnum;
+    
+    //Otherwise calculate the new value and return it.
+    oldhex=hex;
+    oldnum=hex*396.728515625;
+    return oldnum;
+  }else{
+    /* We don't have a codeplug, so default to 434.0 */
+    return 434000000;
   }
 }
 

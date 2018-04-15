@@ -34,3 +34,7 @@ void codeplug_prev();
 const char *codeplug_name();
 //! Sets the codeplug frequency.
 void codeplug_setfreq();
+//! Gets the codeplug frequency.
+uint32_t codeplug_getfreq();
+
+

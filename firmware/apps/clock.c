@@ -254,8 +254,14 @@ void clock_draw(){
       draw_date_rom();
       break;
     case '0':
-      //0 shows the current working channel.
+      //0 shows the name of the working channel.
       lcd_string(codeplug_name());
+      break;
+    case '.':
+      //. shows the frequency of the working channel.
+      lcd_number(codeplug_getfreq()/10);
+      setperiod(5,1);
+      setperiod(2,1);
       break;
     case 0:
       // Draw the time by default.

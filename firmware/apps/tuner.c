@@ -76,9 +76,9 @@ void tuner_draw(){
     break;
 
   case '/': //Show the frequency.
-    lcd_number(radio_getfreq()/10000);
+    lcd_number(codeplug_getfreq()/10);
+    setperiod(5,1);
     setperiod(2,1);
-    
     break;
   case '7': //Show scalar RSSI.
     //Update the RSSI if appropriate.
