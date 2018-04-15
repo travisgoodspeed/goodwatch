@@ -215,6 +215,9 @@ void clock_draw(){
 
   /* The SET button will move us into the programming mode. */
   if(sidebutton_set()){
+    //Wait for the button to be released.
+    while(sidebutton_set());
+    //Then change invert the setting.
     settingclock=!settingclock;
   }
 
