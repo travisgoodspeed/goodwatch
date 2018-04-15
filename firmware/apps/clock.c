@@ -276,6 +276,7 @@ void clock_draw(){
 
 //! Entry to the clock app.
 void clock_init(){
+  lastchar=0;
   lcd_zero();
   clock_draw();
 }
