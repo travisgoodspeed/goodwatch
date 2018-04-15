@@ -14,30 +14,32 @@
 //! Array of codeplug entries in info flash.
 struct codeplugentry *codeplug = (struct codeplugentry*) 0x1800;
 
+static struct codeplugentry *selectedentry;
+
+//! Special codeplug entry for the VFO.
+struct codeplugentry vfoentry={
+  .flags=0x00,
+  .name="vfo mode"
+};
+
 //! Index of entry in the codeplug.
-static unsigned int codeplugi=0;
+static int codeplugi=0;
 
 //! Initialize the codeplug at boot.
 void codeplug_init(){
   do{
-    /*
-    printf("Codeplug entry '%s': %02x 0x%02x%02x%02x\n",
-	   codeplug_name(),
-	   codeplug[codeplugi].flags,
-	   codeplug[codeplugi].freq2,
-	   codeplug[codeplugi].freq1,
-	   codeplug[codeplugi].freq0
-	   );
-    */
     codeplug_next();
   }while(codeplugi);
-  
+
+  selectedentry = &codeplug[codeplugi];
 }
 
 //! Next codeplug entry.
 void codeplug_next(){
   if(codeplug[++codeplugi].flags==0xFF)
     codeplugi=0;
+  
+  selectedentry = &codeplug[codeplugi];
 }
 
 //! Previous codeplug entry.
@@ -51,14 +53,16 @@ void codeplug_prev(){
     //Jump back one.
     codeplugi--;
   }
+
+  selectedentry = &codeplug[codeplugi];
 }
 
 //! Return the name of the codeplug entry.  8 bytes, no null terminator!
 const char *codeplug_name(){
   static char name[9];
 
-  if(codeplug[codeplugi].flags!=0xFF){
-    memcpy(name,codeplug[codeplugi].name,8);
+  if(selectedentry->flags!=0xFF){
+    memcpy(name,selectedentry->name,8);
     name[8]=0;
   }else{
     /* We don't seem to have a codeplug, so we write "Missing" to the
@@ -72,29 +76,44 @@ const char *codeplug_name(){
 
 //! Sets the codeplug frequency.
 void codeplug_setfreq(){
-  if(codeplug[codeplugi].flags!=0xFF){
+  if(selectedentry->flags!=0xFF){
     /* We have a codeplug, so set the current entry's frequency. */
-    radio_setrawfreq(codeplug[codeplugi].freq2,
-		     codeplug[codeplugi].freq1,
-		     codeplug[codeplugi].freq0);
+    radio_setrawfreq(selectedentry->freq2,
+		     selectedentry->freq1,
+		     selectedentry->freq0);
   }else{
     /* We don't have a codeplug, so default to 434.0 */
     radio_setfreq(434000000);
   }
 }
 
+//! Sets the VFO frequency.
+void codeplug_setvfofreq(float freq){
+  float freqMult = (0x10000 / 1000000.0) / 26;
+  uint32_t num = freq * freqMult;
+
+  //Store the frequency into the VFO entry.
+  vfoentry.freq2 = (num >> 16) & 0xFF;
+  vfoentry.freq1 = (num >> 8) & 0xFF;
+  vfoentry.freq0 = num & 0xFF;
+  
+  //Select the VFO entry.
+  selectedentry = &vfoentry;
+
+  //Tune the radio.
+  codeplug_setfreq();
+}
+
+
 //! Gets the codeplug frequency.
 uint32_t codeplug_getfreq(){
   static uint32_t oldhex=0, oldnum=0;
   uint32_t hex=
-    0xFF0000l & (((uint32_t) codeplug[codeplugi].freq2)<<16);
-  hex|= (0xFF00l & (codeplug[codeplugi].freq1<<8));
-  hex|= (0xFFl & (codeplug[codeplugi].freq0));
-
-
-
+    0xFF0000l & (((uint32_t) selectedentry->freq2)<<16);
+  hex|= (0xFF00l & (selectedentry->freq1<<8));
+  hex|= (0xFFl & (selectedentry->freq0));
   
-  if(codeplug[codeplugi].flags!=0xFF){
+  if(selectedentry->flags!=0xFF){
     /* We have a codeplug, so set the current entry's frequency. */
     
     //Return the old value if it hasn't changed.

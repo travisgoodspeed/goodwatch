@@ -13,6 +13,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<msp430.h>
+#include<string.h>
 #include "api.h"
 
 //Draws the codeplug name.
@@ -53,8 +54,52 @@ int tuner_exit(){
 static int vfosetmode=0;
 static int rssi=0x5;
 
+static void clearperiods(){
+  int i;
+  for(i=0; i<8; i++)
+    setperiod(i,0);
+}
+
+int vfosetmode_bufferi;
+char vfosetmode_buffer[9];
+
+static void vfosetmode_apply(){
+  long f=atol(vfosetmode_buffer);
+
+  vfosetmode=0;
+  printf("Setting frequency to %ld\n",f);
+  codeplug_setvfofreq((float) f);
+}
+
+static void vfosetmode_keypress(char ch){
+  //Numbers populate a buffer character.
+  if(ch>='0' && ch<='9')
+    vfosetmode_buffer[vfosetmode_bufferi++]=ch;
+
+  //Exit when we have all characters or = is pressed again.
+  if(ch=='=' || vfosetmode_bufferi==8){
+    vfosetmode_apply();
+  }
+}
+
+static void vfosetmode_draw(){
+  /* This is called four times a second when we are setting the VFO
+     frequency.  Activate the mode by pressing the = button.
+   */
+  clearperiods();
+  lcd_string(vfosetmode_buffer);
+  setperiod(5,1);
+  setperiod(2,1);
+}
+
+
 //! Tuner keypress callback.
 int tuner_keypress(char ch){
+  if(vfosetmode){
+    vfosetmode_keypress(ch);
+    return 0;
+  }
+  
   switch(ch){
   default:
     draw();
@@ -69,11 +114,12 @@ int tuner_keypress(char ch){
     break;
   case '/':  //Show the frequency.
     lcd_number(codeplug_getfreq()/10);
-    //setperiod(5,1);  //Periods are controlled by RSSI right now.
-    //setperiod(2,1);
     break;
-  case '=':  //Set a frequency.  Not yet working.
-    vfosetmode=!vfosetmode;
+  case '=':  //Set a VFO frequency.
+    vfosetmode=1;
+    //Clear all eight digits, plus null terminator.
+    memset(vfosetmode_buffer,'0',9);
+    vfosetmode_bufferi=0;
     break;
   case '7':  //Show snapshot of scalar RSSI.
     lcd_number(rssi);
@@ -84,15 +130,16 @@ int tuner_keypress(char ch){
   return 1;//Redraw.
 }
 
-void clearperiods(){
-  int i;
-  for(i=0; i<8; i++)
-    setperiod(i,0);
-}
 
 //! Draw the screen and increase the count.
 void tuner_draw(){
   static int i=0;
+  
+  //No sense using the radio when we don't yet know the frequency.
+  if(vfosetmode){
+    vfosetmode_draw();
+    return;
+  }
   
   /* Every other frame, we grab the signal strength.  Highest
      stays. */
