@@ -17,6 +17,7 @@ const struct app apps[]={
    .keypress=clock_keypress
   },
 
+
 #ifdef ALARM_APP
   //Alarm    
   {.name="alarm", .init=alarm_init, .draw=alarm_draw, .exit=alarm_exit,   
@@ -70,6 +71,12 @@ const struct app subapps[]={
   //Tuner Tool
   {.name="tuner", .init=tuner_init, .draw=tuner_draw, .exit=tuner_exit,
    .keypress=tuner_keypress
+  },
+#endif 
+#ifdef COUNTER_APP
+  //Counter Tool
+  {.name="counter", .init=counter_init, .draw=counter_draw, .exit=counter_exit,
+   .keypress=counter_keypress
   },
 #endif 
 #ifdef MORSE_APP
