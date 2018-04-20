@@ -77,6 +77,7 @@ static float best_freq;
 #define MAX_FREQ  470000000  //Range is 410 to 470 for now.
 #define MIN_FREQ  410000000  //Will open more bands later.
 #define STEP_FREQ 000100000  //600 steps at 100kHz/Step
+//#define STEP_FREQ 000010000  //6000 steps at 10kHz/Step
 static float current_freq;
 
 //! Try a given frequency, and update display if it's best.
@@ -91,7 +92,6 @@ static void try_freq(float freq){
   if(rssi>best_rssi){
     best_freq=freq;
     best_rssi=rssi;
-    lcd_hex(rssi);
   }
 }
 
@@ -143,6 +143,11 @@ int counter_exit(){
   return 0;
 }
 
+//! Draw the counter's status.
+static void counter_drawstatus(){
+  lcd_number(current_freq/10);
+}
+
 //! Draw the Counter screen.
 void counter_draw(){
   switch(counter_state){
@@ -161,15 +166,22 @@ void counter_draw(){
 
 //! Keypress handler for the Counter applet.
 int counter_keypress(char ch){
+  int i=0;
+  
   switch(ch){
   case '0': //Begin a new sweep.
     best_rssi=0;
     best_freq=0;
+    //No break, because we also want the behavior of '1'.
+  case '1': //Continue the old sweep.
     counter_state=SWEEP;
-
     //Do the sweep.
-    while(counter_state==SWEEP)
+    while(counter_state==SWEEP){
       try_next();
+      //Draw every 64th channel.
+      if((i++&0x3f)==0)
+	counter_drawstatus();
+    }
     
     break;
   }
