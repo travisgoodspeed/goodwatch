@@ -69,7 +69,7 @@ BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
 modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o applist.o \
 	sidebutton.o power.o uart.o monitor.o ucs.o buzz.o \
-	radio.o packet.o dmesg.o codeplug.o rng.o \
+	radio.o packet.o dmesg.o codeplug.o rng.o descriptor.o \
 	libs/assembler.o libs/morse.o 
 
 apps= $(APPS_OBJ)

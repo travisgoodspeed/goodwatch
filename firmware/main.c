@@ -122,8 +122,10 @@ int main(void) {
   lcd_zero();
   lcd_string("APP INIT");
   app_init();
-  
 
+
+  descriptor_dump();
+  
   // Setup and enable WDT 250ms, ACLK, interval timer
   WDTCTL = WDT_ADLY_250;
   SFRIE1 |= WDTIE;
