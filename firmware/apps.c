@@ -15,7 +15,7 @@
 static int appindex=DEFAULTAPP, idlecount=0;
 
 //! The currently selected application.
-const struct app *applet;
+const struct app *applet=&apps[0];
 
 //! Every 3 minutes we return to the clock unless this is called.
 void app_cleartimer(){
