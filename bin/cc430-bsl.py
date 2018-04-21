@@ -30,10 +30,9 @@ class BSL:
 
     def enter_bsl(self):
         """Activates the bootloader by the sequence in SLAU319N."""
-        self.setRST(False)
         self.setTST(False)
-        time.sleep(0.250)
         self.setRST(True)
+        time.sleep(0.10)
 
         #Minimum two rising edges are required, but it helps to have three or more.
         self.setTST(False)
@@ -47,7 +46,7 @@ class BSL:
         
         self.setRST(False)
         self.setTST(False)
-        time.sleep(0.250)
+        time.sleep(0.10)
         self.serial.flushInput();
     def reset(self):
         """Exits the BSL by resetting the chip."""
