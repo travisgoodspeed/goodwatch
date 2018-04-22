@@ -16,10 +16,16 @@
   observed.  It is loosely based on Michael Ossmann's spectrum
   analyzer, written for the Girltech IMME in 2010.
 
-  This implementation does a single sweep from 410 to 470 MHz when the
-  0 button is pressed.  A better implementation would perform a second
-  pass with a narrower filter to better identify the center frequency
-  after a sweep.
+  This implementation does a wideband sweep from 410 to 470
+  MHz when the 0 button is pressed.  The 1 button repeats the broad
+  sweep without forgetting the old peak.
+
+  Generally, you will just run these all by pressing 0, but for TDMA
+  protocols like DMR/MotoTrbo, it's handy to rerun the scan by
+  starting with the 1 button.
+  
+  The result will be off by up to 100kHz, so just treat the result as
+  a decent guess.  Later versions will scan other bands.
   
   --Travis
   
@@ -58,10 +64,12 @@ static const uint8_t counter_settings[]={
   MCSM0, 0,
 
 
-  /* Filter bandwidth */
+  /* Filter bandwidth.  270kHz seems to work best,
+     even though it could be narrower. */
+  //MDMCFG4, 0xFC, /* 58.0357 kHz */
   //MDMCFG4, 0xEC, /* 67.708333 kHz */
-  //MDMCFG4, 0x0C, /* 812.5 kHz */
   MDMCFG4, 0x6C, /* 270.833333 kHz */
+  //MDMCFG4, 0x0C, /* 812.5 kHz */
 
   //End with null terminator.
   0,0
@@ -74,40 +82,44 @@ static const uint8_t counter_settings[]={
 static enum {IDLE, SWEEP} counter_state;
 static int best_rssi;
 static float best_freq;
-#define MAX_FREQ  470000000  //Range is 410 to 470 for now.
-#define MIN_FREQ  410000000  //Will open more bands later.
-#define STEP_FREQ 000100000  //600 steps at 100kHz/Step
-//#define STEP_FREQ 000010000  //6000 steps at 10kHz/Step
+#define MAX_BIGFREQ  470000000.0  //Range is 410 to 470 for now.
+#define MIN_BIGFREQ  410000000.0  //Will open more bands later.
+#define BIGSTEP_FREQ    100000.0  //100kHz/Step
 static float current_freq;
 
 //! Try a given frequency, and update display if it's best.
 static void try_freq(float freq){
   int rssi;
+  
   //Set the frequency.
   radio_setfreq(freq);
+  
   //Get the RSSI.
   rssi=radio_getrssi();
 
   //Compare it.
   if(rssi>best_rssi){
-    best_freq=freq;
     best_rssi=rssi;
+    best_freq=freq;
   }
+
 }
 
-//! Try the next frequency in the set.
-static void try_next(){
+
+
+//! Try the next frequency in the wide set.
+static void try_nextbig(){
   //Enforce the range here.
-  if(current_freq<MIN_FREQ)
-    current_freq=MIN_FREQ;
+  if(current_freq<MIN_BIGFREQ)
+    current_freq=MIN_BIGFREQ;
 
   //Try the next center freq and step ahead.
   try_freq(current_freq);
-  current_freq+=STEP_FREQ;
+  current_freq+=BIGSTEP_FREQ;
 
   //We're done!
-  if(current_freq>MAX_FREQ){
-    current_freq=MIN_FREQ;
+  if(current_freq>MAX_BIGFREQ){
+    current_freq=MIN_BIGFREQ;
     counter_state=IDLE;
   }
 }
@@ -158,8 +170,7 @@ void counter_draw(){
       lcd_number(best_freq/10);
     break;
   case SWEEP:
-    lcd_string("SWEEPING");
-    
+    //lcd_string("SWEEPING");
     break;
   }
 }
@@ -167,22 +178,26 @@ void counter_draw(){
 //! Keypress handler for the Counter applet.
 int counter_keypress(char ch){
   int i=0;
-  
+
+
+  /* No break statements because the stages run in order.
+   */
   switch(ch){
-  case '0': //Begin a new sweep.
+  case '0': //Begin a new broad sweep.
     best_rssi=0;
-    best_freq=0;
-    //No break, because we also want the behavior of '1'.
-  case '1': //Continue the old sweep.
+    
+  case '1': //Second pass of the broad sweep sweep.
     counter_state=SWEEP;
+    current_freq = MIN_BIGFREQ;
+    
     //Do the sweep.
     while(counter_state==SWEEP){
-      try_next();
+      try_nextbig();
       //Draw every 64th channel.
       if((i++&0x3f)==0)
 	counter_drawstatus();
     }
-    
+
     break;
   }
   return 0;
