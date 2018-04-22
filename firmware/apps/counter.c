@@ -27,6 +27,8 @@
   The result will be off by up to 100kHz, so just treat the result as
   a decent guess.  Later versions will scan other bands.
   
+  Press '=' to copy the frequency to the VLO.
+  
   --Travis
   
 */
@@ -198,6 +200,10 @@ int counter_keypress(char ch){
 	counter_drawstatus();
     }
 
+    break;
+
+  case '=': //Copy best freq to VFO.
+    codeplug_setvfofreq(best_freq);
     break;
   }
   return 0;
