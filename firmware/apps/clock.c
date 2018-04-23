@@ -366,10 +366,6 @@ int clock_keypress(char ch){
       //6 toggles the CPU load indicator.
       flickermode=(flickermode?0:-1);
       break;
-    case '.':
-      // beep a little
-      tone(2048, 250);
-      break;
     }
   }
   return 1;

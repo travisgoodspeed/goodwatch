@@ -182,12 +182,16 @@ int alarm_keypress(char ch){
     }
   } else {
     switch(ch){
-     case '4':
+    case '4': //Toggle the alarm.
       if (alarm_enabled())
         toggle_alarm(0);
       else
         toggle_alarm(1);
       break;
+    case '.': // beep a little
+      tone(2048, 250);
+      break;
+
     }
   }
   return 1;
