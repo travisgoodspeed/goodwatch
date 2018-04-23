@@ -123,13 +123,6 @@ static char lastchar=0;
 
 //! Draws the alarm time in the main application.
 void alarm_draw(){
-  static char ch=0;
-
-  if(ch!=lastchar)
-    lcd_zero();
-  
-  ch=lastchar;
-
   /* The SET button will move us into the programming mode. */
   if(sidebutton_set()){
     settingalarm=!settingalarm;
