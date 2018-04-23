@@ -155,6 +155,9 @@ void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
   //a few seconds.  We might later decide to call this in the
   //rendering loop.
   rtc_savetime();
+
+  printf("RTCIV=%02x\n",
+	 RTCIV);
   
   //We don't really handly these, but might want to in the future.
   switch(RTCIV&~1){
@@ -163,14 +166,16 @@ void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
     case 4: break;                          // RTCTEVIFG
     case 6:                                 // RTCAIFG Alarm
       if (!alarm_ringing) {
-          alarm_ringing = 1;
-          //! Sound the alarm
-          tone(NOTE_C6, 500);
-          tone(NOTE_E6, 500);
-          tone(NOTE_G6, 500);
-          tone(NOTE_B7, 500);
-          tone(NOTE_C7, 500);
-          alarm_ringing = 0;
+	alarm_ringing = 1;
+	printf("Sounding the alarm.\n");
+	lcd_string("ALARM");
+	//! Sound the alarm
+	tone(NOTE_C6, 500);
+	tone(NOTE_E6, 500);
+	tone(NOTE_G6, 500);
+	tone(NOTE_B7, 500);
+	tone(NOTE_C7, 500);
+	alarm_ringing = 0;
       }
       break;
     case 8: break;                          // RT0PSIFG

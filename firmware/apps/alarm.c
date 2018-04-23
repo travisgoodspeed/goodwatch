@@ -136,17 +136,11 @@ void alarm_draw(){
 
 //! A button has been pressed for the alarm.
 int alarm_keypress(char ch){
-  int enabled_flag=0;
   unsigned char inputdigit=0;
   lastchar=ch;
   
   if(settingalarm){
 
-    // clear and store the enable state while we overwrite the alarm registers
-    if (alarm_enabled()){
-      toggle_alarm(0);
-      enabled_flag=1;
-    }
     //We only handle numbers here.
     if((ch&0x30)==0x30)
       inputdigit=ch&0x0F;
@@ -172,12 +166,9 @@ int alarm_keypress(char ch){
       break;
     default:
       /* Once we've exceeded the count, it's time to return to the
-     normal mode.
+	 normal mode and enable the alarm.
       */
       settingalarm=0;
-    }
-    // restore enable bits if necessary
-    if (enabled_flag) {
       toggle_alarm(1);
     }
   } else {
