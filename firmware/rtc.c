@@ -168,7 +168,6 @@ void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
       if (!alarm_ringing) {
 	alarm_ringing = 1;
 	printf("Sounding the alarm.\n");
-	lcd_string("ALARM");
 	//! Sound the alarm
 	tone(NOTE_C6, 500);
 	tone(NOTE_E6, 500);
