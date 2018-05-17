@@ -225,6 +225,11 @@ void clock_draw(){
     draw_settingtime();
   else
     switch(ch){
+    case '6':
+      lcd_string("CPU LOAD");
+      setplus(!!flickermode);
+      setminus(!flickermode);
+      break;
     case '7':
       //Hold 7 to run the self-test after startup.  Response codes try to
       //roughly describe the fault.
