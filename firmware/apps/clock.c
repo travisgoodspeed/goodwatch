@@ -246,7 +246,7 @@ void clock_draw(){
 
     case '4':
       //4 shows the git revision.
-      lcd_hex(GITTAG);
+      lcd_hex(GITHASH);
       lcd_cleardigit(7);
       break;
     case '5':

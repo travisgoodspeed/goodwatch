@@ -76,10 +76,10 @@ apps= $(APPS_OBJ)
 
 all: goodwatch.hex
 
-*.c: gittag.h
+*.c: githash.h
 
-gittag.h:
-	echo "#define GITTAG" 0x`git describe --always` >gittag.h
+githash.h:
+	echo "#define GITHASH" 0x`git rev-parse HEAD | head -c7` > githash.h
 goodwatch: $(modules) $(apps) *.h  
 	$(CC) -T msp430.x -o goodwatch $(modules) $(apps)
 	../bin/printsizes.py goodwatch || echo "Please install python-pyelftools."
@@ -88,7 +88,7 @@ goodwatch.hex: goodwatch
 	msp430-objcopy -O ihex goodwatch goodwatch.hex
 
 clean:
-	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch gittag.h html latex
+	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h html latex
 erase:
 	$(BSL) -e
 flash: goodwatch.hex

@@ -15,4 +15,4 @@ ftp-lib-table
 *.o
 *.hex
 firmware/goodwatch
-firmware/gittag.h
+firmware/githash.h
