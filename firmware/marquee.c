@@ -40,8 +40,14 @@ void draw_marquee(void)
     if (!marquee_len) return;
 
     int i;
-    for (i = 0; i < MIN(marquee_len, marquee_startdigit + 1); i++)
-        lcd_char(marquee_startdigit - i, marquee_buf[marquee_skip + i]);
+    int digit;
+    for (i = 0; i < MIN(marquee_len, marquee_startdigit + 1); i++) {
+        digit = marquee_startdigit - i;
+        lcd_char(digit, marquee_buf[marquee_skip + i]);
+        setperiod(digit, 0);
+        if (digit == 5)
+            setcolon(0);
+    }
 
     if (marquee_startdigit != 7) {
         marquee_startdigit++;
