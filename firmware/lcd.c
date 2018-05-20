@@ -10,7 +10,6 @@
 #include <stdio.h>
 
 #include "api.h"
-#include "marquee.h"
 
 //! LCD Main memory.
 volatile unsigned char *lcdm=&LCDM1;

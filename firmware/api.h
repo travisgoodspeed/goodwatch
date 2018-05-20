@@ -18,6 +18,7 @@
 #include "monitor.h"
 #include "ucs.h"
 #include "lcdtext.h"
+#include "marquee.h"
 #include "keypad.h"
 #include "apps.h"
 #include "rtc.h"
