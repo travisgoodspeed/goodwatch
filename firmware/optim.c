@@ -1,5 +1,13 @@
+/*! \file optim.c
+  \brief Hardware optimisation routines in MSP430 assembly.
+ */
+
+
+
 /* Taken from Alex Mykyta's msp430 compatibility header
-   https://github.com/gbkhorn/msp430lib/blob/63d9ba672e75749fa19b0958af5aebb2d977b31c/include/intrinsics_xc.h#L66 */
+   https://github.com/gbkhorn/msp430lib/blob/63d9ba672e75749fa19b0958af5aebb2d977b31c/include/intrinsics_xc.h#L66
+
+*/
 #define bcd_add_long(op1, op2) \
 ({ \
             unsigned long int __op1 = op1;      \

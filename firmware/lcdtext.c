@@ -162,7 +162,6 @@ void lcd_string(const char *str){
 void lcd_number(long num){
   static long oldnum=0;
   static unsigned long bcd=0;
-  int i;
 
   if (num > 99999999) {
     lcd_string(" ovrflo ");
