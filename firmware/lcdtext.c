@@ -43,6 +43,8 @@ const int lcdmap[10][8]={
 
 //! Bit flags for each of the eight segments.
 enum lcdmappos {A=1, B=2, C=4, D=8, E=0x10, F=0x20, G=0x40, DP=0x80};
+
+
 //! Font for numbers.
 const int numfont[]={
   A|B|C|D|E|F,   //0
@@ -125,6 +127,10 @@ void lcd_char(int pos, char c){
   }else if(c==' '){
     lcd_cleardigit(pos);
     return;
+  }else if(c=='-'){
+    lcd_cleardigit(pos);
+    DRAWPOINT(lcdmap[pos][6]); //Set the G segment.
+    return;
   }else if(c=='.'){
     lcd_cleardigit(pos);
     setperiod(pos,1);
@@ -159,7 +165,7 @@ void lcd_string(const char *str){
 }
 
 //! Draws a decimal number on the screen.
-void lcd_number(long num){
+void lcd_unumber(long num){
   static long oldnum=0;
   static unsigned long bcd=0;
 
@@ -178,6 +184,17 @@ void lcd_number(long num){
   oldnum = num;
   bcd = l2bcd(num);
   lcd_hex(bcd);
+}
+
+
+//! Draws a decimal number on the screen.
+void lcd_number(long num){
+  if(num<0){
+    lcd_unumber(0-num);
+    lcd_char(7,'-');
+  }else{
+    lcd_unumber(num);
+  }
 }
 
 //! Draws hex on the screen.

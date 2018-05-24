@@ -12,8 +12,8 @@
 
 #define STACKSIZE 10
 
-static unsigned long stack[STACKSIZE];
-static unsigned long buffer=0;
+static long stack[STACKSIZE];
+static long buffer=0;
 static int bufferdirty=0;
 static unsigned int stacki=0;
 
@@ -109,7 +109,7 @@ void rpn_draw(){
 
 //! A button has been pressed for the calculator.
 int rpn_keypress(char ch){
-  unsigned long i, j;
+  long i, j;
 
   //Do nothing on a keyup event.
   if(!ch)
