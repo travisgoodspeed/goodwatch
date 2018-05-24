@@ -28,6 +28,9 @@ int submenu_keypress(char c){
   case '-':
     if(subindex)
       subindex--;
+    else{
+      while(subapps[++subindex+1].name);
+    }
     break;
   }
 
