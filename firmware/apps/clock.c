@@ -254,6 +254,7 @@ void clock_draw(){
       setperiod(5,1);
       setperiod(2,1);
       break;
+    case '6':
     case '9':
     case 0:
       // Draw the time by default.

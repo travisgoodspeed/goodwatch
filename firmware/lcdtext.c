@@ -3,6 +3,7 @@
  */
 #include "lcd.h"
 #include "lcdtext.h"
+#include "optim.h"
 
 /* Digits look like this, and we index them with 0 being the
    leftmost.
@@ -159,10 +160,14 @@ void lcd_string(const char *str){
 
 //! Draws a decimal number on the screen.
 void lcd_number(long num){
-  static long bcd=0;
   static long oldnum=0;
-  int i;
-  
+  static unsigned long bcd=0;
+
+  if (num > 99999999) {
+    lcd_string(" ovrflo ");
+    return;
+  }
+
   /* This conversion takes too long at 32kHz, so we cache the last
      value for rendering. */
   if(oldnum==num){
@@ -170,14 +175,8 @@ void lcd_number(long num){
     return;
   }
 
-  /* Otherwise we convert it with expensive divisions. */
-  bcd=0;
-  oldnum=num;
-  for(i=0;i<8 && num;i++){
-    bcd|=((num%10)<<(4*i));
-    num/=10;
-  }
-
+  oldnum = num;
+  bcd = l2bcd(num);
   lcd_hex(bcd);
 }
 
