@@ -170,7 +170,7 @@ void lcd_unumber(long num){
   static unsigned long bcd=0;
 
   if (num > 99999999) {
-    lcd_string(" ovrflo ");
+    lcd_string("overflow");
     return;
   }
 
