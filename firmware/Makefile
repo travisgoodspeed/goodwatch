@@ -1,5 +1,6 @@
 
 ALARM_APP = 1
+CALIBRATE_APP = 1
 RPN_APP = 1
 HEX_APP = 1
 STOPWATCH_APP = 1
@@ -28,6 +29,10 @@ ifeq ($(HEX_APP),1)
 APPS_OBJ += apps/hex.o 
 APPS_DEFINES += HEX_APP
 endif
+ifeq ($(CALIBRATE_APP),1)
+APPS_OBJ += apps/calibrate.o 
+APPS_DEFINES += CALIBRATE_APP
+endif 
 ifeq ($(STOPWATCH_APP),1)
 APPS_OBJ += apps/stopwatch.o 
 APPS_DEFINES += STOPWATCH_APP

@@ -6,10 +6,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "rtc.h"
-#include "lcd.h"
-#include "lcdtext.h"
-#include "buzz.h"
+#include "api.h"
+#include "apps/calibrate.h"
 
 //! If this is 0xdeadbeef, the ram time is good.
 static unsigned long magicword __attribute__ ((section (".noinit")));
@@ -64,6 +62,11 @@ void rtc_init(){
   RTCCTL01 = RTCTEVIE + RTCSSEL_2 + RTCTEV_0 + RTCMODE + RTCAIE;
   RTCPS0CTL = RT0PSDIV_2;                   // ACLK, /8, start timer
   RTCPS1CTL = RT1SSEL_2 + RT1PSDIV_3;       // out from RT0PS, /16, start timer
+
+  #ifdef CALIBRATE_APP
+  //Load the calibration routines.
+  calibrate_enforce();
+  #endif
 
   rtc_loadtime();
   rtc_setdow();

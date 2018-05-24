@@ -11,7 +11,6 @@
    to reject a mode switch or 0 to allow it.
  */
 const struct app apps[]={
-
   //Clock
   {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
    .keypress=clock_keypress
@@ -96,6 +95,15 @@ const struct app subapps[]={
    .init=ook_init, .draw=ook_draw, .exit=ook_exit,
    .packetrx=ook_packetrx, .packettx=ook_packettx,
    .keypress=ook_keypress
+  },
+#endif
+
+
+#ifdef CALIBRATE_APP
+  //CALIBRATE
+  {.name="calibrate",
+   .draw=calibrate_draw, .init=calibrate_init, .exit=calibrate_exit,
+   .keypress=calibrate_keypress
   },
 #endif
 
