@@ -1,5 +1,14 @@
 /*! \file calibrate.c
   \brief RTC calibration tool.
+  
+  The number selected on the screen is the RTC calibration.  Positive
+  numbers add 2ppm apiece to the crystal duration, while negative
+  numbers subtract 4ppm from the duration.
+
+  1ppm roughly coresponds to 0.1728 seconds per day, so a value of +63
+  makes the day 21.8 seconds longer and a value of -63 makes the day
+  43.5 seconds shorter.  Your correct adjustment will certainly be
+  smaller than these extremes.
 */
 
 #include<msp430.h>
@@ -27,11 +36,9 @@ void calibrate_draw(){
   // Indicate that we're in the calibrate by setting the plus and
   // minus digits.
   lcd_number(calibration);
-}
 
-//! Change the selected applet.
-int calibrate_keypress(char c){
-  switch(c){
+
+  switch(getchar()){
   case '+':
     calibration++;
     calibrate_enforce();
@@ -41,6 +48,11 @@ int calibrate_keypress(char c){
     calibrate_enforce();
     break;
   }
+
+}
+
+//! Change the selected applet.
+int calibrate_keypress(char c){
   
   return 1;//Redraw after the press.
 }
