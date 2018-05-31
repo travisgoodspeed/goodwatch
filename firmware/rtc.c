@@ -158,9 +158,6 @@ void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
   //a few seconds.  We might later decide to call this in the
   //rendering loop.
   rtc_savetime();
-
-  printf("RTCIV=%02x\n",
-	 RTCIV);
   
   //We don't really handly these, but might want to in the future.
   switch(RTCIV&~1){
