@@ -95,6 +95,9 @@ void lcd_postdraw(){
   }
   if(power_ishigh())
     setminus(1);    //Minus indicates the radio is on.
+
+  // display marquee, if active
+  draw_marquee();
   
   //Now swap back the buffer.
   LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.

@@ -71,19 +71,14 @@ static void draw_date(){
 }
 
 static const char *daysofweek[7]={
-  "  sunday",
-  "  monday",
-  " tuesday",
-  "wednesdy",
-  "thursday",
-  "  friday",
-  "saturday"
+  " sunday ",
+  " monday ",
+  " tuesday ",
+  " wednesday ",
+  " thursday ",
+  " friday ",
+  " saturday "
 };
-
-//! Draws the day of the week.
-static void draw_dow(){
-  lcd_string(daysofweek[RTCDOW]);
-}
 
 //! Draws the date as yyyy.mm.dd
 static void draw_date_rom(){
@@ -235,10 +230,6 @@ void clock_draw(){
       lcd_string("        ");
       lcd_string(CALLSIGN);
       break;
-    case '9':
-      //Hold 9 to draw the day of the week.
-      draw_dow();
-      break;
     case '/':
       //Hold / to draw the date.
       draw_date();
@@ -264,6 +255,7 @@ void clock_draw(){
       setperiod(2,1);
       break;
     case '6':
+    case '9':
     case 0:
       // Draw the time by default.
       draw_time();
@@ -361,11 +353,15 @@ int clock_keypress(char ch){
     //Update the DOW.  We could save some cycles by only doing this if
     //the date changes, but we don't bother.
     rtc_setdow();
-  }else{
-    switch(ch){
+
+  } else {
+    switch (ch) {
     case '6':
       //6 toggles the CPU load indicator.
       flickermode=(flickermode?0:-1);
+      break;
+    case '9':
+      marquee(daysofweek[RTCDOW]);
       break;
     }
   }
