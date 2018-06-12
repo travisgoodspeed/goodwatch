@@ -41,6 +41,13 @@ const struct app apps[]={
    the main menu once selected.
  */
 const struct app subapps[]={
+#ifdef HEX_APP
+  //Hex Viewer.
+  {.name="hex edit", .init=hex_init, .draw=hex_draw, .exit=hex_exit,
+   .keypress=hex_keypress
+  },
+#endif
+  
 #ifdef RPN_APP
   //RPN Calculator
   {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit,
@@ -48,12 +55,11 @@ const struct app subapps[]={
   },
 #endif
 
-#ifdef HEX_APP
-  //Hex Viewer.
-  {.name="hex edit", .init=hex_init, .draw=hex_draw, .exit=hex_exit,
-   .keypress=hex_keypress
-  },
+#ifdef VOLTAGE_APP
+  //Voltage
+  {.name="voltage", .init=voltage_init, .draw=voltage_draw},
 #endif
+  
 #ifdef PHRASE_APP
   // Phrase - passphrase generator
   {.name="phrase", .init=phrase_init, .draw=phrase_draw, .exit=phrase_exit,

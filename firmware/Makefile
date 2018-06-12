@@ -11,6 +11,7 @@ MORSE_APP = 1
 BEACON_APP = 1
 OOK_APP = 1
 COUNTER_APP = 1
+VOLTAGE_APP = 1
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT = /dev/ttyUSB0
@@ -64,6 +65,10 @@ endif
 ifeq ($(COUNTER_APP),1)
 APPS_OBJ += apps/counter.o
 APPS_DEFINES += COUNTER_APP 
+endif
+ifeq ($(VOLTAGE_APP),1)
+APPS_OBJ += apps/voltage.o
+APPS_DEFINES += VOLTAGE_APP 
 endif
 
 
