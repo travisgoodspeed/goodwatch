@@ -8,3 +8,5 @@
 // Uncomment this to emulate the SET button by holding + and - at once.
 //#define EMULATESET
 
+//Uncomment this to set the default RTC Calibration.  Positive is slow, negative is fast.
+#define RTCCALIBRATE -28
