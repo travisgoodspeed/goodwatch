@@ -21,6 +21,8 @@
 //! If non-zero, we are setting the time.
 static int settingclock=0;
 
+static unsigned int vcc;
+
 
 //! Draws the time.
 static void draw_time(){
@@ -112,7 +114,6 @@ static void draw_date_rom(){
 static void draw_settingtime(){
   static int flicker=0;
   
-
   flicker^=1;
 
   //Zero the second hand if we're not yet to the date.  ("Hacking.")
@@ -202,12 +203,18 @@ int clock_exit(){
   }
 }
 
+//! This hold the last character pressed.
 static char lastchar=0;
 
 //! Draws the clock face in the main application.
 void clock_draw(){
+  /* Do *NOT* put anything here that takes a long time to calculate.
+     Instead, do that in clock_keypress() once for the keydown event,
+     and then show the result here.
+  */
+  
   static char ch=0;
-
+  
   if(ch!=lastchar)
     lcd_zero();
   
@@ -253,6 +260,14 @@ void clock_draw(){
       //5 shows the git date from Flash.
       draw_date_rom();
       break;
+
+    case '1':
+      //1 shows the voltage.
+      //lcd_string("voltage");
+      lcd_number(vcc);
+      lcd_string("volt ");
+      break;
+      
     case '0':
       //0 shows the name of the working channel.
       lcd_string(codeplug_name());
@@ -286,6 +301,13 @@ void clock_init(){
 int clock_keypress(char ch){
   unsigned char inputdigit=0;
   lastchar=ch;
+
+  /* This function is called *once* per keypress event, while the
+     handlers in clock_draw() are called once per frame.  It is very
+     important that anything that takes more than a frame be handled
+     here, rather than in clock_draw(), which is rerun for every frame.
+   */
+  
   
   if(settingclock){
     //We only handle numbers here.
@@ -363,6 +385,9 @@ int clock_keypress(char ch){
     rtc_setdow();
   }else{
     switch(ch){
+    case '1':
+      vcc=adc_getvcc();
+      break;
     case '6':
       //6 toggles the CPU load indicator.
       flickermode=(flickermode?0:-1);

@@ -1,9 +1,9 @@
-/*! \file voltage.c
-  \brief Voltmeter applet.
-
-  This uses the internal reference voltage in the ADC to measure the
-  battery voltage.  Later on, we might use this to disable the buzzer
-  and the radio when the voltage is too low to support them.
+/*! \file adc.c
+  \brief ADC12 Driver for the GoodWatch.
+  
+  Mostly this uses the internal voltage reference in the ADC to
+  measure the battery voltage.  For now, we aren't very interested in
+  the temperature or other analog inputs.
 
 */
 
@@ -11,7 +11,7 @@
 #include "api.h"
 
 //! Grab a voltage reference, in hundreds of a volt.
-static unsigned int getvcc(){
+unsigned int adc_getvcc(){
   volatile unsigned int i;
   unsigned int vcc;
 
@@ -67,19 +67,5 @@ static unsigned int getvcc(){
   ADC12MCTL0=0;
   
   return vcc;
-}
-
-static unsigned int vcc;
-
-//! Initialize the voltage applet.
-void voltage_init(){
-  vcc=getvcc();
-  lcd_number(vcc);
-}
-
-
-//! Draw the voltage applet.
-void voltage_draw(){
-  
 }
 

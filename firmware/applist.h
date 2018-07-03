@@ -13,7 +13,6 @@
 #include "apps/hex.h"
 #include "apps/phrase.h"
 #include "apps/rngapp.h"
-#include "apps/voltage.h"
 
 //Then radio apps.
 #include "apps/morse.h"

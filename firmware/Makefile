@@ -11,7 +11,6 @@ MORSE_APP = 1
 BEACON_APP = 1
 OOK_APP = 1
 COUNTER_APP = 1
-VOLTAGE_APP = 1
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT = /dev/ttyUSB0
@@ -66,10 +65,6 @@ ifeq ($(COUNTER_APP),1)
 APPS_OBJ += apps/counter.o
 APPS_DEFINES += COUNTER_APP 
 endif
-ifeq ($(VOLTAGE_APP),1)
-APPS_OBJ += apps/voltage.o
-APPS_DEFINES += VOLTAGE_APP 
-endif
 
 
 #Standard Debian gcc-msp430 and msp430mcu packages.
@@ -77,7 +72,7 @@ CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os  $(addprefix -D, $(APPS_DEFINES))
 
 BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
-modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o applist.o \
+modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o apps.o applist.o adc.o \
 	sidebutton.o power.o uart.o monitor.o ucs.o buzz.o \
 	radio.o packet.o dmesg.o codeplug.o rng.o descriptor.o \
 	optim.o libs/assembler.o libs/morse.o

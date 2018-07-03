@@ -55,10 +55,6 @@ const struct app subapps[]={
   },
 #endif
 
-#ifdef VOLTAGE_APP
-  //Voltage
-  {.name="voltage", .init=voltage_init, .draw=voltage_draw},
-#endif
   
 #ifdef PHRASE_APP
   // Phrase - passphrase generator
