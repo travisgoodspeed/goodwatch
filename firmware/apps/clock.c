@@ -10,6 +10,7 @@
   display the callsign, 9 for the day of the week, / for the date, 4
   for the git tag, 5 for the date of flashing, 6 to toggle the CPU
   load indicator, 0 for the name of the current working channel.
+  Hold 1 for the voltage, * for the CPU model number.
 */
 
 #include <msp430.h>
@@ -259,6 +260,10 @@ void clock_draw(){
     case '5':
       //5 shows the git date from Flash.
       draw_date_rom();
+      break;
+    case '*':
+      //* shows the chip model number.
+      lcd_string(DEVICEID==DEVICEID6137?"430F6137":"430F6147");
       break;
 
     case '1':
