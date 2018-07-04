@@ -266,6 +266,7 @@ void clock_draw(){
       //lcd_string("voltage");
       lcd_number(vcc);
       lcd_string("volt ");
+      setperiod(2,1);
       break;
       
     case '0':
