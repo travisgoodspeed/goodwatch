@@ -95,7 +95,7 @@ void lcd_postdraw(){
   }
   if(power_ishigh())
     setminus(1);    //Minus indicates the radio is on.
-  if(ADC12CTL0 & ADC12ON)
+  if(ADCISACTIVE)
     setplus(1);     //Plus indicates the ADC is on.
   
   //Now swap back the buffer.
