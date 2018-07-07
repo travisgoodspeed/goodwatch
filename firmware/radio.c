@@ -150,9 +150,8 @@ void radio_off(){
   radio_strobe(RF_SXOFF);
 
   
-  /* We really ought to lower the
-     core voltage, but seems that it
-     can never come back up.
+  /* We really ought to lower the core voltage, but seems that it can
+     never come back up.
   */
   //Drop the voltage first.
   power_setvcore(0);
@@ -163,6 +162,7 @@ void radio_off(){
   PMMCTL0_H = 0xA5;
   PMMCTL0_L &= ~PMMHPMRE_L;
   PMMCTL0_H = 0x00;
+
 }
 
 

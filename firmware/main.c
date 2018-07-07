@@ -48,6 +48,7 @@ int post(){
     /* Return zero if everything is hunky dory.
      */
     lcd_string("all good");
+    ref_status();
     return 0;
   }
 
@@ -63,8 +64,11 @@ int main(void) {
   //Initialize the various modules.
   dmesg_init();
 
-  printf("Initializing RNG ");
+  printf("RNG ");
   srand(true_rand()); // we do this as early as possible, because it messes with clocks
+
+  printf("REF ");
+  ref_init();
 
   printf("LCD ");
   lcd_init();

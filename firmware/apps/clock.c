@@ -268,7 +268,6 @@ void clock_draw(){
 
     case '1':
       //1 shows the voltage.
-      //lcd_string("voltage");
       lcd_number(vcc);
       lcd_string("volt ");
       setperiod(2,1);
@@ -392,7 +391,11 @@ int clock_keypress(char ch){
   }else{
     switch(ch){
     case '1':
+      /* To save on power, the reference is not active when idling.
+       */
+      ref_on();
       vcc=adc_getvcc();
+      ref_off();
       break;
     case '6':
       //6 toggles the CPU load indicator.
