@@ -15,7 +15,8 @@ In addition to the source code, there is handy documentation in the
 [wiki](https://github.com/travisgoodspeed/goodwatch/wiki) and a
 general interest website at [goodwatch.org](https://goodwatch.org/).
 
-73 from Pizza Rat City,
+73 from Knoxville,
+
 --Travis
 
 ## Software Status
@@ -26,13 +27,13 @@ consists of a Clock, a Stopwatch, an RPN Calculator, and a Hex Memory
 Viewer with Disassembler, all written in C.  It compiles in Debian
 with all of the MSP430 packages installed.
 
-On watches with a radio, we have a basic Morse transmitter and GFSK
-beacon transceiver for now, with other radio applications on the way.
-The radio is accessible from a host computer over the UART for
-building base stations and repeaters, or for rapidly prototyping
-radio applications in Python.
+On watches with a radio, we have Morse and GFSK transmitters, as well
+as an OOK transmitter that will command cheap remote-controlled
+relays.  The radio is accessible from a host computer over the UART
+for building base stations and repeaters, or for rapidly prototyping
+radio applications in Python.  P25 and DMR support might come soon.
 
-Additionally, we've written out own client for the CC430's BootStrap
+Additionally, we've written our own client for the CC430's BootStrap
 Loader (BSL).  You might find it handy for other projects involving
 that chip, or other MSP430F5 and MSP430F6 chips without USB.  You will
 need to be a member of the `dialout` group to flash the firmware.
@@ -44,6 +45,9 @@ with Doxygen.
 
 Our replacement board is based around the CC430F6137, which combines
 an MSP430 microcontroller with an LCD controller and a sub-GHz radio.
+Thanks to pin compatibility, our fancy linker scripts produce a
+firmware image that works just as well on the more modern CC430F6147
+chip.
 
 The initial version, the GoodWatch10, lacks a radio but supports all
 other features, such as the RPN calculator, hex editor, and
