@@ -41,25 +41,38 @@ static void draw_time(int always){
      changed, which lets us do nothing on three quarters of the
      frames.  Then we only draw the minutes and hours if the minutes
      have changed, saving two thirds of the digit drawing on each
-     frame.
+     frame, and we only draw the tens digit if the ones digit is zero,
+     saving us half the LCD memory writes and trable lookups during
+     those frames.
      
      This could be further improved by testing hours, but as that only
      applies to one frame in 3600, it won't impact battery life very
      much.  When a button has been pressed or the mode changed, it is
      set non-zero to force the whole frame to be drawn.
+     
+     int2bcd() works by a ROM table lookup in bcd.o.  The '6147 also
+     has a hardware BCD calculator, but as this isn't present in the
+     '6137 and only costs us 64 bytes of ROM, it isn't a very high
+     priority.
+     
+     All the digits are drawn out of order for these fancy reasons.
+     Sorry about that.
    */
   
   unsigned int hour=RTCHOUR;
   static unsigned int min;
-  static unsigned int sec;//=RTCSEC;
-
+  static unsigned int sec;
+  unsigned int lsec; //Lower digit of the seconds.
 
   //Only draw once a second, unless a button is pressed.
   if(sec==RTCSEC && !always)
     return;
   sec=RTCSEC;
-  lcd_digit(1,sec/10);
-  lcd_digit(0,sec%10);
+  lcd_digit(0,lsec=int2bcd(sec)&0xf); //Lower digit.
+  if(lsec && !always)  //Only need to draw tens digit if ones is zero.
+    return;
+  lcd_digit(1,int2bcd(sec)>>4);
+  
 
   //If the minute hasn't changed, don't bother drawing it or the hour.
   if(min==RTCMIN && !always)
@@ -68,12 +81,12 @@ static void draw_time(int always){
 
   lcd_cleardigit(2); //Space between seconds and minutes.
   
-  lcd_digit(7,hour/10);
-  lcd_digit(6,hour%10);
+  lcd_digit(7,int2bcd(hour)>>4);
+  lcd_digit(6,int2bcd(hour)&0xf);
   lcd_cleardigit(5); //Space between hours and minutes.
   setcolon(1);
-  lcd_digit(4,min/10);
-  lcd_digit(3,min%10);
+  lcd_digit(4,int2bcd(min)>>4);
+  lcd_digit(3,int2bcd(min)&0xf);
 
   setam(hour<12);
   setpm(hour>=12);
