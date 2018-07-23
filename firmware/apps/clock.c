@@ -22,24 +22,58 @@
 //! If non-zero, we are setting the time.
 static int settingclock=0;
 
+//! Last measured voltage.
 static unsigned int vcc;
 
+//! This hold the last character pressed.
+static char lastchar=0;
 
 //! Draws the time.
-static void draw_time(){
+static void draw_time(int always){
+  /* So at first glance, this might seem a bit complicated.  Why draw
+     the seconds first, and why take so many opportunities to abort
+     and return without drawing anything?
+
+     The reason is that the vast majority of CPU time is spent drawing
+     the time to the LCD, and that anything we can do to shorten that
+     time in each quarter-second frame will increase the watch's
+     battery life.  Therefore, we only draw the seconds if they have
+     changed, which lets us do nothing on three quarters of the
+     frames.  Then we only draw the minutes and hours if the minutes
+     have changed, saving two thirds of the digit drawing on each
+     frame.
+     
+     This could be further improved by testing hours, but as that only
+     applies to one frame in 3600, it won't impact battery life very
+     much.  When a button has been pressed or the mode changed, it is
+     set non-zero to force the whole frame to be drawn.
+   */
+  
   unsigned int hour=RTCHOUR;
-  unsigned int min=RTCMIN;
-  unsigned int sec=RTCSEC;
+  static unsigned int min;
+  static unsigned int sec;//=RTCSEC;
+
+
+  //Only draw once a second, unless a button is pressed.
+  if(sec==RTCSEC && !always)
+    return;
+  sec=RTCSEC;
+  lcd_digit(1,sec/10);
+  lcd_digit(0,sec%10);
+
+  //If the minute hasn't changed, don't bother drawing it or the hour.
+  if(min==RTCMIN && !always)
+    return;
+  min=RTCMIN;
+
+  lcd_cleardigit(2); //Space between seconds and minutes.
   
   lcd_digit(7,hour/10);
   lcd_digit(6,hour%10);
-  lcd_cleardigit(5); //Space
+  lcd_cleardigit(5); //Space between hours and minutes.
   setcolon(1);
   lcd_digit(4,min/10);
   lcd_digit(3,min%10);
-  lcd_cleardigit(2); //Space
-  lcd_digit(1,sec/10);
-  lcd_digit(0,sec%10);
 
   setam(hour<12);
   setpm(hour>=12);
@@ -124,7 +158,7 @@ static void draw_settingtime(){
   //First we draw the entire thing, then we blink the second being
   //set.
   if(settingclock<7)
-    draw_time();
+    draw_time(1);
   else
     draw_date();
 
@@ -204,9 +238,6 @@ int clock_exit(){
   }
 }
 
-//! This hold the last character pressed.
-static char lastchar=0;
-
 //! Draws the clock face in the main application.
 void clock_draw(){
   /* Do *NOT* put anything here that takes a long time to calculate.
@@ -215,9 +246,12 @@ void clock_draw(){
   */
   
   static char ch=0;
+  int redraw=0;
   
-  if(ch!=lastchar)
+  if(ch!=lastchar){
     lcd_zero();
+    redraw++;
+  }
   
   ch=lastchar;
 
@@ -286,7 +320,7 @@ void clock_draw(){
     case '6':
     case 0:
       // Draw the time by default.
-      draw_time();
+      draw_time(redraw);
       break;
     default:
       lcd_hex(ch);
@@ -312,8 +346,6 @@ int clock_keypress(char ch){
      important that anything that takes more than a frame be handled
      here, rather than in clock_draw(), which is rerun for every frame.
    */
-  
-  
   if(settingclock){
     //We only handle numbers here.
     if((ch&0x30)==0x30)
