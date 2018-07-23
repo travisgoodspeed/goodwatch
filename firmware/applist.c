@@ -82,7 +82,9 @@ const struct app subapps[]={
 #endif 
 #ifdef MORSE_APP
   //Morse transmitter.
-  {.name="morse", .init=morse_init, .draw=morse_draw, .exit=morse_exit},
+  {.name="morse", .init=morse_init, .draw=morse_draw, .exit=morse_exit,
+   .keypress=morse_keypress
+  },
 #endif
 #ifdef BEACON_APP
   //Beacon

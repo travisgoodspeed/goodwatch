@@ -22,6 +22,7 @@ void morse_init(){
      things simple.
    */
   if(has_radio){
+    lcd_string("  MORSE ");
     radio_on();
     radio_writesettings(0);
     radio_writepower(0x25);
@@ -41,10 +42,8 @@ int morse_exit(){
   return 0;
 }
 
-//! Draw the screen.
-void morse_draw(){
-  char ch=getchar();
-  
+//! A button has been pressed for Morse.
+int morse_keypress(char ch){
   switch(ch){
   case '7':
     lcd_string("      73");
@@ -96,12 +95,13 @@ void morse_draw(){
     lcd_postdraw();
     radio_morse(CALLSIGN);
     break;
-    
-  default:  //Show that we're using morse.
-    lcd_string("  NNORSE");
-    break;
   }
+  lcd_string("  MORSE ");
+  return 0;//Redraw after keypress.
+}
 
-
+//! Draw the screen.
+void morse_draw(){
+  //We don't actually draw here.
 }
 

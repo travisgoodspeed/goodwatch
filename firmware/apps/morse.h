@@ -9,3 +9,6 @@ void morse_init();
 int morse_exit();
 //! Draw the screen.
 void morse_draw();
+
+//! A button has been pressed for Morse.
+int morse_keypress(char ch);
