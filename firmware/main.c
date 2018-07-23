@@ -48,7 +48,6 @@ int post(){
     /* Return zero if everything is hunky dory.
      */
     lcd_string("all good");
-    ref_status();
     return 0;
   }
 
@@ -141,6 +140,7 @@ int main(void) {
   while(1){
     //printf("main while().\n");
     //uart_tx('T');
+    printf(".");
   }
 }
 
