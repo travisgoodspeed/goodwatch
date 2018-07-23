@@ -26,16 +26,12 @@ void ref_off(){
 
 //! Switch the the static mode, which is power hungry but more reliable.
 void ref_staticmode(){
-  ref_off();
   REFCTL0 |= BGMODE;
-  ref_on();
 }
 
 //! Switch to sample mode, which is more efficient.
 void ref_sampledmode(){
-  ref_off();
   REFCTL0 &= ~BGMODE;
-  ref_on();
 }
 
 
@@ -48,6 +44,7 @@ void ref_init(){
   while(REFCTL0 & REFGENBUSY);
   
   //2.5V reference.
+  ref_sampledmode();
   REFCTL0|=REFVSEL_2;
 }
 
