@@ -346,7 +346,7 @@ void clock_draw(){
 void clock_init(){
   lastchar=0;
   lcd_zero();
-  clock_draw();
+  draw_time(1);
 }
 
 //! A button has been pressed for the clock.
