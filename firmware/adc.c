@@ -41,7 +41,7 @@ static unsigned int adc12_getvcc(){
      VCC.
 
      So 0xb2a*2.0 / 4095 * 2.5 == 3.49, our battery voltage.
-     Simplified, we can get hundreds of a volt by mulitplying
+     Simplified, we can get hundreds of a volt by multiplying
      ADC12MEM0 with 0.1221.
    */
   vcc= (int) ADC12MEM0*0.1221001221001221;
@@ -112,8 +112,6 @@ static unsigned int adc10_getvcc(){
   ADC10CTL1=0;
   ADC10MCTL0=0;
 
-  //printf("VCC sampled as %d\n", vcc);
-  
   return vcc;
 }
 
