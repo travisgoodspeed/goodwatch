@@ -8,7 +8,8 @@
   1ppm roughly coresponds to 0.1728 seconds per day, so a value of +63
   makes the day 21.8 seconds longer and a value of -63 makes the day
   43.5 seconds shorter.  Your correct adjustment will certainly be
-  smaller than these extremes.
+  smaller than these extremes, and I've found that -28 works very well
+  for most GoodWatch21 boards.
 */
 
 #include<msp430.h>
@@ -36,10 +37,12 @@ void calibrate_draw(){
   // Indicate that we're in the calibrate by setting the plus and
   // minus digits.
   lcd_number(calibration);
+}
 
-
-  switch(getchar()){
-  case '+':
+//! Change the selected applet.
+int calibrate_keypress(char c){
+  switch(c){
+   case '+':
     calibration++;
     calibrate_enforce();
     break;
@@ -49,11 +52,6 @@ void calibrate_draw(){
     break;
   }
 
-}
-
-//! Change the selected applet.
-int calibrate_keypress(char c){
-  
   return 1;//Redraw after the press.
 }
 
