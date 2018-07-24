@@ -12,7 +12,7 @@ void calibrate_enforce();
 //! Draw the calibrate selection.
 void calibrate_draw();
 
-//! Change the selected applet.
+//! Change the calibration.
 int calibrate_keypress(char c);
 
 //! On entry, load calibration.

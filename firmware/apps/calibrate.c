@@ -39,7 +39,7 @@ void calibrate_draw(){
   lcd_number(calibration);
 }
 
-//! Change the selected applet.
+//! Change the calibration.
 int calibrate_keypress(char c){
   switch(c){
    case '+':
