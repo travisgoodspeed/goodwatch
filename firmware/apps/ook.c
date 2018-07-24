@@ -87,37 +87,33 @@ void ook_packetrx(uint8_t *packet, int len){
   printf("Not yet supported.\n");
 }
 
+static char lastch=0;
+
 //! Called after a transmission, or on a button press.
 void ook_packettx(){
-  char c=getchar();
-  
-  if(radio_getstate()==1){
-
-    /* Schedule next packet if the right key is being held.
-       
-       Buttons for A,B,C,D are 0,1,2,3 or 0,1,4,7.
-     */
-    switch(c){
-    case '0':
-      packet_tx((uint8_t*) button_array[0],
-		LEN);
-      break;
-    case '1':
-      packet_tx((uint8_t*) button_array[1],
-		LEN);
-      break;
-    case '2': case '4':
-      packet_tx((uint8_t*) button_array[2],
-		LEN);
-      break;
-    case '3': case '7':
-      packet_tx((uint8_t*) button_array[3],
-		LEN);
-      break;
-      
-    }
+  /* Schedule next packet if the right key is being held.
+     
+     Buttons for A,B,C,D are 0,1,2,3 or 0,1,4,7.
+  */
+  switch(lastch){
+  case '0':
+    packet_tx((uint8_t*) button_array[0],
+	      LEN);
+    break;
+  case '1':
+    packet_tx((uint8_t*) button_array[1],
+	      LEN);
+    break;
+  case '2': case '4':
+    packet_tx((uint8_t*) button_array[2],
+	      LEN);
+    break;
+  case '3': case '7':
+    packet_tx((uint8_t*) button_array[3],
+	      LEN);
+    break;
   }
-}
+  }
 
 
 //! Enter the OOK transmitter application.
@@ -176,7 +172,6 @@ void ook_draw(){
        but that's not this module's responsibility.  See issue #56 on
        Github.
     */
-    
     break;
   }
 
@@ -190,7 +185,7 @@ int ook_keypress(char ch){
      library, so it will keep running in a loop until the key is
      released.
    */
-  if(ch)
+  if( (lastch=ch) )
     ook_packettx();
   return 0;
 }
