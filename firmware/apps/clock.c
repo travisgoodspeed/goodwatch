@@ -21,6 +21,8 @@
 
 //! If non-zero, we are setting the time.
 static int settingclock=0;
+//! If non-zero, we need to redraw the whole time.
+static int redraw=0;
 
 //! Last measured voltage.
 static unsigned int vcc;
@@ -259,7 +261,6 @@ void clock_draw(){
   */
   
   static char ch=0;
-  int redraw=0;
   
   if(ch!=lastchar){
     lcd_zero();
@@ -334,6 +335,7 @@ void clock_draw(){
     case 0:
       // Draw the time by default.
       draw_time(redraw);
+      redraw=0;
       break;
     default:
       lcd_hex(ch);
@@ -422,7 +424,9 @@ int clock_keypress(char ch){
     case 14:
       SetRTCDAY(RTCDAY-RTCDAY%10+inputdigit);
       settingclock++;
+      redraw++;
       ////Do not break, or we'll be stuck in the setting mode afer compltion.
+      
     default:
       /* Once we've exceeded the count, it's time to return to the
 	 normal mode.
