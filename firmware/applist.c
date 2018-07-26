@@ -16,12 +16,6 @@ const struct app apps[]={
    .keypress=clock_keypress
   },
 
-#ifdef ALARM_APP
-  //Alarm    
-  {.name="alarm", .init=alarm_init, .draw=alarm_draw, .exit=alarm_exit,   
-   .keypress=alarm_keypress
-  },
-#endif
 #ifdef STOPWATCH_APP
   //Stopwatch
   {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit,
@@ -52,6 +46,13 @@ const struct app subapps[]={
   //RPN Calculator
   {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit,
    .keypress=rpn_keypress
+  },
+#endif
+
+#ifdef ALARM_APP
+  //Alarm
+  {.name="alarm", .init=alarm_init, .draw=alarm_draw, .exit=alarm_exit,
+   .keypress=alarm_keypress
   },
 #endif
 

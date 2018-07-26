@@ -3,6 +3,9 @@
 
  */
 
+//! We begin on the clock.
+extern int appindex;
+
 
 //! Entry in the application table.
 struct app {

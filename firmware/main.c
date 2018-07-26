@@ -96,11 +96,13 @@ int main(void) {
   printf("buzz ");
   lcd_string("BUZZINIT");
   buzz_init();
+  /* Startup tones might kill the watch in low battery.
   tone(NOTE_C7, 500);
   tone(NOTE_E7, 500);
   tone(NOTE_G7, 500);
   tone(NOTE_A8, 500);
   tone(NOTE_C8, 500);
+  */
 
   lcd_zero();
   lcd_string("UARTINIT");
@@ -121,7 +123,7 @@ int main(void) {
   lcd_string("POSTPOST");
   // Run the POST until it passes.
   while(post());
-
+  
   lcd_zero();
   lcd_string("APP INIT");
   app_init();
@@ -135,11 +137,11 @@ int main(void) {
 
   printf("Booted.\n");
   __bis_SR_register(LPM3_bits + GIE);        // Enter LPM3
-  //__bis_SR_register(LPM2_bits + GIE);        // Enter LPM2
-  //__bis_SR_register(LPM0_bits + GIE);	     // Enter LPM0 w/interrupt
   while(1){
-    //printf("main while().\n");
-    //uart_tx('T');
+    /* These dots oughtn't appear in dmesg, because the main thread
+       ought to be paused with all processing in interrupts.  If this
+       code executes, we've got a power management problem.
+     */
     printf(".");
   }
 }
@@ -147,6 +149,7 @@ int main(void) {
 //! Watchdog Timer interrupt service routine, calls back to handler functions.
 void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
   static int latch=0;
+  static int oldsec;
 
   /* When the UART is in use, we don't want to hog interrupt time, so
      we will silently return.
@@ -156,29 +159,29 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
 
   if(sidebutton_mode()){
     /* So if the side button is being pressed, we increment the latch
-       and move to the next application.  Some applications, such as the
-       calculator, might hijack the call, so if we are latched for too
-       many poling cycles, we forcibly revert to the clock applicaiton.
+       and move to the next application.  Some applications, such as
+       the calculator, might hijack the call, so if we are latched for
+       too many polling cycles, we forcibly revert to the clock
+       application.
     */
     
-    lcd_zero();
-    
     //Politely move to the next app if requested.
-    if(!(latch++))
+    if(!(latch++)){
+      lcd_zero();
       app_next();
+    }
     
     //Force a shift to the home if held for 4 seconds (16 polls)
     if(latch>16)
       app_forcehome();
-
   
   }else if(sidebutton_set()){
-    /* Similarly, we'll reboot if the SET/PRGM button has been held for 10
-       seconds (40 polls).  We'll draw a countdown if getting close, so
-       there's no ambiguity as to whether the chip reset.
+    /* Similarly, we'll reboot if the SET/PRGM button has been held
+       for 10 seconds (40 polls).  We'll draw a countdown if getting
+       close, so there's no ambiguity as to whether the chip reset.
        
-       The other features of this button are handled within each application's
-       draw function.
+       The other features of this button are handled within each
+       application's draw function.
     */
     if(latch++>40)
       PMMCTL0 = PMMPW | PMMSWPOR;
@@ -187,10 +190,15 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
     latch=0;
   }
 
-  /* The applet is drawn four times per second.  We handle
-     double-buffering, so that incomplete drawings won't be shown to
-     the user, but everything else is the app's responsibility. */
-  lcd_predraw();
-  app_draw();
-  lcd_postdraw();
+  /* The applet is drawn four times per second, except for the clock,
+     which is only drawn once a second.  We handle double-buffering,
+     so that incomplete drawings won't be shown to the user, but
+     everything else is the app's responsibility. */
+  if(appindex || (oldsec!=RTCSEC)){
+    oldsec=RTCSEC;
+    
+    lcd_predraw();
+    app_draw();
+    lcd_postdraw();
+  }
 }

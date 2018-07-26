@@ -95,8 +95,8 @@ unsigned int key_scan(){
       08   04   02   01
   */
 
-  unsigned int scan;
-
+  unsigned int scan=0;
+  
   //When no buttons are pressed, we need to shortcut the scan to avoid
   //wasting I/O and energy.
   if(!key_pressed())
@@ -104,12 +104,8 @@ unsigned int key_scan(){
   
   //Some button is pressed, so do an active scan to figure out which
   //one.
-  scan=0;
-  scan|=(key_row()<<4);
-  scan|=key_col();
-  //scan=(key_row()<<4)|key_col();
-  //key_init();
-
+  scan=(key_row()<<4)|key_col();
+  
   setdirections();
 
   if(scan&0xF0)

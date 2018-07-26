@@ -12,7 +12,10 @@
 #include "applist.h"
 
 //! We begin on the clock.
-static int appindex=DEFAULTAPP, idlecount=0;
+int appindex=DEFAULTAPP;
+
+//! Idle count to return to the clock.
+static int idlecount=0;
 
 //! The currently selected application.
 const struct app *applet=&apps[0];
