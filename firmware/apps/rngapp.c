@@ -1,11 +1,11 @@
  /*! \file rngapp.c
   \brief Demo random number generator app
   
-  This app will display random numbers on the display.
+  This app will display random numbers.
   
-  Press 0 to generate a new random number
-  Press 7 to diaply it in hexadecimal
-  Press / to display it in decimal 
+  Press 0 to generate a new random number.
+  Press 7 to display it in hexadecimal.
+  Press / to display it in decimal.
 */
 
 #include <stdio.h>
@@ -16,7 +16,7 @@
 
 enum rng_disp_format_enum {DECIMAL, HEX};
 enum rng_disp_format_enum rng_disp_format; 
-static unsigned int last_num = 0;
+static unsigned int num = 0, last_num = 0;
 
 //! Enter the rng tool.
 void rngapp_init(){
@@ -24,7 +24,7 @@ void rngapp_init(){
 }
 //! Exit the rng tool.
 int rngapp_exit(){
-  last_num = 0; //leave only your footprints!
+  num = last_num = 0; //leave only your footprints!
   return 0;
 }
 
@@ -32,29 +32,32 @@ int rngapp_exit(){
 int rngapp_keypress(char ch){
   switch(ch){
   case '0':
-    last_num = true_rand();
+    num = true_rand();
     break;
   case '7': 
     rng_disp_format = HEX;
+    last_num=0; //Dump old number to reconvert.
     break;
   case '/': 
     rng_disp_format = DECIMAL;
+    last_num=0; //Dump old number to reconvert.
     break;
   }
   return 1; //Redraw.
 }
 
-//! Draw the screen 
+//! Draw the screen, only if the number has changed.
 void rngapp_draw(){
-  lcd_string("        ");
-  if (!last_num) {
+  if (!num) {
     lcd_string("press 0 ");
-  } else {
+  } else if (num!=last_num) {
+    last_num=num;
+    lcd_string("        ");
     if (rng_disp_format == DECIMAL) {
-        lcd_number(last_num);
-      } else {
-        lcd_hex(last_num);
-      }
+      lcd_number(num);
+    } else {
+      lcd_hex(num);
+    }
   }
 }
 
