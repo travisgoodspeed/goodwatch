@@ -254,21 +254,7 @@ int clock_exit(){
 }
 
 //! Draws the clock face in the main application.
-void clock_draw(){
-  /* Do *NOT* put anything here that takes a long time to calculate.
-     Instead, do that in clock_keypress() once for the keydown event,
-     and then show the result here.
-  */
-  
-  static char ch=0;
-  
-  if(ch!=lastchar){
-    lcd_zero();
-    redraw++;
-  }
-  
-  ch=lastchar;
-
+void clock_draw(){  
   /* The SET button will move us into the programming mode. */
   if(sidebutton_set()){
     //Wait for the button to be released.
@@ -276,71 +262,14 @@ void clock_draw(){
     //Then change invert the setting.
     settingclock=!settingclock;
   }
-
+  
   if(settingclock)
     draw_settingtime();
-  else
-    switch(ch){
-    case '7':
-      //Hold 7 to run the self-test after startup.  Response codes try to
-      //roughly describe the fault.
-      post();
-      break;
-    case '8':
-      //8 shows the callsign.
-      lcd_string("        ");
-      lcd_string(CALLSIGN);
-      break;
-    case '9':
-      //Hold 9 to draw the day of the week.
-      draw_dow();
-      break;
-    case '/':
-      //Hold / to draw the date.
-      draw_date();
-      break;
-
-    case '4':
-      //4 shows the git revision.
-      lcd_hex(GITHASH);
-      lcd_cleardigit(7);
-      break;
-    case '5':
-      //5 shows the git date from Flash.
-      draw_date_rom();
-      break;
-    case '*':
-      //* shows the chip model number.
-      lcd_string(DEVICEID==DEVICEID6137?"430F6137":"430F6147");
-      break;
-
-    case '1':
-      //1 shows the voltage.
-      lcd_number(vcc);
-      lcd_string("volt ");
-      setperiod(2,1);
-      break;
-      
-    case '0':
-      //0 shows the name of the working channel.
-      lcd_string(codeplug_name());
-      break;
-    case '.':
-      //. shows the frequency of the working channel.
-      lcd_number(codeplug_getfreq()/10);
-      setperiod(5,1);
-      setperiod(2,1);
-      break;
-    case '6':
-    case 0:
-      // Draw the time by default.
-      draw_time(redraw);
-      redraw=0;
-      break;
-    default:
-      lcd_hex(ch);
-    }
-
+  else if(!lastchar){
+    // Draw the time by default, but only if no buttons pushed.
+    draw_time(redraw);
+    redraw=0;
+  }
 }
 
 
@@ -438,17 +367,71 @@ int clock_keypress(char ch){
     //the date changes, but we don't bother.
     rtc_setdow();
   }else{
+    lcd_zero();
+    redraw++;
+    
     switch(ch){
+    case '7':
+      //Hold 7 to run the self-test after startup.  Response codes try
+      //to roughly describe the fault.
+      post();
+      break;
+    case '8':
+      //8 shows the callsign.
+      lcd_string(CALLSIGN);
+      break;
+    case '9':
+      //Hold 9 to draw the day of the week.
+      draw_dow();
+      break;
+    case '/':
+      //Hold / to draw the date.
+      draw_date();
+      break;
+
+    case '4':
+      //4 shows the git revision.
+      lcd_hex(GITHASH);
+      lcd_cleardigit(7);
+      break;
+    case '5':
+      //5 shows the git date from Flash.
+      draw_date_rom();
+      break;
+    case '*':
+      //* shows the chip model number.
+      lcd_string(DEVICEID==DEVICEID6137?"430F6137":"430F6147");
+      break;
+
+      
     case '1':
-      /* To save on power, the reference is not active when idling.
-       */
+      /* 1 shows the the voltage.  To save on power, the reference is
+	 not active when idling. */
       ref_on();
       vcc=adc_getvcc();
       ref_off();
+      lcd_number(vcc);
+      lcd_string("volt ");
+      setperiod(2,1);
       break;
+
+      
+    case '0':
+      //0 shows the name of the working channel.
+      lcd_string(codeplug_name());
+      break;
+    case '.':
+      //. shows the frequency of the working channel.
+      lcd_number(codeplug_getfreq()/10);
+      setperiod(5,1);
+      setperiod(2,1);
+      break;
+
+      
     case '6':
       //6 toggles the CPU load indicator.
       flickermode=(flickermode?0:-1);
+      lcd_string(flickermode?"FLICK ON":"FLICKOFF");
       break;
     }
   }
