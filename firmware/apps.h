@@ -11,7 +11,7 @@ extern int appindex;
 struct app {
   char *name;         //Shows when entering the app.
   void (*init)(void); //Called exactly once at startup.
-  void (*draw)(void); //Called four times per second to draw display.
+  void (*draw)(int); //Called four times per second to draw display.
   
   /* Called once when moving to the next applet.  Returns zero (or is
      NULL) if the application may move on, or returns non-zero if the
@@ -36,7 +36,7 @@ struct app {
 
 
 //! Draw the current application.
-void app_draw();
+void app_draw(int forced);
 //! Initializes the set of applications.
 void app_init();
 //! Move to the next application.

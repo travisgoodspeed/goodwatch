@@ -198,7 +198,7 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
     oldsec=RTCSEC;
     
     lcd_predraw();
-    app_draw();
+    app_draw(0); //Unforced, because it's a regular timer.
     lcd_postdraw();
   }
 }

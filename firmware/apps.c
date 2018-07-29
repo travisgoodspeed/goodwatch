@@ -26,7 +26,7 @@ void app_cleartimer(){
 }
 
 //! Renders the current app to the screen.
-void app_draw(){
+void app_draw(int forced){
   static int lastmin=0;;
   
   //If we go three minutes without action, return to main screen.
@@ -39,10 +39,11 @@ void app_draw(){
     app_forcehome();
   }
   
-  //Call the cap if it exists, or switch to the clock if we're at the
-  //end of the list.
+  //Draw the applet if it exists, or switch to the clock if we're at
+  //the end of the list.  The draw is forced if it is drawn by a
+  //keypress and not as a timer.
   if(applet->draw)
-    applet->draw();
+    applet->draw(forced);
   else
     app_forcehome();
   return;
@@ -156,7 +157,7 @@ void app_keypress(char ch){
 	 us to do we redraw it.
        */
       lcd_predraw();
-      app_draw();
+      app_draw(1); //We're forcing the draw because it's from a keypress.
       lcd_postdraw();
     }
   }

@@ -1,10 +1,9 @@
 /*! \file hex.c
-
   \brief Hex Viewer
   
-  This is a simple hex viewer, allowing the user to explore memory
-  and I/O registers.  It also acts asa a demo application, which
-  should be easy to fork for other purposes.
+  This is a simple hex viewer, allowing the user to explore memory and
+  I/O registers.  It also acts as a demo application, which should be
+  easy to fork for other purposes.
 */
 
 //MSP430 functions for the SFRIE.
@@ -35,7 +34,6 @@ void hex_init(){
   SFRIE1&=~(VMAIE|ACCVIE);
   //Disable BSL protections, so we can read it without trouble.
   SYSBSLC=3;
-
   
   return;
 }
@@ -51,30 +49,22 @@ int hex_exit(){
   return 0;
 }
 
-//Last character pressed, interpreted on every frame.
-static char lastch;
+//! Address of the hex editor.
+static int adr=0x8000; //Beginning of Flash.
 
 //! A button has been pressed for the hex editor.
 int hex_keypress(char ch){
-  lastch=ch;
-  return 0;
-}
-
-
-//! Draw the hex editor app.
-void hex_draw(){
-  /* This is called four times per second to render the display.  The
-     CPU is running at 32kHz until we tell it otherwise, so it's best
-     not to do anything too fancy in a single rendering.
-     
-     Our screen is double-buffered, so the user won't notice it all
-     being drawn.
-   */
-  
-  static int adr=0x8000; //Beginning of Flash.
-
   //Handle the input that we received by an event.
-  switch(lastch){
+  switch(ch){
+  case '4':// Hold 4 to disassemble the curent instruction.
+    lcd_zero();
+    asm_dis(adr,
+	      ((unsigned int*)adr)[0],
+	      ((unsigned int*)adr)[1],
+	      ((unsigned int*)adr)[2]);
+    asm_show();
+    return 0;  //We'll redraw when the button is released.
+    
     /* The top button on each column increases that nybble of the address.
        The bottom button reduces it.
     */
@@ -104,38 +94,47 @@ void hex_draw(){
     break;
   }
 
-  //And finally we draw the result to the screen.
-  lcd_zero();
+  //Force a redraw out-of-frame.
+  return 1;
+}
 
-  /* The bootloader range is illegal to read, so we skip it.  In the
-     future, we might bypass this by reflecting our request through
-     the bootloader region, or trying to find the protection flag that
-     is keeping us from accessing it.
+
+//! Draw the hex editor app.
+void hex_draw(int forced){
+  /* This is called four times per second to render the display.  The
+     CPU is running at 32kHz until we tell it otherwise, so it's best
+     not to do anything too fancy in a single rendering.
+     
+     Our screen is double-buffered, so the user won't notice it all
+     being drawn.
    */
-  if(!hex_islegal(adr)){
-    lcd_hex(
-	    (((unsigned long)adr)<<16) // Address
-	    );
-    lcd_cleardigit(3);
-    lcd_cleardigit(2);
-    lcd_cleardigit(1);
-    lcd_cleardigit(0);
-    return;
-  }else if(lastch=='4'){
-    /* Holding the 4 button will disassemble the current instruction.
-     */
-    asm_dis(adr,
-	    ((unsigned int*)adr)[0],
-	    ((unsigned int*)adr)[1],
-	    ((unsigned int*)adr)[2]);
-    asm_show();
-  }else{
-    /* Now that the range is legal and the value known, let's fetch the
-       value and display it.
+  
+  if(forced){
+    //And finally we draw the result to the screen.
+    lcd_zero();
+    
+    /* The bootloader range is illegal to read, so we skip it.  In the
+       future, we might bypass this by reflecting our request through
+       the bootloader region, or trying to find the protection flag that
+       is keeping us from accessing it.
     */
-    lcd_hex(
-	    (((unsigned long)adr)<<16) // Address
-	    | ((unsigned int*)adr)[0] //data
-	    );
+    if(!hex_islegal(adr)){
+      lcd_hex(
+	      (((unsigned long)adr)<<16) // Address
+	      );
+      lcd_cleardigit(3);
+      lcd_cleardigit(2);
+      lcd_cleardigit(1);
+      lcd_cleardigit(0);
+      return;
+    }else{
+      /* Now that the range is legal and the value known, let's fetch the
+	 value and display it.
+      */
+      lcd_hex(
+	      (((unsigned long)adr)<<16) // Address
+	      | ((unsigned int*)adr)[0] //data
+	      );
+    }
   }
 }
