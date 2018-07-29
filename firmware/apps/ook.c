@@ -40,6 +40,9 @@
   other receivers, you might be able to get away with a single
   transmission.
   
+  Further details and a tutorial for adding your own remote are in the
+  wiki.  https://github.com/travisgoodspeed/goodwatch/wiki/OOK_Example
+  
   --Travis
   
 */
