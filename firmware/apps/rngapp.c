@@ -20,6 +20,7 @@ static unsigned int num = 0, last_num = 0;
 
 //! Enter the rng tool.
 void rngapp_init(){
+  lcd_string("press 0 ");
   rng_disp_format = DECIMAL;
 }
 //! Exit the rng tool.
@@ -48,9 +49,7 @@ int rngapp_keypress(char ch){
 
 //! Draw the screen, only if the number has changed.
 void rngapp_draw(){
-  if (!num) {
-    lcd_string("press 0 ");
-  } else if (num!=last_num) {
+  if (num!=last_num) {
     last_num=num;
     lcd_string("        ");
     if (rng_disp_format == DECIMAL) {
