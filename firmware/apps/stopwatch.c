@@ -4,10 +4,13 @@
    
   This is a simple stop watch, which begins counting as the + key is
   hit and clears the count when the 0 key is pressed.  Because the
-  RTC is busy with the real time, we could in quarter seconds as the
+  RTC is busy with the real time, we count in quarter seconds as the
   display is updated.
 
   We do not count time or store the count when in other applications.
+  It would be nice to change that, so that something could be timed in
+  the background while the user is doing other things.
+
 */
 
 #include "api.h"
@@ -33,6 +36,10 @@ void stopwatch_init(){
   hour=0;
   //Start off without counting.
   counting=0;
+
+  //Draw these once, rather than every frame.
+  lcd_cleardigit(5); //Space
+  lcd_cleardigit(2); //Space
 }
 
 //! Exit form the stopwatch app.
@@ -92,23 +99,31 @@ void stopwatch_draw_time(){
     hour++;
     hourhex=int2bcd(hour);
   }
+
+  //Blink the colon once a second.
+  setcolon((count>>1)&1);
   
+  //We either draw hhmmss or mmssSS.
   if(hour){
-    //Only draw if the subseconds have changed.
+    //Only draw if the subseconds are zero.
     if(!subhex){
-      hourhex=int2bcd(hour);
-      minhex=int2bcd(min);
       sechex=int2bcd(sec);
-      
-      lcd_digit(7,hourhex>>4);
-      lcd_digit(6,hourhex&0xF);
-      lcd_cleardigit(5); //Space
-      setcolon((count>>1)&1);
-      lcd_digit(4,minhex>>4);
-      lcd_digit(3,minhex&0xF);
-      lcd_cleardigit(2); //Space
       lcd_digit(1,sechex>>4);
       lcd_digit(0,sechex&0xF);
+
+      //Draw minutes if seconds are zero.
+      if(!sec){
+	minhex=int2bcd(min);
+	lcd_digit(4,minhex>>4);
+	lcd_digit(3,minhex&0xF);
+
+	//Draw hours if minutes are zero.
+	if(!min){
+	  hourhex=int2bcd(hour);
+	  lcd_digit(7,hourhex>>4);
+	  lcd_digit(6,hourhex&0xF);
+	}
+      }
     }
   }else{
     //Draw the subsecond first.
@@ -117,16 +132,16 @@ void stopwatch_draw_time(){
     
     //Only draw the rest if the subseconds have changed.
     if(!subhex || count==1){
-      minhex=int2bcd(min);
       sechex=int2bcd(sec);
-      
-      lcd_digit(7,minhex>>4);
-      lcd_digit(6,minhex&0xF);
-      lcd_cleardigit(5); //Space
-      setcolon((count>>1)&1);
       lcd_digit(4,sechex>>4);
       lcd_digit(3,sechex&0xF);
-      lcd_cleardigit(2); //Space
+
+      //Update minutes if the seconds are zero.
+      if(!sec){
+	minhex=int2bcd(min);
+	lcd_digit(7,minhex>>4);
+	lcd_digit(6,minhex&0xF);
+      }
     }
   }
 }
