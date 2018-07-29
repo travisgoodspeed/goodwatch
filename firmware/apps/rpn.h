@@ -5,7 +5,7 @@
 //! Initialize the RPN calculator.
 void rpn_init();
 //! Draw the RPN calculator.
-void rpn_draw();
+void rpn_draw(int forced);
 //! Clears the stack to zero, or moves to the next app if already zero.
 int rpn_exit();
 

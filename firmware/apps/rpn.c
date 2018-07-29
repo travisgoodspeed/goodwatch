@@ -2,13 +2,23 @@
    \brief RPN Calculator.
 
    This is a simple RPN calculator, so that our calculator watch can
-   still calculate.  The = key is a space, and the stack is STACKSIZE
-   deep.
+   still calculate.  The stack is 10 longs deep, and you should press
+   the side button to push the current value into the stack.  '=' also
+   pushes, and the '.' key is not yet supported.
+   
+   The AM pixel indicates that the current value has not yet been
+   pushed to the stack.
+
+   This applet calls ucs_fast() to jump the clock rate to 1MHz for the
+   period of calculations, but it drops the clock afterward to
+   preserve power.  Frames are only drawn as needed, and idle
+   consumption is quite low.
+   
 */
 
 
 #include "api.h"
-
+#include "rpn.h"
 
 #define STACKSIZE 10
 
@@ -16,7 +26,6 @@ static long stack[STACKSIZE];
 static long buffer=0;
 static int bufferdirty=0;
 static unsigned int stacki=0;
-
 
 
 //! Peeks at the top item of the stack.
@@ -77,34 +86,42 @@ static void rpn_updatebuffer(int i){
 void rpn_init(){
   int i;
 
-  //Jump up the clock rate for those pesky divisions.
-  ucs_fast();
+  
   
   //Fresh stack when we enter the calculator.
   for(i=0;i<STACKSIZE;i++)
     rpn_push(0);
+
+  //Force the first draw.
+  rpn_draw(1);
 }
 
 //! RPN handler for sidebutton.
 int rpn_exit(){
-  // Exit if zero is the latest number.
-  if(rpn_peek()==0){
+  if(bufferdirty){
+    // Push the incoming number if it's not yet committed.
+    rpn_pushbuffer();
+    return 1;
+    
+  } else if(rpn_peek()==0){
+    // Exit if zero is the latest number.
+    
     //Jump up the clock rate for those pesky divisions.
     ucs_slow();
-    
     return 0;
   }
-
+  
+  
   //Otherwise push a zero and return.
   rpn_push(0);
   return 1;
 }
 
 //! Draws the RPN calculator.
-void rpn_draw(){
-  //We just draw the stack.  All input comes from the keypress
-  //callback.
-  rpn_drawstack();
+void rpn_draw(int forced){
+  //We only draw if forced to.
+  if(forced)
+    rpn_drawstack();
 }
 
 //! A button has been pressed for the calculator.
@@ -114,7 +131,10 @@ int rpn_keypress(char ch){
   //Do nothing on a keyup event.
   if(!ch)
     return 0;
-  
+
+  //Jump up the clock rate for those pesky divisions.
+  ucs_fast();
+
   //Operators
   switch(ch){
   case '=':
@@ -125,7 +145,7 @@ int rpn_keypress(char ch){
     break;
   case '.':
     //What should this do?
-    //It's out only free button.
+    //It's our only free button.
     break;
   case '+':
     rpn_pushbuffer();
@@ -148,6 +168,10 @@ int rpn_keypress(char ch){
     rpn_push(i/j);
     break;
   }
+
+  //Drop the clock after the arithmetic is done.
+  ucs_slow();
+  
   
   /* Numbers are special.  They modify a buffer, and the buffer is
      pushed onto the stack before an operator or when = is pressed.
