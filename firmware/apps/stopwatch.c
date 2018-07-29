@@ -65,24 +65,31 @@ int stopwatch_keypress(char ch){
       break;
   }
   
-  //Stopwatch uses rendering frequency to count time, so we don't
-  //redraw after a keypress.
-  return 0;
+  /* Stopwatch uses rendering frequency to count time, so we don't
+     redraw after a keypress when we are counting. */
+  return !counting;
 }
 
 //! Renders the low bits of the count in quarter seconds.
 static const char subs[]={0, 0x25, 0x50, 0x75};
 
-//! Draws the time.
-void stopwatch_draw_time(){
+
+//! Draw the stopwatch app and handle its input.
+void stopwatch_draw(int forced){
   unsigned int min, sec,
     minhex, sechex, hourhex, subhex;
 
+  
   /* The stopwatch is special in that it never times out.  Be very
      careful when doing this, because a minor bug might kill the
      battery.
    */
   app_cleartimer();
+
+  //If we aren't counting and there's not been a keypress, don't bother drawing.
+  if(!forced && !counting)
+    return;
+
   
   //Increment the count if we're counting.
   if(counting)
@@ -144,10 +151,5 @@ void stopwatch_draw_time(){
       }
     }
   }
-}
 
-
-//! Draw the stopwatch app and handle its input.
-void stopwatch_draw(){
-  stopwatch_draw_time();
 }

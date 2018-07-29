@@ -10,4 +10,4 @@ void stopwatch_init();
 //! Exit the stopwatch.
 int stopwatch_exit();
 //! Draw the screen and increase the count.
-void stopwatch_draw();
+void stopwatch_draw(int forced);
