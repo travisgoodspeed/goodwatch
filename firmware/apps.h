@@ -5,7 +5,7 @@
 
 //! We begin on the clock.
 extern int appindex;
-
+extern const struct app *applet;
 
 //! Entry in the application table.
 struct app {
@@ -55,3 +55,5 @@ void app_keypress(char ch);
 
 //! Sets an app by a pointer to its structure.  Used for submenus.
 void app_set(const struct app *newapplet);
+//! Sets back to the indexed app.  Does not work in the submenu.
+void app_reset();

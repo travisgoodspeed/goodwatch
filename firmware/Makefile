@@ -14,7 +14,8 @@ COUNTER_APP = 1
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT = /dev/ttyUSB0
-APPS_OBJ += apps/clock.o apps/submenu.o 
+#Mandatory applets.
+APPS_OBJ += apps/clock.o apps/settime.o apps/submenu.o 
 
 #add optional apps
 ifeq ($(ALARM_APP),1)

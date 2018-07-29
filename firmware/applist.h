@@ -4,8 +4,12 @@
 
 #include "apps/submenu.h"
 
+extern const struct app setting_applet;
+extern const struct app clock_applet;
+
 //Non-radio apps first.
 #include "apps/clock.h"
+#include "apps/settime.h"
 #include "apps/alarm.h"
 #include "apps/stopwatch.h"
 #include "apps/calibrate.h"

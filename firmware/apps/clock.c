@@ -14,13 +14,16 @@
 */
 
 #include <msp430.h>
-
 #include "api.h"
+
+#include "applist.h"
+
+
+
+
 
 #define RTCAE (0x80) /* Real Time Clock Alarm enable */
 
-//! If non-zero, we are setting the time.
-static int settingclock=0;
 //! If non-zero, we need to redraw the whole time.
 static int redraw=0;
 
@@ -31,7 +34,7 @@ static unsigned int vcc;
 static char lastchar=0;
 
 //! Draws the time.
-static void draw_time(int always){
+void draw_time(int always){
   /* So at first glance, this might seem a bit complicated.  Why draw
      the seconds first, and why take so many opportunities to abort
      and return without drawing anything?
@@ -101,7 +104,7 @@ static void draw_time(int always){
 }
 
 //! Draws the date as yyyy.mm.dd
-static void draw_date(){
+void draw_date(){
   unsigned int year=RTCYEAR;
   unsigned int month=RTCMON;
   unsigned int day=RTCDAY;
@@ -157,118 +160,27 @@ static void draw_date_rom(){
   setpm(0);
 }
 
-
-
-
-//! Draws whatever is being set
-static void draw_settingtime(){
-  static int flicker=0;
-  
-  flicker^=1;
-
-  //Zero the second hand if we're not yet to the date.  ("Hacking.")
-  if(settingclock<7)
-    SetRTCSEC(0);
-
-  //First we draw the entire thing, then we blink the second being
-  //set.
-  if(settingclock<7)
-    draw_time(1);
-  else
-    draw_date();
-
-  switch(settingclock){
-  case 1:         //Hour
-    if(flicker)
-      lcd_cleardigit(7);
-    break;
-  case 2:
-    if(flicker)
-      lcd_cleardigit(6);
-    break;
-  case 3:         //Minute
-    if(flicker)
-      lcd_cleardigit(4);
-    break;
-  case 4:
-    if(flicker)
-      lcd_cleardigit(3);
-    break;
-    
-  case 5:        //Second
-    /* We no longer set the seconds, but rather hold them at zero
-       until the user moves back them into the date.  Mechanical watch
-       experts call this 'hacking.'
-     */
-    
-  case 7:        //Year
-    if(flicker)
-      lcd_cleardigit(7);
-    break;
-  case 8:
-    if(flicker)
-      lcd_cleardigit(6);
-    break;
-  case 9:
-    if(flicker)
-      lcd_cleardigit(5);
-    break;
-  case 10:
-    if(flicker)
-      lcd_cleardigit(4);
-    break;
-    
-  case 11:        //Month
-    if(flicker)
-      lcd_cleardigit(3);
-    break;
-  case 12:
-    if(flicker)
-      lcd_cleardigit(2);
-    break;
-    
-  case 13:       //Day
-    if(flicker) 
-      lcd_cleardigit(1);
-    break;
-  case 14:
-    if(flicker)
-      lcd_cleardigit(0);
-    break;
-  }
-}
-
-
-
-
-//! Exit clock when the sidebutton is pressed, unless we are programming.
+//! Exit clock when the sidebutton is pressed.
 int clock_exit(){
-  if(settingclock){
-    //Setting the time, so jump to next digit.
-    settingclock++;
-    return 1;
-  }else{
-    //Not setting the time, so just move on to next app.
-    return 0;
-  }
+  return 0;
 }
+
 
 //! Draws the clock face in the main application.
-void clock_draw(){  
-  /* The SET button will move us into the programming mode. */
+void clock_draw(int forced){
+  //Use the SET button to reconfigure the time.
   if(sidebutton_set()){
     //Wait for the button to be released.
     while(sidebutton_set());
-    //Then change invert the setting.
-    settingclock=!settingclock;
+    //Set to applet zero.
+    app_set(&setting_applet);
   }
   
-  if(settingclock)
-    draw_settingtime();
-  else if(!lastchar){
+  if(!lastchar){
     // Draw the time by default, but only if no buttons pushed.
     draw_time(redraw);
-    redraw=0;
+    if(redraw)
+      redraw--;
   }
 }
 
@@ -277,12 +189,12 @@ void clock_draw(){
 void clock_init(){
   lastchar=0;
   lcd_zero();
+  redraw=5;
   draw_time(1);
 }
 
 //! A button has been pressed for the clock.
 int clock_keypress(char ch){
-  unsigned char inputdigit=0;
   lastchar=ch;
 
   /* This function is called *once* per keypress event, while the
@@ -290,150 +202,73 @@ int clock_keypress(char ch){
      important that anything that takes more than a frame be handled
      here, rather than in clock_draw(), which is rerun for every frame.
    */
-  if(settingclock){
-    //We only handle numbers here.
-    if((ch&0x30)==0x30)
-      inputdigit=ch&0x0F;
-    else
-      return 1;
-    
-    switch(settingclock){
-    case 1:         //Hour
-      SetRTCHOUR(inputdigit*10+RTCHOUR%10);
-      settingclock++;
-      break;
-    case 2:
-      SetRTCHOUR(RTCHOUR-RTCHOUR%10+inputdigit);
-      settingclock++;
-      break;
-    case 3:         //Minute
-      SetRTCMIN(inputdigit*10+RTCMIN%10);
-      settingclock++;
-      break;
-    case 4:
-      SetRTCMIN(RTCMIN-RTCMIN%10+inputdigit);
-      settingclock=7;
-      break;
-    
-      /* We no longer set the seconds, but rather hold them at zero
-	 until the user moves back them into the date.  Mechanical watch
-	 experts call this 'hacking.'
-      */
-    
-    case 7:        //Year
-      SetRTCYEAR(inputdigit*1000+RTCYEAR%1000);
-      settingclock++;
-      break;
-    case 8:
-      SetRTCYEAR(RTCYEAR-RTCYEAR%1000+inputdigit*100+RTCYEAR%100);
-      settingclock++;
-      break;
-    case 9:
-      SetRTCYEAR(RTCYEAR-RTCYEAR%100+inputdigit*10+RTCYEAR%10);
-      settingclock++;
-      break;
-    case 10:
-      SetRTCYEAR(RTCYEAR-RTCYEAR%10+inputdigit);
-      settingclock++;
-      break;
-    
-    case 11:        //Month
-      SetRTCMON(inputdigit*10+RTCMON%10);
-      settingclock++;
-      break;
-    case 12:
-      SetRTCMON(RTCMON-RTCMON%10+inputdigit);
-      settingclock++;
-      break;
-    
-    case 13:       //Day
-      SetRTCDAY(inputdigit*10+RTCDAY%10);
-      settingclock++;
-      break;
-    case 14:
-      SetRTCDAY(RTCDAY-RTCDAY%10+inputdigit);
-      settingclock++;
-      redraw++;
-      ////Do not break, or we'll be stuck in the setting mode afer compltion.
-      
-    default:
-      /* Once we've exceeded the count, it's time to return to the
-	 normal mode.
-      */
-      settingclock=0;
-    }
 
-    //Update the DOW.  We could save some cycles by only doing this if
-    //the date changes, but we don't bother.
-    rtc_setdow();
-  }else{
-    lcd_zero();
-    redraw++;
+  lcd_zero();
+  redraw++;
     
-    switch(ch){
-    case '7':
-      //Hold 7 to run the self-test after startup.  Response codes try
-      //to roughly describe the fault.
-      post();
-      break;
-    case '8':
-      //8 shows the callsign.
-      lcd_string(CALLSIGN);
-      break;
-    case '9':
-      //Hold 9 to draw the day of the week.
-      draw_dow();
-      break;
-    case '/':
-      //Hold / to draw the date.
-      draw_date();
-      break;
+  switch(ch){
+  case '7':
+    //Hold 7 to run the self-test after startup.  Response codes try
+    //to roughly describe the fault.
+    post();
+    break;
+  case '8':
+    //8 shows the callsign.
+    lcd_string(CALLSIGN);
+    break;
+  case '9':
+    //Hold 9 to draw the day of the week.
+    draw_dow();
+    break;
+  case '/':
+    //Hold / to draw the date.
+    draw_date();
+    break;
 
-    case '4':
-      //4 shows the git revision.
-      lcd_hex(GITHASH);
-      lcd_cleardigit(7);
-      break;
-    case '5':
-      //5 shows the git date from Flash.
-      draw_date_rom();
-      break;
-    case '*':
-      //* shows the chip model number.
-      lcd_string(DEVICEID==DEVICEID6137?"430F6137":"430F6147");
-      break;
+  case '4':
+    //4 shows the git revision.
+    lcd_hex(GITHASH);
+    lcd_cleardigit(7);
+    break;
+  case '5':
+    //5 shows the git date from Flash.
+    draw_date_rom();
+    break;
+  case '*':
+    //* shows the chip model number.
+    lcd_string(DEVICEID==DEVICEID6137?"430F6137":"430F6147");
+    break;
 
       
-    case '1':
-      /* 1 shows the the voltage.  To save on power, the reference is
-	 not active when idling. */
-      ref_on();
-      vcc=adc_getvcc();
-      ref_off();
-      lcd_number(vcc);
-      lcd_string("volt ");
-      setperiod(2,1);
-      break;
+  case '1':
+    /* 1 shows the the voltage.  To save on power, the reference is
+       not active when idling. */
+    ref_on();
+    vcc=adc_getvcc();
+    ref_off();
+    lcd_number(vcc);
+    lcd_string("volt ");
+    setperiod(2,1);
+    break;
 
       
-    case '0':
-      //0 shows the name of the working channel.
-      lcd_string(codeplug_name());
-      break;
-    case '.':
-      //. shows the frequency of the working channel.
-      lcd_number(codeplug_getfreq()/10);
-      setperiod(5,1);
-      setperiod(2,1);
-      break;
+  case '0':
+    //0 shows the name of the working channel.
+    lcd_string(codeplug_name());
+    break;
+  case '.':
+    //. shows the frequency of the working channel.
+    lcd_number(codeplug_getfreq()/10);
+    setperiod(5,1);
+    setperiod(2,1);
+    break;
 
       
-    case '6':
-      //6 toggles the CPU load indicator.
-      flickermode=(flickermode?0:-1);
-      lcd_string(flickermode?"FLICK ON":"FLICKOFF");
-      break;
-    }
+  case '6':
+    //6 toggles the CPU load indicator.
+    flickermode=(flickermode?0:-1);
+    lcd_string(flickermode?"FLICK ON":"FLICKOFF");
+    break;
   }
   return 1;
 }

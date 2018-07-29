@@ -5,6 +5,15 @@
 #include "api.h"
 #include "applist.h"
 
+/* These orphaned applets are entered through other means, such as by
+   pressing the SET button. */
+
+const struct app setting_applet=
+  //Setting time is zero, so that Clock follows.
+  {.name="setting", .init=settime_init, .draw=settime_draw, .exit=settime_exit,
+   .keypress=settime_keypress
+  };
+ 
 /* For each application, the init() function is called at entry.  The
    draw() function is called four times per second.  The exit()
    function is called when the mode button is pressed, but returns 1
@@ -15,7 +24,7 @@ const struct app apps[]={
   {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
    .keypress=clock_keypress
   },
-
+  
 #ifdef STOPWATCH_APP
   //Stopwatch
   {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit,

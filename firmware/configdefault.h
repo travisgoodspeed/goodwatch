@@ -18,6 +18,7 @@
 #define COREVOLTAGE 0
 #endif
 
+//Override this in config.h if you're testing an applet.
 #ifndef DEFAULTAPP
 #define DEFAULTAPP 0
 #endif

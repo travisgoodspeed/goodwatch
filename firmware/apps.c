@@ -18,7 +18,7 @@ int appindex=DEFAULTAPP;
 static int idlecount=0;
 
 //! The currently selected application.
-const struct app *applet=&apps[0];
+const struct app *applet=&apps[DEFAULTAPP];
 
 //! Every 3 minutes we return to the clock unless this is called.
 void app_cleartimer(){
@@ -27,7 +27,7 @@ void app_cleartimer(){
 
 //! Renders the current app to the screen.
 void app_draw(int forced){
-  static int lastmin=0;;
+  static int lastmin=0;
   
   //If we go three minutes without action, return to main screen.
   if(lastmin!=RTCMIN){
@@ -57,7 +57,7 @@ void app_forcehome(){
 
   //And force it if that doesn't work.
   ucs_slow();  //Gotta drop the clock rate, in case it was high.
-  appindex=0;
+  appindex=0;  //Move to the clock applet, not settime.
   applet = &apps[appindex];
   applet->init();
 }
@@ -67,7 +67,7 @@ void app_init(){
   if(applet->init)
     applet->init();
   else if(!applet->name){
-    appindex=0;
+    appindex=0; //Clock applet, not settime.
     applet = &apps[appindex];
   }
 
@@ -79,6 +79,12 @@ void app_set(const struct app *newapplet){
   applet=newapplet;
   app_init();
 }
+//! Sets back to the indexed app.  Does not work in the submenu.
+void app_reset(){
+  applet=&apps[appindex];
+  app_init();
+}
+
 
 //! Move to the next application if the current allows it.
 void app_next(){
@@ -99,7 +105,7 @@ void app_next(){
   
   applet = &apps[++appindex];
   if(!applet->draw){
-    appindex=0;
+    appindex=0; //Clock applet, not settime.
     applet = &apps[appindex];
   }
 

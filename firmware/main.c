@@ -11,6 +11,7 @@
 #include <stdlib.h>
 
 #include "api.h"
+#include "applist.h"
 #include "dmesg.h"
 #include "rng.h"
 
@@ -127,8 +128,8 @@ int main(void) {
   lcd_zero();
   lcd_string("APP INIT");
   app_init();
-
-
+  
+  
   descriptor_dump();
   
   // Setup and enable WDT 250ms, ACLK, interval timer
@@ -194,7 +195,7 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
      which is only drawn once a second.  We handle double-buffering,
      so that incomplete drawings won't be shown to the user, but
      everything else is the app's responsibility. */
-  if(appindex || (oldsec!=RTCSEC)){
+  if(applet->draw!=clock_draw || (oldsec!=RTCSEC)){
     oldsec=RTCSEC;
     
     lcd_predraw();
