@@ -10,7 +10,7 @@
 void calibrate_enforce();
 
 //! Draw the calibrate selection.
-void calibrate_draw();
+void calibrate_draw(int forced);
 
 //! Change the calibration.
 int calibrate_keypress(char c);

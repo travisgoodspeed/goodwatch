@@ -33,10 +33,10 @@ void calibrate_enforce(){
 }
 
 //! Draw the calibrate selection.
-void calibrate_draw(){
-  // Indicate that we're in the calibrate by setting the plus and
-  // minus digits.
-  lcd_number(calibration);
+void calibrate_draw(int forced){
+  // Draw the number if it has changed.
+  if(forced)
+    lcd_number(calibration);
 }
 
 //! Change the calibration.
@@ -62,6 +62,8 @@ void calibrate_init(){
   //Invert the calibration if it's negative.
   if(RTCCTL2&0x80)
     calibration=0-calibration;
+
+  calibrate_draw(1);
 }
 
 
