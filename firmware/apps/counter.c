@@ -162,14 +162,50 @@ static void counter_drawstatus(){
   lcd_number(current_freq/10);
 }
 
+
 //! Draw the Counter screen.
 void counter_draw(){
+  static int i, rssi;
+  
   switch(counter_state){
   case IDLE:
     if(best_rssi==0)
       lcd_string("CNT IDLE");
-    else
+    else{
       lcd_number(best_freq/10);
+
+      /* Every other frame, we grab the signal strength.  Highest
+	 stays. */
+      if(!(i&1))
+	rssi=radio_getrssi();
+      
+      //Draw the new strength.
+      clearperiods();
+      switch(rssi&0xF0){
+      case 0xF0:
+      case 0xE0:
+	setperiod(0,1);
+      case 0xD0:
+	setperiod(1,1);
+      case 0xC0:
+      case 0xB0:
+	setperiod(2,1);
+      case 0xA0:
+      case 0x90:
+	setperiod(3,1);
+      case 0x80:
+      case 0x70:
+	setperiod(4,1);
+      case 0x60:
+      case 0x50:
+	setperiod(5,1);
+      case 0x40:
+      case 0x30:
+	setperiod(6,1);
+      case 0x20:
+	setperiod(7,1);
+      }
+    }
     break;
   case SWEEP:
     //lcd_string("SWEEPING");
@@ -180,8 +216,7 @@ void counter_draw(){
 //! Keypress handler for the Counter applet.
 int counter_keypress(char ch){
   int i=0;
-
-
+  
   /* No break statements because the stages run in order.
    */
   switch(ch){
@@ -199,6 +234,8 @@ int counter_keypress(char ch){
       if((i++&0x3f)==0)
 	counter_drawstatus();
     }
+    //Return to best freq on idly.
+    radio_setfreq(best_freq);
 
     break;
 

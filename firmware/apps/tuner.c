@@ -55,11 +55,6 @@ int tuner_exit(){
 static int vfosetmode=0;
 static int rssi=0x5;
 
-static void clearperiods(){
-  int i;
-  for(i=0; i<8; i++)
-    setperiod(i,0);
-}
 
 int vfosetmode_bufferi;
 char vfosetmode_buffer[9];

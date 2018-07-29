@@ -222,6 +222,14 @@ void setperiod(int digit, int on){
     CLEARPOINT(lcdmap[digit][7]);
 }
 
+//! Zeroes all the periods.
+void clearperiods(){
+  int i;
+  for(i=0; i<8; i++)
+    setperiod(i,0);
+}
+
+
 //! Activates the colon.  2 for invert.
 void setcolon(int on){
   if(on==2)          //Blink
