@@ -23,7 +23,8 @@ const struct app apps[]={
   },
 #endif
   //Submenu selection.
-  {.name="submenu", .draw=submenu_draw, .keypress=submenu_keypress, .exit=submenu_exit},
+  {.name="submenu", .init=submenu_init,
+   .draw=submenu_draw, .keypress=submenu_keypress, .exit=submenu_exit},
   //Selected submenu comes here in sequence, but isn't in the array.
   
   //End on null entry.

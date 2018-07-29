@@ -1,5 +1,14 @@
 /*! \file submenu.c
   \brief Submenu selection tool.
+
+  
+  This little applet lists a submenu of applications, so that the user
+  can choose between many rarely used applets without having to wade
+  through an endless ring of of them.
+  
+  Press + and - to choose between the applets, and the side button to
+  move into the chosen applet.
+  
 */
 
 #include "api.h"
@@ -8,13 +17,28 @@
 //! Index of the applet in the submenu.
 static unsigned int subindex=0;
 
+//! Redraw the submenu.
+static void redraw(){
+  lcd_string("        ");
+  lcd_string(subapps[subindex].name);
+}
+
 //! Draw the submenu selection.
 void submenu_draw(){
+  static unsigned int lastindex=0;
+
+  //Redraw only when the index changes.
+  if(lastindex!=subindex)
+    redraw();
+  lastindex=subindex;
+}
+
+//! Enter the submenu.
+void submenu_init(){
   // indicate that we're in the submenu by setting the plus and minus digits
   setplus(1); 
   setminus(1);
-  lcd_string("        ");
-  lcd_string(subapps[subindex].name);
+  redraw();
 }
 
 //! Change the selected applet.

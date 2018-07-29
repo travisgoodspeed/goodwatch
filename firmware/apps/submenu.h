@@ -14,3 +14,6 @@ void submenu_drawselected();
 
 //! On exit, set the submenu app.
 int submenu_exit();
+
+//! Enter the submenu.
+void submenu_init();
