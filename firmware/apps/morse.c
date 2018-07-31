@@ -45,23 +45,32 @@ int morse_exit(){
 //! A button has been pressed for Morse.
 int morse_keypress(char ch){
   switch(ch){
-  case '7':
+  case '7':  //Transmit 73 (Goodbye!)
     lcd_string("      73");
     lcd_postdraw();
     radio_morse("73");
     break;
-  case '1':
+  case '1':  //Transmit CQ (Anybody there?)
     lcd_string("      CQ");
     lcd_postdraw();
     radio_morse("CQ CQ CQ");
     break;
-  case '0':
+  case '0':  //Transmit K (End of transmission.)
     lcd_string("       K");
     lcd_postdraw();
     radio_morse("K");
     break;
 
-  case '=':
+  case '+':  //One raw transmission.
+    do{
+      radio_strobe(RF_STX);
+      __delay_cycles(300);
+    }while(getchar()=='+');
+    radio_strobe(RF_SIDLE);
+    __delay_cycles(300);
+    break;
+
+  case '=':  //Raw mode, for keying with the sidebutton.
     /* Pressing the equals button switches to raw Morse mode, where the
        mode button causes a carrier to be transmitted.  Exit by pressing
        the button again.
