@@ -172,7 +172,7 @@ void clock_draw(int forced){
   if(sidebutton_set()){
     //Wait for the button to be released.
     while(sidebutton_set());
-    //Set to applet zero.
+    //Switch to the setting applet.
     app_set(&setting_applet);
   }
   
@@ -234,6 +234,11 @@ int clock_keypress(char ch){
     //5 shows the git date from Flash.
     draw_date_rom();
     break;
+  case '6':
+    //6 toggles the CPU load indicator.
+    flickermode=(flickermode?0:-1);
+    lcd_string(flickermode?"FLICK ON":"FLICKOFF");
+    break;
   case '*':
     //* shows the chip model number.
     lcd_string(DEVICEID==DEVICEID6137?"430F6137":"430F6147");
@@ -264,11 +269,6 @@ int clock_keypress(char ch){
     break;
 
       
-  case '6':
-    //6 toggles the CPU load indicator.
-    flickermode=(flickermode?0:-1);
-    lcd_string(flickermode?"FLICK ON":"FLICKOFF");
-    break;
   }
   return 1;
 }
