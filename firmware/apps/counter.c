@@ -27,7 +27,7 @@
   The result will be off by up to 100kHz, so just treat the result as
   a decent guess.  Later versions will scan other bands.
   
-  Press '=' to copy the frequency to the VLO.
+  Press '=' to copy the frequency to the VFO.
   
   --Travis
   
@@ -234,7 +234,7 @@ int counter_keypress(char ch){
       if((i++&0x3f)==0)
 	counter_drawstatus();
     }
-    //Return to best freq on idly.
+    //Return to best freq on idle.
     radio_setfreq(best_freq);
 
     break;
