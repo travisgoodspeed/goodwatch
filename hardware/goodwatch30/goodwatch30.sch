@@ -915,9 +915,9 @@ Wire Wire Line
 Text Label 4200 7200 0    60   ~ 0
 GND
 Text Label 4200 7300 0    60   ~ 0
-RF_P
-Text Label 5300 7300 0    60   ~ 0
 RF_N
+Text Label 5300 7300 0    60   ~ 0
+RF_P
 Wire Wire Line
 	2900 7100 2900 7000
 Wire Wire Line
