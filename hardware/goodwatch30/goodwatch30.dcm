@@ -1,0 +1,12 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP B0310J50100AH
+D 300-1000 MHz Balun
+K balun
+$ENDCMP
+#
+$CMP LP15
+D Johanson Low Pass Filter
+$ENDCMP
+#
+#End Doc Library

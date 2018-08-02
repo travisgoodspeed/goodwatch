@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:goodwatch30-cache
 EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
@@ -18,7 +19,7 @@ GoodWatch Rev 30
 Text Notes 10600 7650 0    60   ~ 0
 21
 Text Notes 7000 7100 0    60   ~ 0
-Replacement PCB for the Casio 3208 watch module (CA53 or CA506) built around\nthe CC430F6137.  Tuned for 70cm (430MHz).\nby Travis Goodspeed
+Replacement PCB for the Casio 3208 watch module (CA53 or CA506) built around\nthe CC430F6137.  Tuned for either 70cm (<500MHz) or 33cm (<1GHz).\nby Travis Goodspeed
 $Comp
 L goodwatch30:CA53LCD LCD1
 U 1 1 58F11D4F
