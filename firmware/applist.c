@@ -45,12 +45,6 @@ const struct app apps[]={
    the main menu once selected.
  */
 const struct app subapps[]={
-#ifdef SHABBAT_APP
-  //Kosher applet for Shabbat that disables all inputs except the SET button.
-  {.name="shabbat ", .init=shabbat_init, .draw=shabbat_draw, .exit=shabbat_exit,
-   .keypress=shabbat_keypress
-  },
-#endif
   
 #ifdef HEX_APP
   //Hex Viewer.
@@ -73,6 +67,12 @@ const struct app subapps[]={
   },
 #endif
 
+#ifdef SHABBAT_APP
+  //Kosher applet for Shabbat that disables all inputs except the SET button.
+  {.name="shabbat ", .init=shabbat_init, .draw=shabbat_draw, .exit=shabbat_exit,
+   .keypress=shabbat_keypress
+  },
+#endif
   
 #ifdef PHRASE_APP
   // Phrase - passphrase generator
