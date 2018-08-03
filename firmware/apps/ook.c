@@ -41,7 +41,9 @@
   transmission.
   
   Further details and a tutorial for adding your own remote are in the
-  wiki.  https://github.com/travisgoodspeed/goodwatch/wiki/OOK_Example
+  wiki.
+  
+  https://github.com/travisgoodspeed/goodwatch/wiki/OOK_Example
   
   --Travis
   
@@ -59,8 +61,10 @@
    no preamble, no CRC, and 341µs symbol times.
  */
 static const uint8_t ook_settings[]={
-  MDMCFG4, 0x86,      // Modem Configuration
-  MDMCFG3, 0xD9,      // Modem Configuration
+  //Change these to change the rate.
+  MDMCFG4, OOKMDMCFG4,      // Modem Configuration
+  MDMCFG3, OOKMDMCFG3,      // Modem Configuration
+  //These rest are consistent for all OOK emulation.
   MDMCFG2, 0x30,      // Modem Configuration, no sync
   FREND0 , 0x11,      // Front End TX Configuration
   FSCAL3 , 0xE9,      // Frequency Synthesizer Calibration
@@ -77,11 +81,8 @@ static const char * const button_array[] = {
   /* These were recorded with Universal Radio Hacker (URH).  You might
      need to adjust both these packets and the symbol periods defined
      above. */
-
-  "\x00\x00\xe8\xe8\xee\x88\xe8\x8e\xe8\x88\xee\xe8\x88\x8e\x80\x00", //A
-  "\x00\x00\xe8\xe8\xee\x88\xe8\x8e\xe8\x88\xee\xe8\x88\xe8\x80\x00", //B
-  "\x00\x00\xe8\xe8\xee\x88\xe8\x8e\xe8\x88\xee\xe8\x8e\x88\x80\x00", //C
-  "\x00\x00\xe8\xe8\xee\x88\xe8\x8e\xe8\x88\xee\xe8\xe8\x88\x80\x00"  //D
+  OOKBUTTONA, OOKBUTTONB,
+  OOKBUTTONC, OOKBUTTOND
 };
 
 

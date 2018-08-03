@@ -22,3 +22,23 @@
 #ifndef DEFAULTAPP
 #define DEFAULTAPP 0
 #endif
+
+//Settings for a DC relay, 341us/bit OOK.
+#ifndef OOKMDMCFG4
+#define OOKMDMCFG4 0x86
+#endif
+#ifndef OOKMDMCFG3
+#define OOKMDMCFG3 0xd9
+#endif
+#ifndef OOKBUTTONA
+#define OOKBUTTONA "\x00\x00\xe8\xe8\xee\x88\xe8\x8e\xe8\x88\xee\xe8\x88\x8e\x80\x00"
+#endif
+#ifndef OOKBUTTONB
+#define OOKBUTTONB "\x00\x00\xe8\xe8\xee\x88\xe8\x8e\xe8\x88\xee\xe8\x88\xe8\x80\x00"
+#endif
+#ifndef OOKBUTTONC
+#define OOKBUTTONC "\x00\x00\xe8\xe8\xee\x88\xe8\x8e\xe8\x88\xee\xe8\x8e\x88\x80\x00"
+#endif
+#ifndef OOKBUTTOND
+#define OOKBUTTOND "\x00\x00\xe8\xe8\xee\x88\xe8\x8e\xe8\x88\xee\xe8\xe8\x88\x80\x00"
+#endif
