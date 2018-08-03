@@ -14,7 +14,7 @@
 */
 
 #include "api.h"
-
+#include "stopwatch.h"
 
 static int counting=0;
 
@@ -40,6 +40,9 @@ void stopwatch_init(){
   //Draw these once, rather than every frame.
   lcd_cleardigit(5); //Space
   lcd_cleardigit(2); //Space
+
+  //Force a draw on startup.
+  stopwatch_draw(1);
 }
 
 //! Exit form the stopwatch app.
