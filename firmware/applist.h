@@ -17,6 +17,7 @@ extern const struct app clock_applet;
 #include "apps/hex.h"
 #include "apps/phrase.h"
 #include "apps/rngapp.h"
+#include "apps/shabbat.h"
 
 //Then radio apps.
 #include "apps/morse.h"

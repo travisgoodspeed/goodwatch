@@ -14,6 +14,6 @@ int clock_keypress(char ch);
 
 
 //! Draw the time.
-void draw_time();
+void draw_time(int redraw);
 //! Draw the date.
 void draw_date();

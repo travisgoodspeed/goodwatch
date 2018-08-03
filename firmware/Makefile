@@ -5,6 +5,7 @@ RPN_APP = 1
 HEX_APP = 1
 STOPWATCH_APP = 1
 PHRASE_APP = 0
+SHABBAT_APP = 0
 RNG_APP = 1
 TUNER_APP = 1
 MORSE_APP = 1
@@ -21,6 +22,10 @@ APPS_OBJ += apps/clock.o apps/settime.o apps/submenu.o
 ifeq ($(ALARM_APP),1)
 APPS_OBJ += apps/alarm.o 
 APPS_DEFINES += ALARM_APP
+endif
+ifeq ($(SHABBAT_APP),1)
+APPS_OBJ += apps/shabbat.o 
+APPS_DEFINES += SHABBAT_APP
 endif
 ifeq ($(RPN_APP),1)
 APPS_OBJ += apps/rpn.o 
