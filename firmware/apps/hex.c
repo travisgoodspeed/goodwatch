@@ -34,6 +34,8 @@ void hex_init(){
   SFRIE1&=~(VMAIE|ACCVIE);
   //Disable BSL protections, so we can read it without trouble.
   SYSBSLC=3;
+  //Force drawing the first frame.
+  hex_draw(1);
   
   return;
 }
