@@ -6,11 +6,15 @@
   easy to fork for other purposes.
 */
 
+
+
 //MSP430 functions for the SFRIE.
 #include <msp430.h>
 
 //Include all standard GoodWatch functions.
 #include "api.h"
+
+#include "hex.h"
 
 //! Returns 1 if a given address is legal.
 static int hex_islegal(unsigned int adr){
