@@ -95,6 +95,7 @@ static char lastch=0;
 
 //! Called after a transmission, or on a button press.
 void ook_packettx(){
+  
   /* Schedule next packet if the right key is being held.
      
      Buttons for A,B,C,D are 0,1,2,3 or 0,1,4,7.
@@ -117,27 +118,18 @@ void ook_packettx(){
 	      LEN);
     break;
   }
-  }
+}
 
 
 //! Enter the OOK transmitter application.
 void ook_init(){
-  /* This enters the application.
-     We ignore the codeplug frequency and set our own.
+  /* Skip this application if we haven't got a radio.
    */
-  if(has_radio){
-    //Faster processing time, for rapid packet succession.
-    ucs_fast();
-    
-    radio_on();
-    radio_writesettings(ook_settings);
-    radio_writepower(0x25);
-  
-    //Set a frequency manually rather than using the codeplug.
-    radio_setfreq(433960000);
-  }else{
+  if(!has_radio){
     app_next();
   }
+
+  lcd_string("     OOK");
 }
 
 //! Exit the OOK application.
@@ -153,33 +145,22 @@ int ook_exit(){
 void ook_draw(){
   int state=radio_getstate();
 
-  if(state==1){
-    lcd_string("     OOK");
-  }else{
-    lcd_string("TRANSMIT");
-  }
-  
-
   switch(state){
-
-  case 17: //RX_OVERFLOW
-    printf("RX Overflow.\n");
-    radio_strobe(RF_SIDLE);
+  case 0:
+  case 1:
+    //lcd_string("     OOK");
+    break;
+  case 19: //RX IDLE between transmit packets.
+    lcd_string("TRANSMIT");
     break;
   case 22: //TX_OVERFLOW
     printf("TX Overflow.\n");
     radio_strobe(RF_SIDLE);
     break;
-    
-  case 13: //RX Mode
-    /* The screen will dim down in this mode unless we power cycle it,
-       but that's not this module's responsibility.  See issue #56 on
-       Github.
-    */
+  default:
+    lcd_hex(state);
     break;
   }
-
-
 }
 
 //! Keypress handler for the ook applet.
@@ -189,7 +170,25 @@ int ook_keypress(char ch){
      library, so it will keep running in a loop until the key is
      released.
    */
-  if( (lastch=ch) )
+  if( (lastch=ch) ){
+    //Faster processing time, for rapid packet succession.
+    ucs_fast();
+    
+    //Radio settings.
+    radio_on();
+    radio_writesettings(ook_settings);
+    radio_writepower(0x25);
+    //Set a frequency manually rather than using the codeplug.
+    radio_setfreq(433960000);
+
+    //This handler will be called back as the packet finished transmission.
     ook_packettx();
+  }else{
+    //Shut down the radio when the button is released.
+    ucs_slow();
+    radio_off();
+    lcd_zero(); //Clear the clock and radio indicators.
+    lcd_string("     OOK");
+  }
   return 0;
 }
