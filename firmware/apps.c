@@ -67,10 +67,11 @@ void app_init(){
   if(applet->init)
     applet->init();
   else if(!applet->name){
-    appindex=0; //Clock applet, not settime.
-    applet = &apps[appindex];
+    //Clock applet.
+    applet = &apps[appindex=0];
+    applet->init();
   }
-
+  
   return;
 }
 

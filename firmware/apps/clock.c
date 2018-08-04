@@ -189,7 +189,6 @@ void clock_draw(int forced){
 void clock_init(){
   lastchar=0;
   lcd_zero();
-  redraw=5;
   draw_time(1);
 }
 
@@ -267,8 +266,6 @@ int clock_keypress(char ch){
     setperiod(5,1);
     setperiod(2,1);
     break;
-
-      
   }
   return 1;
 }

@@ -79,25 +79,19 @@ int main(void) {
   rtc_init();
 
   lcd_zero();
-  printf("key ");
-  lcd_string("KEY INIT");
-  key_init();
-  
-  lcd_zero();
-  printf("but ");
-  lcd_string("BUT INIT");
-  sidebutton_init();
-  
-  lcd_zero();
   printf("osc ");
   lcd_string("OSC INIT");
   ucs_init();
+  
+  //Recognize the CPU model.
+  descriptor_dump();
+  
 
   lcd_zero();
   printf("buzz ");
   lcd_string("BUZZINIT");
   buzz_init();
-  /* Startup tones might kill the watch in low battery.
+  /* Startup tones kill the watch in low battery.
   tone(NOTE_C7, 500);
   tone(NOTE_E7, 500);
   tone(NOTE_G7, 500);
@@ -114,23 +108,29 @@ int main(void) {
   lcd_string("CP  INIT");
   codeplug_init();
   
-
   lcd_zero();
   printf("rad ");
   lcd_string("RAD INIT");
   radio_init();
-  
+
   printf("Beginning POST.\n");
   lcd_string("POSTPOST");
   // Run the POST until it passes.
   while(post());
-  
+
+  //Finally we initialize the application.
   lcd_zero();
   lcd_string("APP INIT");
   app_init();
   
+  //Keys and buttons are initialized *after* the application.
+  printf("key ");
+  key_init();
+  printf("but ");
+  sidebutton_init();
   
-  descriptor_dump();
+  
+  
   
   // Setup and enable WDT 250ms, ACLK, interval timer
   WDTCTL = WDT_ADLY_250;
