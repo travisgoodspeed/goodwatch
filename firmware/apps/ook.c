@@ -5,20 +5,21 @@
   Howdy y'all,
   
   This is a quick little comm demo that sends OOK commands to INSMA
-  Modules.  Fork this one if you need to emulate other OOK devices, by
-  adjusting button_array[] and the modem bitrate.
+  Modules.  Additional remotes can be added without forking this
+  module by placing their data rates (MDMCFG4 and MDMCFG3) and packets
+  into the OOKBUTTONS array of your config.h.
   
   You can buy this particular transmitter from Amazon as ``INSMA
   433Mhz Wireless RF Switch 328ft Long Range DC 12V 4CH Channel
   Wireless Remote Control Switch, DC12V Relay Receiver Module,
   Transmitter Toggle Switch RF Relay (2 Transmitter & 1 Receiver).''
   
-  These particular packets are based on my own device, but you can use
-  the learning button to train your radio to it.  Bits and timings
-  were initially reversed with Universal Radio Hacker, then a single
-  packet was prototyped in Python through the Monitor feature.  Once
-  this packet was properly compared to the original, a steady stream
-  of packets was created by the ook_packettx() callback.
+  These packets are based on my own device, but you can use the
+  learning button to train your radio to it.  Bits and timings were
+  initially reversed with Universal Radio Hacker, then a single packet
+  was prototyped in Python through the Monitor feature.  Once this
+  packet was properly compared to the original, a steady stream of
+  packets was created by the ook_packettx() callback.
   
   The 'bits' are 341 µs long for a symbol rate of 2.93207 kilobaud,
   but because the protocol is designed in terms of short and long
@@ -62,8 +63,8 @@
  */
 static const uint8_t ook_settings[]={
   //Change these to change the rate.
-  MDMCFG4, OOKMDMCFG4,      // Modem Configuration
-  MDMCFG3, OOKMDMCFG3,      // Modem Configuration
+  //MDMCFG4, OOKMDMCFG4,      // Modem Configuration
+  //MDMCFG3, OOKMDMCFG3,      // Modem Configuration
   //These rest are consistent for all OOK emulation.
   MDMCFG2, 0x30,      // Modem Configuration, no sync
   FREND0 , 0x11,      // Front End TX Configuration
@@ -81,9 +82,19 @@ static const char * const button_array[] = {
   /* These were recorded with Universal Radio Hacker (URH).  You might
      need to adjust both these packets and the symbol periods defined
      above. */
-  OOKBUTTONA, OOKBUTTONB,
-  OOKBUTTONC, OOKBUTTOND
+  OOKBUTTONS
 };
+
+//! Local function that returns an OOK array index from a button.  -1 on failure.
+static int button2index(char c){
+  //For now, only numbers.  Might change this later to have even rows of four buttons.
+  if(c<='9' && c>='0'){
+    return c-'0';
+  }
+
+  //Otherwise failure.
+  return -1;
+}
 
 
 //! Handle an incoming packet.
@@ -93,30 +104,27 @@ void ook_packetrx(uint8_t *packet, int len){
 
 static char lastch=0;
 
+
+//! Send a packet.
+static void transmit(int index){
+  //Packet begins on the third byte.
+  packet_tx((uint8_t*) button_array[index]+2,
+	    LEN);
+}
+//! Set the rate.
+static void setrate(int index){
+  //First two bytes are the rate.
+  radio_writereg(MDMCFG4, ((uint8_t*) button_array[index])[0]);
+  radio_writereg(MDMCFG3, ((uint8_t*) button_array[index])[1]);
+}
+
 //! Called after a transmission, or on a button press.
 void ook_packettx(){
-  
-  /* Schedule next packet if the right key is being held.
-     
-     Buttons for A,B,C,D are 0,1,2,3 or 0,1,4,7.
+  /* Schedule next packet if a number is being held.  We already set
+     the bitrate in the keypress handler.
   */
-  switch(lastch){
-  case '0':
-    packet_tx((uint8_t*) button_array[0],
-	      LEN);
-    break;
-  case '1':
-    packet_tx((uint8_t*) button_array[1],
-	      LEN);
-    break;
-  case '2': case '4':
-    packet_tx((uint8_t*) button_array[2],
-	      LEN);
-    break;
-  case '3': case '7':
-    packet_tx((uint8_t*) button_array[3],
-	      LEN);
-    break;
+  if(lastch<='9' && lastch>='0'){
+    transmit(lastch-'0');
   }
 }
 
@@ -130,6 +138,8 @@ void ook_init(){
   }
 
   lcd_string("     OOK");
+
+  printf("%d button entries are available.\n", sizeof(button_array)/2);
 }
 
 //! Exit the OOK application.
@@ -170,13 +180,14 @@ int ook_keypress(char ch){
      library, so it will keep running in a loop until the key is
      released.
    */
-  if( (lastch=ch) ){
+  if( (lastch=ch) && ch>='0' && ch<='9' ){
     //Faster processing time, for rapid packet succession.
     ucs_fast();
     
     //Radio settings.
     radio_on();
     radio_writesettings(ook_settings);
+    setrate(ch-'0'); //First two bytes are the packet rate.
     radio_writepower(0x25);
     //Set a frequency manually rather than using the codeplug.
     radio_setfreq(433960000);

@@ -91,7 +91,7 @@ static int test_shabbat(){
 
 //! Exit to normal mode.
 static void exit_shabbat(){
-   //Return keypad to normal.
+  //Return keypad to normal.
   key_init();
   //Return sidebuttons to normal.
   sidebutton_init();
@@ -107,7 +107,7 @@ void shabbat_init(){
 
 //! Exit the Shabbat application.
 int shabbat_exit(){
-  //Return GPIO to normal.
+  //Return GPIO to normal, just to be safe.
   exit_shabbat();
   //Good to move to the next applet.
   return 0;
@@ -119,8 +119,8 @@ void shabbat_draw(){
   if(sidebutton_set()){
     //Wait for the button to be released.
     while(sidebutton_set());
-    //Switch to the setting applet.
-    app_next();
+    //Return GPIO to normal, which should show the PANIC message.
+    exit_shabbat();
   }
 
   
