@@ -258,13 +258,20 @@ int clock_keypress(char ch){
       
   case '0':
     //0 shows the name of the working channel.
-    lcd_string(codeplug_name());
+    if(has_radio)
+      lcd_string(codeplug_name());
+    else
+      lcd_string("NO RADIO");
     break;
   case '.':
     //. shows the frequency of the working channel.
-    lcd_number(codeplug_getfreq()/10);
-    setperiod(5,1);
-    setperiod(2,1);
+    if(has_radio){
+      lcd_number(codeplug_getfreq()/10);
+      setperiod(5,1);
+      setperiod(2,1);
+    }else{
+      lcd_string("NO RADIO");
+    }
     break;
   }
   return 1;
