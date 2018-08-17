@@ -10,6 +10,14 @@
   )
 
   (page A4)
+  (title_block
+    (title GoodWatch)
+    (rev "Rev 30")
+    (comment 1 "by TravisGoodspeed")
+    (comment 2 "the CC430F6137.  Tuned for either 70cm (<500MHz) or 33cm (<1GHz).")
+    (comment 3 "Replacement PCB for the Casio 3208 watch module (CA53 or CA506) built around")
+  )
+
   (layers
     (0 F.Cu signal)
     (31 B.Cu signal)
