@@ -6,11 +6,14 @@ same parts as the GoodWatch20 series, except that the combined balun
 and bandpass filter has been replaced with separate components, to
 allow for a choice of bands.
 
+The CC430F6147 is now preferred over the CC430F6137, but the older
+chip is still supported by firmware.
+
 
 Base parts, required for all watches.
 
         MfgrPartNo              Digikey             Pkg      Qty   Cmt
-U1      CC430F6137IRGCR         296-25822-1-ND      VQFN64   1     CPU
+U1      CC430F6147IRGCR         296-39985-1-ND      VQFN64   1     CPU
 R1      RC0201FR-0775KL         YAG2795CT-ND        0201     1     75K
 C1      CL10A476MR8NZNE         1276-6528-1-ND      0603     1     47uF
 C2,C3   GRM033R61A104ME15D      490-5405-1-ND       0201     2     0.1uF
