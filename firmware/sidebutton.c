@@ -32,8 +32,8 @@ void sidebutton_init(){
 
 //! Test the Mode button.
 int sidebutton_mode(){
-  //Side button.
-  if(!uartactive && !(P1IN&BIT5))
+  //Easily accessible side button.
+  if(!uartactive && !(P1IN&BIT5) && !(P1DIR&BIT5))
     return 1;
 
   //Emulation.
@@ -45,11 +45,11 @@ int sidebutton_mode(){
 
 //! Test the Set button.
 int sidebutton_set(){
-  //Side button.
-  if(!uartactive && !(P1IN&BIT6))
+  //Recessed side button.
+  if(!uartactive && !(P1IN&BIT6) && !(P1DIR&BIT6))
     return 1;
 
-  //Emulation, disaabled by default.
+  //Emulation, disabled by default.
 #ifdef EMULATESET
   if(key_scan()==0xC1)
     return 1;

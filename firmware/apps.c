@@ -111,8 +111,10 @@ void app_next(){
   }
 
   //Initialize the new application.
-  if(applet->init)
+  if(applet->init){
+    lcd_zero();
     applet->init();
+  }
   
   return;
 }

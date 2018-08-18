@@ -107,18 +107,23 @@ void shabbat_init(){
 
 //! Exit the Shabbat application.
 int shabbat_exit(){
-  //Return GPIO to normal, just to be safe.
-  exit_shabbat();
-  //Good to move to the next applet.
-  return 0;
+  //After shabbat mode has been exited by pressing the SET button,
+  //press the MODE button to move to the next applet.
+  if(sidebutton_mode()){
+    //Return GPIO to normal, just to be safe.
+    exit_shabbat();
+    //Good to move to the next applet.
+    return 0;
+  }else{
+    //False alarms are frequent from the mode being set, so refuse to exit.
+    return 1;
+  }
 }
 
 //! Draw the Shabbat screen.
 void shabbat_draw(){
   //Use the SET button to exit Shabbat mode.
   if(sidebutton_set()){
-    //Wait for the button to be released.
-    while(sidebutton_set());
     //Return GPIO to normal, which should show the PANIC message.
     exit_shabbat();
   }

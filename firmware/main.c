@@ -165,10 +165,10 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
        too many polling cycles, we forcibly revert to the clock
        application.
     */
-    
+
     //Politely move to the next app if requested.
     if(!(latch++)){
-      lcd_zero();
+      //lcd_zero();
       app_next();
     }
     
