@@ -91,17 +91,19 @@ all: goodwatch.hex
 
 githash.h:
 	echo "#define GITHASH" 0x`git rev-parse HEAD | head -c7` > githash.h
-goodwatch: $(modules) $(apps) *.h  
-	$(CC) -T msp430.x -o goodwatch $(modules) $(apps)
-	../bin/printsizes.py goodwatch || echo "Please install python-pyelftools."
+goodwatch.elf: $(modules) $(apps) *.h  
+	$(CC) -T msp430.x -o goodwatch.elf $(modules) $(apps)
+	../bin/printsizes.py goodwatch.elf || echo "Please install python-pyelftools."
 
-goodwatch.hex: goodwatch
-	msp430-objcopy -O ihex goodwatch goodwatch.hex
+goodwatch.hex: goodwatch.elf
+	msp430-objcopy -O ihex goodwatch.elf goodwatch.hex
 
 clean:
-	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h html latex
+	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h html latex goodwatch.elf energytrace.png energytrace.txt
 erase:
 	$(BSL) -e
+sbwflash: goodwatch.hex
+	mspdebug tilib "prog goodwatch.elf"
 flash: goodwatch.hex
 	$(BSL) -etf goodwatch.hex
 dmesg:
@@ -121,3 +123,9 @@ dump:
 	$(BSL) -ed
 
 
+
+energytrace.txt: goodwatch.hex sbwflash
+	et 30 > energytrace.txt
+
+energytrace.png: energytrace.txt energytrace.gnuplot
+	gnuplot energytrace.gnuplot
