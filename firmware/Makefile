@@ -125,7 +125,7 @@ dump:
 
 
 energytrace.txt: goodwatch.hex sbwflash
-	et 60 > energytrace.txt #This will take a minute.
+	energytrace 60 > energytrace.txt #This will take a minute.
 	gnuplot energytrace.gnuplot
 	gnuplot energytrace-txt.gnuplot
 	../bin/batterylife.py <energytrace.txt
