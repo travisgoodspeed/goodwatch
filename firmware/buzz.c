@@ -45,7 +45,7 @@ void tone(unsigned int freq, unsigned int duration) {
   // delay until we want to stop the tone
   int i;
   for (i = 0; i < duration; i++) {
-    __delay_cycles(29);
+    __delay_cycles(2900);
   }
   // stop the tone and reset the pin
   TA1CTL = TACLR | TASSEL__SMCLK | MC__STOP;

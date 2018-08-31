@@ -41,5 +41,5 @@ void ucs_init(){
   UCSCTL6 &= ~(XT1DRIVE_3);                 // Xtal is now stable, reduce drive
                                             // strength
   //See page 125 of the family guide.
-  ucs_slow();
+  ucs_fast();
 }

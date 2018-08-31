@@ -132,9 +132,6 @@ void counter_init(){
      We ignore the codeplug frequency and set our own.
    */
   if(has_radio){
-    //Faster processing time, for rapid packet succession.
-    ucs_fast();
-    
     radio_on();
     radio_writesettings(counter_settings);
 
@@ -151,7 +148,6 @@ void counter_init(){
 int counter_exit(){
   //Cut the radio off and drop the CPU frequency.
   radio_off();
-  ucs_slow();
   
   //Allow the exit.
   return 0;

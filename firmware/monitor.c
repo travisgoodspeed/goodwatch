@@ -138,11 +138,9 @@ int monitor_handle(uint8_t *buffer, int len){
     if(buffer[1]){
       uartactive=1;
       lcd_zero();
-      lcd_string("nnonitor");
-      ucs_fast();
+      lcd_string("monitor ");
     }else{
       uartactive=0;
-      ucs_slow();
     }
     break;
     

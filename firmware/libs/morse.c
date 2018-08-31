@@ -7,6 +7,13 @@
 #include "api.h"
 
 
+//! Delay for a while.
+static void morsedelay(uint16_t i){
+  while(i--){
+    __delay_cycles(100);
+  }
+}
+
 //! Send a message in Morse, just dits and dahs.
 static void radio_morse_raw(const char *msg){
   if(has_radio)
@@ -17,16 +24,16 @@ static void radio_morse_raw(const char *msg){
 	radio_strobe(RF_STX);
       
       if(*msg=='.' || *msg=='*')
-	__delay_cycles(2000);
+	morsedelay(2000);
       else if(*msg=='-')
-	__delay_cycles(6000);
+	morsedelay(6000);
       else if(*msg==' ')
-	__delay_cycles(6000);
+	morsedelay(6000);
       
       //End transmission.
       radio_strobe(RF_SIDLE);
       //Intercharacter space.
-      __delay_cycles(1000);
+      morsedelay(1000);
       
       msg++;
     }

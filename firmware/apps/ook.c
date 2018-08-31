@@ -146,7 +146,6 @@ void ook_init(){
 int ook_exit(){
   //Cut the radio off.
   radio_off();
-  ucs_slow();
   //Allow the exit.
   return 0;
 }
@@ -181,9 +180,6 @@ int ook_keypress(char ch){
      released.
    */
   if( (lastch=ch) && ch>='0' && ch<='9' ){
-    //Faster processing time, for rapid packet succession.
-    ucs_fast();
-    
     //Radio settings.
     radio_on();
     radio_writesettings(ook_settings);
@@ -196,7 +192,6 @@ int ook_keypress(char ch){
     ook_packettx();
   }else{
     //Shut down the radio when the button is released.
-    ucs_slow();
     radio_off();
     lcd_zero(); //Clear the clock and radio indicators.
     lcd_string("     OOK");

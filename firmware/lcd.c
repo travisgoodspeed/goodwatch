@@ -87,8 +87,7 @@ void lcd_postdraw(){
   //Every sixteenth frame, we test for clocks and faults.
   if((testcount++ & 0x0F) == 0x0F){
     //Mark some flags no matter what the mode.
-    if((UCSCTL4&SELM_7)!=SELM_0)
-      setmult(1);     //Mult indicates main clock is not from XT1
+    
     if(UCSCTL7&2){
       setdivide(1);   //Div indicates a crystal fault.
       printf("Clock fault, attempting repair.\n");

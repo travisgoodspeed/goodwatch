@@ -8,11 +8,7 @@
    
    The AM pixel indicates that the current value has not yet been
    pushed to the stack.
-
-   This applet calls ucs_fast() to jump the clock rate to 1MHz for the
-   period of calculations, but it drops the clock afterward to
-   preserve power.  Frames are only drawn as needed, and idle
-   consumption is quite low.
+   
    
 */
 
@@ -105,9 +101,6 @@ int rpn_exit(){
     
   } else if(rpn_peek()==0){
     // Exit if zero is the latest number.
-    
-    //Jump up the clock rate for those pesky divisions.
-    ucs_slow();
     return 0;
   }
   
@@ -132,8 +125,6 @@ int rpn_keypress(char ch){
   if(!ch)
     return 0;
 
-  //Jump up the clock rate for those pesky divisions.
-  ucs_fast();
 
   //Operators
   switch(ch){
@@ -169,9 +160,6 @@ int rpn_keypress(char ch){
     break;
   }
 
-  //Drop the clock after the arithmetic is done.
-  ucs_slow();
-  
   
   /* Numbers are special.  They modify a buffer, and the buffer is
      pushed onto the stack before an operator or when = is pressed.
