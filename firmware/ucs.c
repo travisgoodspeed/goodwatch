@@ -19,7 +19,11 @@ void ucs_fast(){
 
 //! Slow mode.
 void ucs_slow(){
+  #ifdef TURBOMODE
+  ucs_fast();
+  #else
   UCSCTL4 = SELM_0 + SELS_0 + SELA_0;    //XT1 for everything; very slow CPU.
+  #endif
 }
 
 //! Initialize the XT1 crystal, and stabilize it.
@@ -37,9 +41,5 @@ void ucs_init(){
   UCSCTL6 &= ~(XT1DRIVE_3);                 // Xtal is now stable, reduce drive
                                             // strength
   //See page 125 of the family guide.
-  #ifdef TURBOMODE
-  ucs_fast();
-  #else
   ucs_slow();
-  #endif
 }
