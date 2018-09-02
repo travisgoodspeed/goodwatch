@@ -540,12 +540,12 @@ RF_N
 $Comp
 L goodwatch30:YageoS432 A1
 U 1 1 59D2F54A
-P 2900 6750
-F 0 "A1" H 2900 7150 60  0000 C CNN
-F 1 "YageoS432" V 2750 6850 60  0000 C CNN
-F 2 "goodwatch30:YageoS432" H 2900 6750 60  0001 C CNN
-F 3 "" H 2900 6750 60  0001 C CNN
-	1    2900 6750
+P 2800 6750
+F 0 "A1" H 2800 7150 60  0000 C CNN
+F 1 "YageoS432" V 2650 6850 60  0000 C CNN
+F 2 "goodwatch30:YageoS432" H 2800 6750 60  0001 C CNN
+F 3 "" H 2800 6750 60  0001 C CNN
+	1    2800 6750
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -912,8 +912,6 @@ RF_N
 Text Label 5300 7300 0    60   ~ 0
 RF_P
 Wire Wire Line
-	2900 7100 2900 7000
-Wire Wire Line
 	3750 6750 3750 6550
 Wire Wire Line
 	3950 6750 3950 6550
@@ -921,12 +919,47 @@ Wire Wire Line
 	3750 7450 3750 7650
 Wire Wire Line
 	3950 7450 3950 7650
-Text Label 3750 6750 1    60   ~ 0
+Text Label 3750 6550 3    60   ~ 0
 GND
-Text Label 3950 6750 1    60   ~ 0
+Text Label 3950 6550 3    60   ~ 0
 GND
 Text Label 3750 7650 1    60   ~ 0
 GND
 Text Label 3950 7650 1    60   ~ 0
 GND
+$Comp
+L Connector:Conn_Coaxial J1
+U 1 1 5B8D41DD
+P 2350 6550
+F 0 "J1" V 2450 6550 50  0000 L CNN
+F 1 "ANT_U.FL" H 2150 6700 50  0000 L CNN
+F 2 "Connector_Coaxial:U.FL_Molex_MCRF_73412-0110_Vertical" H 2350 6550 50  0001 C CNN
+F 3 " ~" H 2350 6550 50  0001 C CNN
+	1    2350 6550
+	0    1    -1   0   
+$EndComp
+Wire Wire Line
+	2800 7000 2800 7100
+Wire Wire Line
+	2800 7100 2900 7100
+Wire Wire Line
+	2800 7100 2350 7100
+Wire Wire Line
+	2350 7100 2350 6750
+Connection ~ 2800 7100
+$Comp
+L power:GND #PWR0101
+U 1 1 5B8FCF2F
+P 2050 7200
+F 0 "#PWR0101" H 2050 6950 50  0001 C CNN
+F 1 "GND" H 2050 7050 50  0000 C CNN
+F 2 "" H 2050 7200 50  0000 C CNN
+F 3 "" H 2050 7200 50  0000 C CNN
+	1    2050 7200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2150 6550 2050 6550
+Wire Wire Line
+	2050 6550 2050 7200
 $EndSCHEMATC
