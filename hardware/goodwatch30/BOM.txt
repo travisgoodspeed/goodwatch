@@ -28,7 +28,7 @@ R2      CRGCQ0402F56K           A129648CT-ND        0402     1     56k, 1%
 Y2      FA-128 26.0000MF10Z-W5  SER4186CT-ND                 1     26MHz SMD Xtal, 12pF
 A1      ANT1204F002R0433A       311-1570-1-ND                1     430MHz Chip Antenna, you probably won't populate this.
 J1      0734120110              WM5587CT-ND                  1     u.FL/UMCC coaxial antenna connector, you probably won't populate this.
-C6,C7   GCQ1555C1H190JB01D      490-17432-1-ND      0402     2     19pF
+C6,C7   CL05C120JB5NNNC         1276-1178-1-ND      0402     2     12pF
 C8,C9   GRM152C80J104KE19D      490-9997-1-ND       0402     2     0.1uF (<0.3mm thickness) (Same as C2,C3.)
 L1      BLM15HG102SN1D          490-3999-1-ND       0402     1     Ferrite Bead
 U2      0500LP15A500            712-1117-1-ND       0805     1     500MHz Low Pass Filter (70cm usage)

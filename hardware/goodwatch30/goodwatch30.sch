@@ -660,10 +660,10 @@ L Device:C C6
 U 1 1 59D3F241
 P 1400 1250
 F 0 "C6" H 1425 1350 50  0000 L CNN
-F 1 "19pF" H 1425 1150 50  0000 L CNN
+F 1 "12pF" H 1425 1150 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 2050 1800 50  0000 C CNN
 F 3 "" H 1400 1250 50  0000 C CNN
-F 4 "cap-cer-0402-19p" H 0   0   50  0001 C CNN "Key"
+F 4 "cap-cer-0402-12p" H 0   0   50  0001 C CNN "Key"
 F 5 "Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
 	1    1400 1250
 	1    0    0    -1  
@@ -673,10 +673,10 @@ L Device:C C7
 U 1 1 59D3F397
 P 2950 1250
 F 0 "C7" H 2975 1350 50  0000 L CNN
-F 1 "19pF" H 2975 1150 50  0000 L CNN
+F 1 "12pF" H 2975 1150 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 2050 1900 50  0000 C CNN
 F 3 "" H 2950 1250 50  0000 C CNN
-F 4 "cap-cer-0402-19p" H 0   0   50  0001 C CNN "Key"
+F 4 "cap-cer-0402-12p" H 0   0   50  0001 C CNN "Key"
 F 5 "Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
 	1    2950 1250
 	1    0    0    -1  
