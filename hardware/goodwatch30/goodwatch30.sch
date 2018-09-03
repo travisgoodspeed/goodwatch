@@ -184,9 +184,10 @@ U 1 1 58F297AD
 P 7450 3200
 F 0 "C2" H 7475 3300 50  0000 L CNN
 F 1 "0.1uF" H 7475 3100 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric" V 8000 3100 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" V 8000 3100 50  0000 C CNN
 F 3 "" H 7450 3200 50  0000 C CNN
-F 4 "cap-cer-0201-100n" H 0   0   50  0001 C CNN "Key"
+F 4 "cap-cer-0402-03high-100n" H 0   0   50  0001 C CNN "Key"
+F 5 "Use flat versions that are not higher than 0.33mm." H 0   0   50  0001 C CNN "Notes"
 	1    7450 3200
 	1    0    0    -1  
 $EndComp
@@ -196,9 +197,10 @@ U 1 1 58F297DF
 P 7700 3200
 F 0 "C3" H 7725 3300 50  0000 L CNN
 F 1 "0.1uF" H 7725 3100 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric" V 8100 3100 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" V 8100 3100 50  0000 C CNN
 F 3 "" H 7700 3200 50  0000 C CNN
-F 4 "cap-cer-0201-100n" H 0   0   50  0001 C CNN "Key"
+F 4 "cap-cer-0402-03high-100n" H 0   0   50  0001 C CNN "Key"
+F 5 "Use flat versions that are not higher than 0.33mm." H 0   0   50  0001 C CNN "Notes"
 	1    7700 3200
 	1    0    0    -1  
 $EndComp
@@ -497,7 +499,7 @@ Wire Wire Line
 	8550 3100 8550 2750
 Text Label 4800 2450 3    60   ~ 0
 LCDCAP
-Text Label 8550 3100 1    60   ~ 0
+Text Label 8550 2750 3    60   ~ 0
 LCDCAP
 $Comp
 L Device:C C5
@@ -526,7 +528,7 @@ Wire Wire Line
 	9050 3400 9050 3500
 Wire Wire Line
 	9050 3100 9050 2750
-Text Label 9050 3100 1    60   ~ 0
+Text Label 9050 2750 3    60   ~ 0
 VCORE
 Text Label 4200 2450 3    60   ~ 0
 VCORE
@@ -734,9 +736,10 @@ U 1 1 59E28B92
 P 5150 5450
 F 0 "C8" H 5175 5550 50  0000 L CNN
 F 1 "0.1uF" V 5300 5300 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric" H 4800 4900 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 4800 4900 50  0000 C CNN
 F 3 "" H 5150 5450 50  0000 C CNN
-F 4 "cap-cer-0201-100n" H 0   0   50  0001 C CNN "Key"
+F 4 "cap-cer-0402-03high-100n" H 0   0   50  0001 C CNN "Key"
+F 5 "Use flat versions that are not higher than 0.33mm." H 0   0   50  0001 C CNN "Notes"
 	1    5150 5450
 	-1   0    0    -1  
 $EndComp
@@ -746,9 +749,10 @@ U 1 1 59E28F57
 P 5350 5450
 F 0 "C9" H 5375 5550 50  0000 L CNN
 F 1 "0.1uF" V 5200 5300 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric" H 5200 5000 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 5200 5000 50  0000 C CNN
 F 3 "" H 5350 5450 50  0000 C CNN
-F 4 "cap-cer-0201-100n" H 0   0   50  0001 C CNN "Key"
+F 4 "cap-cer-0402-03high-100n" H 0   0   50  0001 C CNN "Key"
+F 5 "Use flat versions that are not higher than 0.33mm." H 0   0   50  0001 C CNN "Notes"
 	1    5350 5450
 	-1   0    0    -1  
 $EndComp
