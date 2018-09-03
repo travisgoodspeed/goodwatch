@@ -33,8 +33,10 @@ P 4350 4000
 F 0 "U1" H 3900 3650 60  0000 C CNN
 F 1 "CC430F613x" H 4000 4350 60  0000 C CNN
 F 2 "goodwatch30:CC430F613x" H 4350 4000 60  0001 C CNN
-F 3 "" H 4350 4000 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cc430f6143.pdf" H 4350 4000 60  0001 C CNN
 F 4 "ic-mcu-cc430f613x" H 0   0   50  0001 C CNN "Key"
+F 5 "Texas Instruments" H 4350 4000 50  0001 C CNN "Manufacturer"
+F 6 "CC430F6147IRGCR" H 4350 4000 50  0001 C CNN "MFN"
 	1    4350 4000
 	0    1    1    0   
 $EndComp
@@ -135,8 +137,10 @@ P 5700 4150
 F 0 "Y1" H 5900 4200 50  0000 C CNN
 F 1 "32.768kHz" H 6050 4100 50  0000 C CNN
 F 2 "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm" V 6800 4150 50  0000 C CNN
-F 3 "" H 5700 4150 50  0000 C CNN
+F 3 "https://abracon.com/Resonators/ABS07-120-32.768kHz-T.pdf" H 5700 4150 50  0001 C CNN
 F 4 "xtal3215-32_768khz" H 0   0   50  0001 C CNN "Key"
+F 5 "Abracon" H 0   0   50  0001 C CNN "Manufacturer"
+F 6 "ABS07-120-32.768KHZ-T" H 0   0   50  0001 C CNN "MFN"
 	1    5700 4150
 	1    0    0    -1  
 $EndComp
@@ -557,10 +561,12 @@ P 2800 6750
 F 0 "A1" H 2800 7150 60  0000 C CNN
 F 1 "YageoS432" V 2650 6850 60  0000 C CNN
 F 2 "goodwatch30:YageoS432" H 2800 6750 60  0001 C CNN
-F 3 "" H 2800 6750 60  0001 C CNN
-F 4 "Only used outside of a watch case." H 2800 6750 50  0001 C CNN "Notes"
+F 3 "http://www.yageo.com/documents/recent/An_SMD_UHF_433_1204_0.pdf" H 2800 6750 60  0001 C CNN
+F 4 "Optional: only used without watch body for the RF version" H 2800 6750 50  0001 C CNN "Notes"
 F 5 "YES" H 2800 6750 50  0001 C CNN "DNP"
 F 6 "ant-smd-yageos432" H 0   0   50  0001 C CNN "Key"
+F 7 "Yaego" H 0   0   50  0001 C CNN "Manufacturer"
+F 8 "ANT1204F002R0433A" H 0   0   50  0001 C CNN "MFN"
 	1    2800 6750
 	1    0    0    -1  
 $EndComp
@@ -572,7 +578,8 @@ F 0 "R2" V 4600 5600 50  0000 C CNN
 F 1 "56k" V 4700 5600 50  0000 C CNN
 F 2 "Resistor_SMD:R_0402_1005Metric" V 4630 5600 50  0001 C CNN
 F 3 "" H 4700 5600 50  0000 C CNN
-F 4 "res-0402-56k" H 4700 5600 50  0001 C CNN "Key"
+F 4 "res-0402-56k-1%" H 4700 5600 50  0001 C CNN "Key"
+F 5 "Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
 	1    4700 5600
 	1    0    0    -1  
 $EndComp
@@ -616,8 +623,11 @@ P 2150 1000
 F 0 "Y2" H 2150 800 60  0000 C CNN
 F 1 "FA128 26MHz" H 2150 1150 60  0000 C CNN
 F 2 "goodwatch30:FA128" H 2150 1000 60  0001 C CNN
-F 3 "" H 2150 1000 60  0001 C CNN
+F 3 "https://support.epson.biz/td/api/doc_check.php?dl=brief_FA-128_en.pdf" H 2150 1000 60  0001 C CNN
 F 4 "xtal-fa128-26mhz" H 0   0   50  0001 C CNN "Key"
+F 5 "FA-128 26.0000MF10Z-W5" H 0   0   50  0001 C CNN "MFN"
+F 6 "EPSON" H 0   0   50  0001 C CNN "Manufacturer"
+F 7 "Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
 	1    2150 1000
 	1    0    0    -1  
 $EndComp
@@ -654,6 +664,7 @@ F 1 "19pF" H 1425 1150 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 2050 1800 50  0000 C CNN
 F 3 "" H 1400 1250 50  0000 C CNN
 F 4 "cap-cer-0402-19p" H 0   0   50  0001 C CNN "Key"
+F 5 "Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
 	1    1400 1250
 	1    0    0    -1  
 $EndComp
@@ -666,6 +677,7 @@ F 1 "19pF" H 2975 1150 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 2050 1900 50  0000 C CNN
 F 3 "" H 2950 1250 50  0000 C CNN
 F 4 "cap-cer-0402-19p" H 0   0   50  0001 C CNN "Key"
+F 5 "Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
 	1    2950 1250
 	1    0    0    -1  
 $EndComp
@@ -709,9 +721,11 @@ L Device:L_Small L1
 U 1 1 59E2854B
 P 5650 5250
 F 0 "L1" H 5680 5290 50  0000 L CNN
-F 1 "L_Small" H 5680 5210 50  0000 L CNN
+F 1 "Ferrite 1k" H 5680 5210 50  0000 L CNN
 F 2 "Inductor_SMD:L_0402_1005Metric" V 5600 4850 50  0000 C CNN
 F 3 "" H 5650 5250 50  0000 C CNN
+F 4 "Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
+F 5 "ferrite-0402-1k" H 0   0   50  0001 C CNN "Key"
 	1    5650 5250
 	0    -1   -1   0   
 $EndComp
@@ -739,7 +753,7 @@ F 1 "0.1uF" V 5300 5300 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 4800 4900 50  0000 C CNN
 F 3 "" H 5150 5450 50  0000 C CNN
 F 4 "cap-cer-0402-03high-100n" H 0   0   50  0001 C CNN "Key"
-F 5 "Use flat versions that are not higher than 0.33mm." H 0   0   50  0001 C CNN "Notes"
+F 5 "Use flat versions that are not higher than 0.33mm. Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
 	1    5150 5450
 	-1   0    0    -1  
 $EndComp
@@ -752,7 +766,7 @@ F 1 "0.1uF" V 5200 5300 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 5200 5000 50  0000 C CNN
 F 3 "" H 5350 5450 50  0000 C CNN
 F 4 "cap-cer-0402-03high-100n" H 0   0   50  0001 C CNN "Key"
-F 5 "Use flat versions that are not higher than 0.33mm." H 0   0   50  0001 C CNN "Notes"
+F 5 "Use flat versions that are not higher than 0.33mm. Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
 	1    5350 5450
 	-1   0    0    -1  
 $EndComp
@@ -894,8 +908,11 @@ P 3850 7100
 F 0 "U2" H 4150 7350 50  0000 L CNN
 F 1 "0915LP15B02" H 4100 7450 50  0000 L CNN
 F 2 "goodwatch30:LP15" H 3850 7100 50  0001 C CNN
-F 3 "" H 3850 7100 50  0001 C CNN
-F 4 "filter-0915lp15b02" H 0   0   50  0001 C CNN "Key"
+F 3 "https://www.mouser.com/ds/2/611/LP_Filter_0500LP15A500_v2-258166.pdf, https://www.mouser.com/datasheet/2/611/JTI_Low-Pass-0915LP15B026_8-04-515344.pdf" H 3850 7100 50  0001 C CNN
+F 4 "filter-0915lp15b02, filter-0915lp15b02" H 0   0   50  0001 C CNN "Key"
+F 5 "Optional: only needed for the RF version; two options 500MHz/915MHz" H 0   0   50  0001 C CNN "Notes"
+F 6 "0500LP15A500, 0915LP15B02" H 0   0   50  0001 C CNN "MFN"
+F 7 "Johanson Technology Inc." H 0   0   50  0001 C CNN "Manufacturer"
 	1    3850 7100
 	1    0    0    -1  
 $EndComp
@@ -906,8 +923,11 @@ P 4850 7300
 F 0 "U3" H 4850 7725 50  0000 C CNN
 F 1 "B0310J50100AHF" H 4850 7634 50  0000 C CNN
 F 2 "goodwatch30:B0310J50100AHF" H 4850 7300 50  0001 C CNN
-F 3 "" H 4850 7300 50  0001 C CNN
+F 3 "https://cdn.anaren.com/product-documents/Xinger/BalunTransformers/B0310J50100AHF/B0310J50100AHF_DataSheet(Rev_A).pdf" H 4850 7300 50  0001 C CNN
 F 4 "balun-b0310j50100ahf" H 0   0   50  0001 C CNN "Key"
+F 5 "Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
+F 6 "B0310J50100AH" H 0   0   50  0001 C CNN "MFN"
+F 7 "Anaren" H 0   0   50  0001 C CNN "Manufacturer"
 	1    4850 7300
 	1    0    0    -1  
 $EndComp
@@ -920,6 +940,7 @@ F 1 "220pF" H 3075 7000 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" V 3400 7000 50  0000 C CNN
 F 3 "" H 3050 7100 50  0000 C CNN
 F 4 "cap-cer-0402-220p" H 0   0   50  0001 C CNN "Key"
+F 5 "Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
 	1    3050 7100
 	0    1    1    0   
 $EndComp
@@ -962,10 +983,12 @@ P 2350 6550
 F 0 "J1" V 2450 6550 50  0000 L CNN
 F 1 "ANT_U.FL" H 2150 6700 50  0000 L CNN
 F 2 "Connector_Coaxial:U.FL_Molex_MCRF_73412-0110_Vertical" H 2350 6550 50  0001 C CNN
-F 3 " ~" H 2350 6550 50  0001 C CNN
-F 4 "Only used outside of a watch case." H 2350 6550 50  0001 C CNN "Notes"
+F 3 "https://www.molex.com/pdm_docs/sd/734120110_sd.pdf" H 2350 6550 50  0001 C CNN
+F 4 "Optional: only used without watch body for the RF version" H 2350 6550 50  0001 C CNN "Notes"
 F 5 "YES" H 2350 6550 50  0001 C CNN "DNP"
 F 6 "conn-umcc" H 0   0   50  0001 C CNN "Key"
+F 7 "0734120110" H 0   0   50  0001 C CNN "MFN"
+F 8 "Molex" H 0   0   50  0001 C CNN "Manufacturer"
 	1    2350 6550
 	0    1    -1   0   
 $EndComp
