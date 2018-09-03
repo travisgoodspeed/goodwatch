@@ -117,8 +117,10 @@ run:
 codeplug.hex: codeplug.txt
 	../bin/goodwatch-txt2cp.py -i codeplug.txt -o codeplug.hex
 flashcp: codeplug.hex
-	#FIXME Might need a different sort of erase.
 	$(BSL) -Ef codeplug.hex
+sbwflashcp: codeplug.hex
+	mspdebug tilib "load codeplug.hex"
+
 dump:
 	$(BSL) -ed
 
