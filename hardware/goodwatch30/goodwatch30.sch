@@ -22,6 +22,7 @@ F 0 "LCD1" H 1150 5700 60  0000 C CNN
 F 1 "CA53LCD" H 1350 4050 60  0000 C CNN
 F 2 "goodwatch30:ca53lcd" H 1350 3900 60  0001 C CNN
 F 3 "" H 1350 3900 60  0001 C CNN
+F 4 "YES" H 1350 3900 50  0001 C CNN "DNP"
 	1    1350 3900
 	-1   0    0    1   
 $EndComp
@@ -33,6 +34,7 @@ F 0 "U1" H 3900 3650 60  0000 C CNN
 F 1 "CC430F613x" H 4000 4350 60  0000 C CNN
 F 2 "goodwatch30:CC430F613x" H 4350 4000 60  0001 C CNN
 F 3 "" H 4350 4000 60  0001 C CNN
+F 4 "ic-mcu-cc430f613x" H 0   0   50  0001 C CNN "Key"
 	1    4350 4000
 	0    1    1    0   
 $EndComp
@@ -44,6 +46,7 @@ F 0 "KPD1" H 6200 3150 60  0000 C CNN
 F 1 "CA53KEYPAD" V 6200 3650 60  0000 C CNN
 F 2 "goodwatch30:ca53keypad" H 6050 3550 60  0001 C CNN
 F 3 "" H 6050 3550 60  0001 C CNN
+F 4 "YES" H 6050 3550 50  0001 C CNN "DNP"
 	1    6050 3550
 	1    0    0    1   
 $EndComp
@@ -57,6 +60,7 @@ F 0 "BRD1" H 5850 3100 60  0000 C CNN
 F 1 "CA53BOARD" V 6050 2650 60  0000 C CNN
 F 2 "goodwatch30:ca53board" H 5350 2500 60  0001 C CNN
 F 3 "" H 5350 2500 60  0001 C CNN
+F 4 "YES" H 5350 2500 50  0001 C CNN "DNP"
 	1    5350 2500
 	1    0    0    -1  
 $EndComp
@@ -132,6 +136,7 @@ F 0 "Y1" H 5900 4200 50  0000 C CNN
 F 1 "32.768kHz" H 6050 4100 50  0000 C CNN
 F 2 "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm" V 6700 4100 50  0000 C CNN
 F 3 "" H 5700 4150 50  0000 C CNN
+F 4 "xtal3215-32_768khz" H 0   0   50  0001 C CNN "Key"
 	1    5700 4150
 	1    0    0    -1  
 $EndComp
@@ -169,6 +174,7 @@ F 0 "C1" H 7225 3300 50  0000 L CNN
 F 1 "47uF" H 7225 3100 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric" V 7000 3100 50  0000 C CNN
 F 3 "" H 7200 3200 50  0000 C CNN
+F 4 "cap-cer-0603-47u" H 0   0   50  0001 C CNN "Key"
 	1    7200 3200
 	1    0    0    -1  
 $EndComp
@@ -180,6 +186,7 @@ F 0 "C2" H 7475 3300 50  0000 L CNN
 F 1 "0.1uF" H 7475 3100 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" V 8000 3100 50  0000 C CNN
 F 3 "" H 7450 3200 50  0000 C CNN
+F 4 "cap-cer-0201-100n" H 0   0   50  0001 C CNN "Key"
 	1    7450 3200
 	1    0    0    -1  
 $EndComp
@@ -191,6 +198,7 @@ F 0 "C3" H 7725 3300 50  0000 L CNN
 F 1 "0.1uF" H 7725 3100 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" V 8100 3100 50  0000 C CNN
 F 3 "" H 7700 3200 50  0000 C CNN
+F 4 "cap-cer-0201-100n" H 0   0   50  0001 C CNN "Key"
 	1    7700 3200
 	1    0    0    -1  
 $EndComp
@@ -216,17 +224,17 @@ F 3 "" H 7450 3500 50  0000 C CNN
 	1    7450 3500
 	1    0    0    -1  
 $EndComp
-Text Label 2350 5250 0    60   ~ 0
+Text Label 2700 5250 2    60   ~ 0
 COM2
-Text Label 2350 5350 0    60   ~ 0
+Text Label 2700 5350 2    60   ~ 0
 COM1
-Text Label 2350 5450 0    60   ~ 0
+Text Label 2700 5450 2    60   ~ 0
 COM0
-Text Label 4500 2750 1    60   ~ 0
+Text Label 4500 2450 3    60   ~ 0
 COM2
-Text Label 4600 2750 1    60   ~ 0
+Text Label 4600 2450 3    60   ~ 0
 COM1
-Text Label 4700 2750 1    60   ~ 0
+Text Label 4700 2450 3    60   ~ 0
 COM0
 Wire Wire Line
 	5000 2800 5000 2300
@@ -468,6 +476,7 @@ F 0 "C4" H 8575 3350 50  0000 L CNN
 F 1 "10uF" H 8575 3150 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" V 8800 3200 50  0000 C CNN
 F 3 "" H 8550 3250 50  0000 C CNN
+F 4 "cap-cer-0402-10u" H 0   0   50  0001 C CNN "Key"
 	1    8550 3250
 	1    0    0    -1  
 $EndComp
@@ -486,7 +495,7 @@ Wire Wire Line
 	8550 3500 8550 3400
 Wire Wire Line
 	8550 3100 8550 2750
-Text Label 4800 2750 1    60   ~ 0
+Text Label 4800 2450 3    60   ~ 0
 LCDCAP
 Text Label 8550 3100 1    60   ~ 0
 LCDCAP
@@ -498,6 +507,7 @@ F 0 "C5" H 9075 3350 50  0000 L CNN
 F 1 "0.47uF" H 9075 3150 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" V 9350 3200 50  0000 C CNN
 F 3 "" H 9050 3250 50  0000 C CNN
+F 4 "cap-cer-0201-470n" H 0   0   50  0001 C CNN "Key"
 	1    9050 3250
 	1    0    0    -1  
 $EndComp
@@ -518,7 +528,7 @@ Wire Wire Line
 	9050 3100 9050 2750
 Text Label 9050 3100 1    60   ~ 0
 VCORE
-Text Label 4200 2750 1    60   ~ 0
+Text Label 4200 2450 3    60   ~ 0
 VCORE
 Wire Wire Line
 	5500 2400 5300 2400
@@ -546,6 +556,9 @@ F 0 "A1" H 2800 7150 60  0000 C CNN
 F 1 "YageoS432" V 2650 6850 60  0000 C CNN
 F 2 "goodwatch30:YageoS432" H 2800 6750 60  0001 C CNN
 F 3 "" H 2800 6750 60  0001 C CNN
+F 4 "Only used outside of a watch case." H 2800 6750 50  0001 C CNN "Notes"
+F 5 "YES" H 2800 6750 50  0001 C CNN "DNP"
+F 6 "ant-smd-yageos432" H 0   0   50  0001 C CNN "Key"
 	1    2800 6750
 	1    0    0    -1  
 $EndComp
@@ -557,6 +570,7 @@ F 0 "R2" V 4600 5600 50  0000 C CNN
 F 1 "56k" V 4700 5600 50  0000 C CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 4630 5600 50  0001 C CNN
 F 3 "" H 4700 5600 50  0000 C CNN
+F 4 "res-0201-56k" H 4700 5600 50  0001 C CNN "Key"
 	1    4700 5600
 	1    0    0    -1  
 $EndComp
@@ -598,9 +612,10 @@ L goodwatch30:FA128 Y2
 U 1 1 59D3CB4A
 P 2150 1000
 F 0 "Y2" H 2150 800 60  0000 C CNN
-F 1 "FA128" H 2150 1150 60  0000 C CNN
+F 1 "FA128 26MHz" H 2150 1150 60  0000 C CNN
 F 2 "goodwatch30:FA128" H 2150 1000 60  0001 C CNN
 F 3 "" H 2150 1000 60  0001 C CNN
+F 4 "xtal-fa128-26mhz" H 0   0   50  0001 C CNN "Key"
 	1    2150 1000
 	1    0    0    -1  
 $EndComp
@@ -610,7 +625,7 @@ Wire Wire Line
 	2550 1100 2750 1100
 Text Label 1600 950  0    60   ~ 0
 GND
-Text Label 2550 1100 0    60   ~ 0
+Text Label 2750 1100 2    60   ~ 0
 GND
 Wire Wire Line
 	3900 5200 3900 5600
@@ -636,6 +651,7 @@ F 0 "C6" H 1425 1350 50  0000 L CNN
 F 1 "19pF" H 1425 1150 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 2050 1800 50  0000 C CNN
 F 3 "" H 1400 1250 50  0000 C CNN
+F 4 "cap-cer-0201-19p" H 0   0   50  0001 C CNN "Key"
 	1    1400 1250
 	1    0    0    -1  
 $EndComp
@@ -647,6 +663,7 @@ F 0 "C7" H 2975 1350 50  0000 L CNN
 F 1 "19pF" H 2975 1150 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 2050 1900 50  0000 C CNN
 F 3 "" H 2950 1250 50  0000 C CNN
+F 4 "cap-cer-0201-19p" H 0   0   50  0001 C CNN "Key"
 	1    2950 1250
 	1    0    0    -1  
 $EndComp
@@ -676,6 +693,7 @@ F 0 "R1" V 5980 4550 50  0000 C CNN
 F 1 "75k" V 5900 4550 50  0000 C CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 6100 4650 50  0000 C CNN
 F 3 "" H 5900 4550 50  0000 C CNN
+F 4 "res-0201-75k" H 0   0   50  0001 C CNN "Key"
 	1    5900 4550
 	0    1    1    0   
 $EndComp
@@ -718,6 +736,7 @@ F 0 "C8" H 5175 5550 50  0000 L CNN
 F 1 "0.1uF" V 5300 5300 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 4800 4900 50  0000 C CNN
 F 3 "" H 5150 5450 50  0000 C CNN
+F 4 "cap-cer-0201-100n" H 0   0   50  0001 C CNN "Key"
 	1    5150 5450
 	-1   0    0    -1  
 $EndComp
@@ -729,6 +748,7 @@ F 0 "C9" H 5375 5550 50  0000 L CNN
 F 1 "0.1uF" V 5200 5300 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 5200 5000 50  0000 C CNN
 F 3 "" H 5350 5450 50  0000 C CNN
+F 4 "cap-cer-0201-100n" H 0   0   50  0001 C CNN "Key"
 	1    5350 5450
 	-1   0    0    -1  
 $EndComp
@@ -783,7 +803,7 @@ Text Label 5300 2700 0    60   ~ 0
 BUZZ
 Wire Wire Line
 	5400 3950 5650 3950
-Text Label 5400 3950 0    60   ~ 0
+Text Label 5650 3950 2    60   ~ 0
 BUZZ
 Wire Notes Line
 	8500 1500 9200 1500
@@ -871,6 +891,7 @@ F 0 "U2" H 4150 7350 50  0000 L CNN
 F 1 "0915LP15B02" H 4100 7450 50  0000 L CNN
 F 2 "goodwatch30:LP15" H 3850 7100 50  0001 C CNN
 F 3 "" H 3850 7100 50  0001 C CNN
+F 4 "filter-0915lp15b02" H 0   0   50  0001 C CNN "Key"
 	1    3850 7100
 	1    0    0    -1  
 $EndComp
@@ -879,9 +900,10 @@ L goodwatch30:B0310J50100AH U3
 U 1 1 5B642963
 P 4850 7300
 F 0 "U3" H 4850 7725 50  0000 C CNN
-F 1 "B0310J50100AH" H 4850 7634 50  0000 C CNN
+F 1 "B0310J50100AHF" H 4850 7634 50  0000 C CNN
 F 2 "goodwatch30:B0310J50100AHF" H 4850 7300 50  0001 C CNN
 F 3 "" H 4850 7300 50  0001 C CNN
+F 4 "balun-b0310j50100ahf" H 0   0   50  0001 C CNN "Key"
 	1    4850 7300
 	1    0    0    -1  
 $EndComp
@@ -893,6 +915,7 @@ F 0 "C10" H 3075 7200 50  0000 L CNN
 F 1 "220pF" H 3075 7000 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" V 3400 7000 50  0000 C CNN
 F 3 "" H 3050 7100 50  0000 C CNN
+F 4 "cap-cer-0201-220p" H 0   0   50  0001 C CNN "Key"
 	1    3050 7100
 	0    1    1    0   
 $EndComp
@@ -910,7 +933,7 @@ Text Label 4200 7200 0    60   ~ 0
 GND
 Text Label 4200 7300 0    60   ~ 0
 RF_N
-Text Label 5300 7300 0    60   ~ 0
+Text Label 5550 7300 2    60   ~ 0
 RF_P
 Wire Wire Line
 	3750 6750 3750 6550
@@ -936,6 +959,9 @@ F 0 "J1" V 2450 6550 50  0000 L CNN
 F 1 "ANT_U.FL" H 2150 6700 50  0000 L CNN
 F 2 "Connector_Coaxial:U.FL_Molex_MCRF_73412-0110_Vertical" H 2350 6550 50  0001 C CNN
 F 3 " ~" H 2350 6550 50  0001 C CNN
+F 4 "Only used outside of a watch case." H 2350 6550 50  0001 C CNN "Notes"
+F 5 "YES" H 2350 6550 50  0001 C CNN "DNP"
+F 6 "conn-umcc" H 0   0   50  0001 C CNN "Key"
 	1    2350 6550
 	0    1    -1   0   
 $EndComp
