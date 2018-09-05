@@ -108,6 +108,9 @@ flash: goodwatch.hex
 	$(BSL) -etf goodwatch.hex
 dmesg:
 	$(BSL) -P goodwatch.hex -uD
+sbwdmesg:
+	mspdebug tilib "save_raw 0x2400 2048 dmesg.bin"
+	strings dmesg.bin
 
 #Same as dmesg, but it gives the target some time to boot first.
 run:
