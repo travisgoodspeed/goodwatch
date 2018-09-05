@@ -55,12 +55,6 @@ void lcd_init() {
   //LCDBVCTL = LCDCPEN | VLCD_3_02 | LCD2B; //Mid contrast
   //LCDBVCTL = LCDCPEN | VLCD_2_60 | LCD2B; //Weakest contrast.
   LCDBCTL0 |= LCDON + LCDSON;
-
-  /* Previously, we cleared REFMSTR to place the reference in legacy
-     mode, but this wasn't compatible with ADC10 on the CC430F6147.
-   */
-  //REFCTL0 &= ~REFMSTR; // Enable legacy mode.
-  //REFCTL0 |=  REFMSTR; // Disable legacy mode.
   
   //Select LCD Segments 0-9
   LCDBPCTL0 = 0xFFFF;

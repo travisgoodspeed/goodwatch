@@ -1,8 +1,8 @@
 /*! \file main.c
 
-  \brief Main module.  This version just initializes the LCD and then
-   drops to a low power mode, letting the WDT do the work on a slow
-   interval.
+  \brief Main module.  This version initializes the LCD and then
+   drops to a low power mode, letting the WDT update the display each
+   quarter second, or in the handler of a keypress.
 */
 
 #include <msp430.h>

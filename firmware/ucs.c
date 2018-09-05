@@ -19,11 +19,7 @@ void ucs_fast(){
 
 //! Slow mode.
 void ucs_slow(){
-  #ifdef TURBOMODE
-  ucs_fast();
-  #else
   UCSCTL4 = SELM_0 + SELS_0 + SELA_0;    //XT1 for everything; very slow CPU.
-  #endif
 }
 
 //! Initialize the XT1 crystal, and stabilize it.
