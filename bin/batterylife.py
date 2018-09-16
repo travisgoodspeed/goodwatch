@@ -25,8 +25,8 @@ for line in sys.stdin:
         amps=float(words[1]);
         milliamps=amps*1000.0;
 
-        #We only count after the first 10 seconds, as booting takes 5 seconds.
-        if time>10.0:
+        #We only count after the first 20 seconds, as booting takes 5 to 10 seconds.
+        if time>20.0:
             ampcount=ampcount+1;
             ampsum=ampsum+amps;
 
