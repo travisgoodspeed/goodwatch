@@ -129,6 +129,9 @@ int main(void) {
   printf("but ");
   sidebutton_init();
   
+  //Unused IO pins must be outputs.
+  PJDIR |=  0xF;
+  PJOUT &= ~0xF;
   
   
   
