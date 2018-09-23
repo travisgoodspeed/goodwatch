@@ -6,7 +6,8 @@
 extern int uartactive;
 
 //! UART buffer length.
-#define UARTBUFLEN 64
+#define UARTBUFLEN 256
+
 //! UART receive buffer.
 extern uint8_t uart_buffer[];
 
