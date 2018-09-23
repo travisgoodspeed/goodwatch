@@ -131,8 +131,6 @@ int main(void) {
   PJOUT &= ~0xF;
 
   //UART must come after the sidebuttons.
-  lcd_zero();
-  lcd_string("UARTINIT");
   uart_init();
   
   // Setup and enable WDT 250ms, ACLK, interval timer
