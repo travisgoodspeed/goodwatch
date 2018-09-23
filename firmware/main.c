@@ -99,9 +99,6 @@ int main(void) {
   tone(NOTE_C8, 500);
   */
 
-  lcd_zero();
-  lcd_string("UARTINIT");
-  uart_init();
 
   lcd_zero();
   printf("cp ");
@@ -132,8 +129,11 @@ int main(void) {
   //Unused IO pins must be outputs.
   PJDIR |=  0xF;
   PJOUT &= ~0xF;
-  
-  
+
+  //UART must come after the sidebuttons.
+  lcd_zero();
+  lcd_string("UARTINIT");
+  uart_init();
   
   // Setup and enable WDT 250ms, ACLK, interval timer
   WDTCTL = WDT_ADLY_250;
