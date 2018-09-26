@@ -102,8 +102,9 @@ clean:
 	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h html latex goodwatch.elf energytrace.png energytrace.txt
 erase:
 	$(BSL) -e
-sbwflash: goodwatch.hex
-	mspdebug tilib "prog goodwatch.elf"
+sbwflash: goodwatch.hex codeplug.hex
+	mspdebug tilib "prog goodwatch.elf" "load codeplug.hex"
+
 flash: goodwatch.hex
 	$(BSL) -etf goodwatch.hex
 dmesg:
@@ -121,8 +122,6 @@ codeplug.hex: codeplug.txt
 	../bin/goodwatch-txt2cp.py -i codeplug.txt -o codeplug.hex
 flashcp: codeplug.hex
 	$(BSL) -Ef codeplug.hex
-sbwflashcp: codeplug.hex
-	mspdebug tilib "load codeplug.hex"
 
 dump:
 	$(BSL) -ed
