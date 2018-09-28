@@ -98,7 +98,7 @@ void radio_init(){
   /* We can't check RF1AIFERR&1 to tell whether the radio circuit is
      powered, because Errata RF1A6 makes that bit useless.  Instead,
      we run a radio strobe and look for its reply.
-   */
+  */
   radio_strobe(RF_SCAL);
   printf("This watch has %s radio.\n",
 	 has_radio?"a":"no");
@@ -146,9 +146,8 @@ void radio_resetcore(){
 //! Turns the radio off.
 void radio_off(){
   //Cut the radio's oscillator.
-  radio_strobe(RF_SIDLE);
+  radio_strobe(RF_SRES);
   radio_strobe(RF_SXOFF);
-
   
   /* We really ought to lower the core voltage, but seems that it can
      never come back up.
@@ -162,7 +161,6 @@ void radio_off(){
   PMMCTL0_H = 0xA5;
   PMMCTL0_L &= ~PMMHPMRE_L;
   PMMCTL0_H = 0x00;
-
 }
 
 
@@ -318,8 +316,11 @@ uint8_t radio_strobe(uint8_t strobe){
   uint16_t count=0;
   uint16_t gdo_state;
 
+
+  /*
   if(!has_radio)
     return 0xFF;
+  */
   
   // Check for valid strobe command 
   if((strobe == 0xBD) || ((strobe >= RF_SRES) && (strobe <= RF_SNOP))){
@@ -345,7 +346,7 @@ uint8_t radio_strobe(uint8_t strobe){
 	   */
           while ((RF1AIN&0x04)== 0x04){
 	    if(count++>1000){
-	      printf("Timeout in radio_strobe.  Broken XT2?\n");
+	      //printf("Timeout in radio_strobe.  Broken XT2?\n");
 	      has_radio=0;
 	      return 0xFF;
 	    }
