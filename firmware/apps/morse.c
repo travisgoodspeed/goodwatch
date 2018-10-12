@@ -8,11 +8,15 @@
   
   7 transmits "73", 1 transmits "CQ CQ CQ CQ", 0 transmits "K", and /
   transmits the owner's callsign.
+
+  + is a straight key, or you can press = to enter raw mode, where the
+  mode button is a straight key.  The SET button will exit raw mode.
   
 */
 
 #include<msp430.h>
 #include "api.h"
+
 
 
 //! Enter the Morse application.
@@ -62,6 +66,7 @@ int morse_keypress(char ch){
     break;
 
   case '+':  //One raw transmission.
+    lcd_string("      TX");
     do{
       radio_strobe(RF_STX);
       __delay_cycles(300);
@@ -75,7 +80,7 @@ int morse_keypress(char ch){
        mode button causes a carrier to be transmitted.  Exit by pressing
        the button again.
        
-       Set-button is a straight key.
+       Mode-button is a straight key.
     */
     lcd_string(" RAW CW ");
     lcd_postdraw();
@@ -92,7 +97,7 @@ int morse_keypress(char ch){
 	  __delay_cycles(300);
 	}
       }
-    }while(getchar()!='=');//!sidebutton_set());
+    }while(!sidebutton_set());
     lcd_string("RAW EXIT");
     lcd_postdraw();
     __delay_cycles(6000);
