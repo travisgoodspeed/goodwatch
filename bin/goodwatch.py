@@ -159,6 +159,24 @@ ookpackets=[
     "0000e8e8ee88e88ee888eee8e8888000"  #D
 ];
 
+# 1200 Baud POCSAG for DAPNET
+pocsagconfig=[
+    MDMCFG4, 0xF5,      #  Modem Configuration
+    MDMCFG3, 0x83,      #  Modem Configuration
+    MDMCFG2, 0x30,      #  Modem Configuration, no sync
+    FREND0 , 0x11,      #  Front End TX Configuration
+    FSCAL3 , 0xE9,      #  Frequency Synthesizer Calibration
+    FSCAL2 , 0x2A,      #  Frequency Synthesizer Calibration
+    FSCAL1 , 0x00,      #  Frequency Synthesizer Calibration
+    FSCAL0 , 0x1F,      #  Frequency Synthesizer Calibration
+    PKTCTRL0, 0x00,     #Packet automation control, fixed length without CRC.
+    PKTLEN,  64,   # PKTLEN    Packet length.
+    0, 0 
+];
+
+# Example POCSAG packet.  The preamble ought to be a lot longer.
+pocsagpacket="5555555560cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a3dc16875058b680e1947a992d51fa63309468edd5af3ec8c8479e1e35effff87e0cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a";
+
 
 
 def packconfig(config):
@@ -321,12 +339,12 @@ class GoodWatch:
     def radiorx(self):
         """Sniffs for packets on the current channel."""
         return self.transact("\x12");
-    def radiotx(self,message):
+    def radiotx(self,message,length=32):
         """Sends a radio packet on the current frequency."""
-        while(len(message)<32):
+        while(len(message)<length):
             message+='\x00';
-        #print("Sending %d bytes: %s\n"% (len(message),message.encode('hex')));
-        self.transact("\x13"+message);
+        print("Sending %d bytes: %s\n"% (len(message),message.encode('hex')));
+        self.transact("\x13"+message[0:length]);
         
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='GoodWatch Client')
@@ -350,7 +368,10 @@ if __name__=='__main__':
                         help='Sniffs for beacons.',action='count');
     parser.add_argument('-O','--ook',
                         help='Transmits an OOK example packet.');
-
+    parser.add_argument('-P','--pocsag',
+                        action='count',
+                        help='Transmits a POCSAG page. (BROKEN)');
+    
     
     args = parser.parse_args()
 
@@ -398,8 +419,8 @@ if __name__=='__main__':
 
     if args.ook!=None:
         print "Turning radio on.";
-        time.sleep(1);
         goodwatch.radioonoff(1);
+        time.sleep(1);
         print "Configuring radio.";
         goodwatch.radioconfig(beaconconfig);
         goodwatch.radioconfig(ookconfig);
@@ -408,6 +429,20 @@ if __name__=='__main__':
         while 1:
             print "Transmitting packet %d" % int(args.ook);
             goodwatch.radiotx(ookpackets[int(args.ook)].decode('hex'));
+            time.sleep(0.1);
+            
+    if args.pocsag!=None:
+        print "WARNING: POCSAG DOESN'T WORK YET";
+        time.sleep(1);
+        goodwatch.radioonoff(1);
+        print "Configuring radio.";
+        goodwatch.radioconfig(beaconconfig);
+        goodwatch.radioconfig(pocsagconfig);
+        #Standard DAPNET frequency.
+        goodwatch.radiofreq(439.988);
+        while 1:
+            print "Transmitting packet.";
+            goodwatch.radiotx(pocsagpacket.decode('hex'),64);
             time.sleep(1);
     
     if args.beaconsniff!=None:

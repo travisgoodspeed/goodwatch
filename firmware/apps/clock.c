@@ -188,6 +188,7 @@ void clock_draw(int forced){
 //! Entry to the clock app.
 void clock_init(){
   lastchar=0;
+  redraw=0;
   lcd_zero();
   draw_time(1);
 }

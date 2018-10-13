@@ -9,12 +9,15 @@
 #include "api.h"
 #include "apps/calibrate.h"
 
+//Automatically generated, not a part of the git repo.
+#include "buildtime.h"
+
 //! If this is 0xdeadbeef, the ram time is good.
 static unsigned long magicword __attribute__ ((section (".noinit")));
 //! Time and date, in case of a reboot.
 static unsigned char ramsavetime[8] __attribute__ ((section (".noinit")));
 //! ROM copy of the manufacturing time.
-unsigned char *romsavetime=(unsigned char*) 0xFF00;
+unsigned char *romsavetime=(unsigned char*) BUILDTIME;
 // Alarm tone status
 static unsigned int alarm_ringing = 0;
 

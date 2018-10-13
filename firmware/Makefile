@@ -87,10 +87,13 @@ apps= $(APPS_OBJ)
 
 all: goodwatch.hex
 
-*.c: githash.h
+*.c: githash.h buildtime.h
 
 githash.h:
 	echo "#define GITHASH" 0x`git rev-parse HEAD | head -c7` > githash.h
+buildtime.h:
+	../bin/buildtime.py >buildtime.h
+
 goodwatch.elf: $(modules) $(apps) *.h  
 	$(CC) -T msp430.x -o goodwatch.elf $(modules) $(apps)
 	../bin/printsizes.py goodwatch.elf || echo "Please install python-pyelftools."
@@ -99,14 +102,14 @@ goodwatch.hex: goodwatch.elf
 	msp430-objcopy -O ihex goodwatch.elf goodwatch.hex
 
 clean:
-	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h html latex goodwatch.elf energytrace.png energytrace.txt
+	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h buildtime.h html latex goodwatch.elf energytrace.png energytrace.txt
 erase:
 	$(BSL) -e
 sbwflash: goodwatch.hex codeplug.hex
 	mspdebug tilib "prog goodwatch.elf" "load codeplug.hex"
 
 flash: goodwatch.hex
-	$(BSL) -etf goodwatch.hex
+	$(BSL) -ef goodwatch.hex
 dmesg:
 	$(BSL) -P goodwatch.hex -uD
 sbwdmesg:

@@ -36,7 +36,6 @@ void key_init(){
   P2DIR|=BIT7; // Buzzer is on P2.7.
 
   //Trigger interrupts for keypresses so we needn't scan.
-  //P2IE|=BIT2|BIT1|BIT0;
   P2IE=BIT3|BIT4|BIT5|BIT6;
 }
 
@@ -48,10 +47,15 @@ int key_pressed(){
 //! Bitfields indicate pressed rows.
 int key_row(){
   int row;
+
+  /* Already the default directions when this is called, but uncomment
+     if used elsewhere.
+
   P1DIR|=0x80; //P1.7 out.
   P1OUT|=0x80; //P1.7 high.
   P2DIR|=0x07;  //P2.0, 2.1, 2.2 out.
   P2OUT|=0x07;  //P2.0, 2.1, 2.2 high.
+  */
 
   //We'll return this result, but after cleaning up.
   row=(P2IN>>3)&0x0F;
@@ -66,9 +70,9 @@ int key_col(){
   P1OUT&=~0x80; //Low
 
   P2DIR&=~0x07; //P2.0, 2.1, 2.2 in
-  P2DIR|= 0x78; //P2.3, 2.4, 2.5, 2.6 out
   P2OUT&=~0x07; //P2.0, 2.1, 2.2 low.
   P2OUT|= 0x78; //P2.3, 2.4, 2.5, 2.6 high
+  P2DIR|= 0x78; //P2.3, 2.4, 2.5, 2.6 out
 
   //We'll return this result, but after cleaning up.
   col=((P2IN&0x7)<<1) | ((P1IN&0x80)>>7);
@@ -107,7 +111,7 @@ unsigned int key_scan(){
   scan=(key_row()<<4)|key_col();
   
   setdirections();
-
+  
   if(scan&0xF0)
     return scan;
   else{
@@ -156,10 +160,20 @@ void __attribute__ ((interrupt(PORT2_VECTOR))) PORT2_ISR(void){
   static char lastchar=0x00;
   char newchar;
 
-  //It's important that we clear the flags, and *then* scan, to catch
-  //keyups.
-  P2IFG=0;
+  //We used to clear P2IFG here, but it would cause the interrupt to
+  //be re-triggered until the button was released, wasting a lot of
+  //power now that the CPU clock is fast.
+  //P2IFG=0;
+
+  //We must also configure the edge triggering such that we get
+  //another interrupt on the *change* rather than just because a
+  //button is still held.
+  P2IES=P2IN&(BIT3|BIT4|BIT5|BIT6);
+
+  //Scan for the new character, which we will compare to the old to
+  //reduce duplicates.
   newchar=key_chr(key_scan());
+  
 
   //Bail quickly when the key is the same.
   if(lastchar!=newchar){
@@ -171,7 +185,10 @@ void __attribute__ ((interrupt(PORT2_VECTOR))) PORT2_ISR(void){
     //printf(".");
   }
 
+  
   //Fix the pin directions before we return.
   setdirections();
+  //Clear the interrupt flags.
+  P2IFG=0;
 }
 

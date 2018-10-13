@@ -56,12 +56,12 @@ void settime_draw(int forced){
   }
   
   //Zero the second hand if we're not yet to the date.  ("Hacking.")
-  if(settingclock<7)
+  if(settingclock<5)
     SetRTCSEC(0);
 
   //First we draw the entire thing, then we blink the second being
   //set.
-  if(settingclock<7)
+  if(settingclock<5)
     draw_time(1);
   else
     draw_date();
@@ -88,7 +88,10 @@ void settime_draw(int forced){
     /* We no longer set the seconds, but rather hold them at zero
        until the user moves back them into the date.  Mechanical watch
        experts call this 'hacking.'
-     */
+    */ 
+    settingclock++;
+  case 6:
+    settingclock++;
     
   case 7:        //Year
     if(flicker)
@@ -152,17 +155,16 @@ int settime_keypress(char ch){
     break;
   case 4:
     SetRTCMIN(RTCMIN-RTCMIN%10+inputdigit);
-    settingclock=7;
+    settingclock++;
     break;
     
     /* We no longer set the seconds, but rather hold them at zero
        until the user moves back them into the date.  Mechanical watch
        experts call this 'hacking.'
     */
-    
   case 7:        //Year
     SetRTCYEAR(inputdigit*1000+RTCYEAR%1000);
-    settingclock++;
+    settingclock=8;
     break;
   case 8:
     SetRTCYEAR(RTCYEAR-RTCYEAR%1000+inputdigit*100+RTCYEAR%100);
