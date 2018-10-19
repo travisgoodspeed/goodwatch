@@ -5,6 +5,8 @@
    quarter second, or in the handler of a keypress.
 */
 
+//test hash change
+//
 #include <msp430.h>
 #include <string.h>
 #include <stdio.h>
