@@ -148,7 +148,7 @@ void stopwatch_draw(int forced){
 
       //Update minutes if the seconds are zero.
       if(!sec){
-        inhex=int2bcd(min);
+        minhex=int2bcd(min);
         lcd_digit(7,minhex>>4);
         lcd_digit(6,minhex&0xF);
       }
