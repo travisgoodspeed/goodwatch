@@ -178,7 +178,7 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
       app_forcehome();
 
     //Force a reboot if the button is held for a full 10 seconds.
-    if(latch++>40)
+    if(latch>40)
       PMMCTL0 = PMMPW | PMMSWPOR;
 
   }else if(sidebutton_set()){
