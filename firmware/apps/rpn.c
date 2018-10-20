@@ -81,8 +81,6 @@ static void rpn_updatebuffer(int i){
 //! Initializes the calculator.
 void rpn_init(){
   int i;
-
-  
   
   //Fresh stack when we enter the calculator.
   for(i=0;i<STACKSIZE;i++)
@@ -97,13 +95,13 @@ int rpn_exit(){
   if(bufferdirty){
     // Push the incoming number if it's not yet committed.
     rpn_pushbuffer();
+    rpn_draw(1); // Redraw screen to clear SetAM when side button used
     return 1;
     
   } else if(rpn_peek()==0){
     // Exit if zero is the latest number.
     return 0;
   }
-  
   
   //Otherwise push a zero and return.
   rpn_push(0);
