@@ -123,16 +123,16 @@ void stopwatch_draw(int forced){
 
       //Draw minutes if seconds are zero.
       if(!sec){
-	minhex=int2bcd(min);
-	lcd_digit(4,minhex>>4);
-	lcd_digit(3,minhex&0xF);
+        minhex=int2bcd(min);
+        lcd_digit(4,minhex>>4);
+        lcd_digit(3,minhex&0xF);
 
-	//Draw hours if minutes are zero.
-	if(!min){
-	  hourhex=int2bcd(hour);
-	  lcd_digit(7,hourhex>>4);
-	  lcd_digit(6,hourhex&0xF);
-	}
+        //Draw hours if minutes are zero.
+        if(!min){
+          hourhex=int2bcd(hour);
+          lcd_digit(7,hourhex>>4);
+          lcd_digit(6,hourhex&0xF);
+        }
       }
     }
   }else{
@@ -148,9 +148,9 @@ void stopwatch_draw(int forced){
 
       //Update minutes if the seconds are zero.
       if(!sec){
-	minhex=int2bcd(min);
-	lcd_digit(7,minhex>>4);
-	lcd_digit(6,minhex&0xF);
+        inhex=int2bcd(min);
+        lcd_digit(7,minhex>>4);
+        lcd_digit(6,minhex&0xF);
       }
     }
   }
