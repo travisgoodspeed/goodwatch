@@ -171,6 +171,8 @@ void clock_draw(int forced){
   //Use the SET button to reconfigure the time.
   if(sidebutton_set()){
     //Wait for the button to be released.
+    //*** This while loop prevents the reboot functionality in main.c ***
+    //*** Moving reboot functionality to sidebutton. ***
     while(sidebutton_set());
     //Switch to the setting applet.
     app_set(&setting_applet);
