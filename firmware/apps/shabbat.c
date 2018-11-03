@@ -131,6 +131,7 @@ void shabbat_draw(){
   
   /* Display a strong warning if we aren't in shabbat mode. */
   if(test_shabbat()){
+    lcd_zero();
     lcd_string("PANIC   ");
     return;
   }
