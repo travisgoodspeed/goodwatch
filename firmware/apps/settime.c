@@ -26,6 +26,7 @@ void settime_init(){
 static void reallyexit(){
   //Return to the clock applet.
   app_reset();
+  draw_time(1);
 }
 
 //! Move to the next digit, or finally exit the applet.
@@ -38,6 +39,7 @@ int settime_exit(){
     //Not setting the time, so we move back to our own app by undoing
     //the app_set() call in clock.c.
     app_reset();
+    draw_time(1);
     return 1;
   }
 }
@@ -53,6 +55,7 @@ void settime_draw(int forced){
     while(sidebutton_set());
     //Let's quit!
     reallyexit();
+    return;
   }
   
   //Zero the second hand if we're not yet to the date.  ("Hacking.")
