@@ -129,6 +129,8 @@ flashcp: codeplug.hex
 dump:
 	$(BSL) -ed
 
+fmt:
+	clang-format -i -style=LLVM `find . -name \*.c` `find . -name \*.h`
 
 
 energytrace.txt: goodwatch.hex sbwflash
