@@ -141,3 +141,7 @@ energytrace: goodwatch.hex sbwflash
 	gnuplot energytrace-txt.gnuplot
 	../bin/batterylife.py <energytrace.txt
 
+docs:
+	doxygen
+docsdeploy: docs
+	rsync -ave ssh html/* goodwatch.org:/var/www/html/doxygen/
