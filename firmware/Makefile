@@ -133,7 +133,9 @@ fmt:
 	clang-format -i -style=LLVM `find . -name \*.c` `find . -name \*.h`
 
 
-energytrace.txt: goodwatch.hex sbwflash
+energytrace.txt: energytrace
+
+energytrace: goodwatch.hex sbwflash
 	energytrace 60 > energytrace.txt #This will take a minute.
 	gnuplot energytrace.gnuplot
 	gnuplot energytrace-txt.gnuplot
