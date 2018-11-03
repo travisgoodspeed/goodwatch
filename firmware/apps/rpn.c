@@ -9,6 +9,7 @@
    The AM pixel indicates that the current value has not yet been
    pushed to the stack.
    
+   A floating-point rewrite of this would be a nice pull request.
    
 */
 
@@ -31,10 +32,13 @@ static long rpn_peek(){
 //! Pushes a new value onto the stack.
 static void rpn_push(long val){
   stack[(++stacki)%STACKSIZE]=val;
+  rpn_draw(1);
 }
 //! Pops the top item from the stack.
 static long rpn_pop(){
-  return stack[(stacki--)%STACKSIZE];
+  long i=stack[(stacki--)%STACKSIZE];
+  rpn_draw(1);
+  return i;
 }
 
 
@@ -61,9 +65,10 @@ static void rpn_pushbuffer(){
 
   //If the buffer is dirty, we'll zero it, mark it clean, and push it
   //to the call stack.
+  bufferdirty=0;
   rpn_push(buffer);
   buffer=0;
-  bufferdirty=0;
+  
 }
 //! Presses one digit into the buffer.
 static void rpn_updatebuffer(int i){
@@ -98,7 +103,6 @@ int rpn_exit(){
     // Push the incoming number if it's not yet committed.
     rpn_pushbuffer();
     return 1;
-    
   } else if(rpn_peek()==0){
     // Exit if zero is the latest number.
     return 0;
@@ -129,10 +133,10 @@ int rpn_keypress(char ch){
   //Operators
   switch(ch){
   case '=':
-    if(bufferdirty)
+    if(bufferdirty)          //Push the value if it's waiting.
       rpn_pushbuffer();
-    else
-      rpn_push(rpn_peek());
+    else                     //Otherwise duplicate bottom stack item.
+      rpn_push(rpn_peek()); 
     break;
   case '.':
     //What should this do?
