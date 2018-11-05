@@ -150,9 +150,11 @@ static void draw_date_rom(){
   lcd_digit(6,(year/100)%10);
   lcd_digit(5,(year/10)%10);
   lcd_digit(4,year%10);
+  setperiod(4,1);
   setcolon(0);
   lcd_digit(3,month/10);
   lcd_digit(2,month%10);
+  setperiod(2,1);
   lcd_digit(1,day/10);
   lcd_digit(0,day%10);
 
