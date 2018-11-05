@@ -162,14 +162,12 @@ int alarm_keypress(char ch){
       break;
     case 4:
       RTCAMIN = RTCAMIN-RTCAMIN%10+inputdigit;
-      settingalarm++;
-      break;
-    default:
-      /* Once we've exceeded the count, it's time to return to the
-	 normal mode and enable the alarm.
-      */
       settingalarm=0;
       toggle_alarm(1);
+      break;
+    default:
+      // Return to normal mode if we end up here accidentally
+      settingalarm=0;
     }
   } else {
     switch(ch){
