@@ -23,15 +23,22 @@ general interest website at [goodwatch.org](https://goodwatch.org/).
 
 Our firmware is freely available in this repository, compiling with
 the standard MSP430 compiler packages that ship with Debian.  It
-consists of a Clock, a Stopwatch, an RPN Calculator, and a Hex Memory
-Viewer with Disassembler, all written in C.  It compiles in Debian
-with all of the MSP430 packages installed.
+consists of a
+[Clock](https://github.com/travisgoodspeed/goodwatch/wiki/ClockApplet),
+a Stopwatch, an RPN Calculator, and a [Hex Memory
+Viewer](https://github.com/travisgoodspeed/goodwatch/wiki/HexApplet)
+with Disassembler, all written in C.  It compiles in Debian with all
+of the MSP430 packages installed.
 
-On watches with a radio, we have Morse and GFSK transmitters, as well
-as an OOK transmitter that will command cheap remote-controlled
-relays.  The radio is accessible from a host computer over the UART
-for building base stations and repeaters, or for rapidly prototyping
-radio applications in Python.  P25 and DMR support might come soon.
+On watches with a radio, we have
+[Morse](https://github.com/travisgoodspeed/goodwatch/wiki/MorseApplet)
+and GFSK transmitters, as well as an [OOK
+transmitter](https://github.com/travisgoodspeed/goodwatch/wiki/OOK_Example)
+that will command cheap remote-controlled relays.  It has a [frequency
+counter](https://github.com/travisgoodspeed/goodwatch/wiki/CounterApplet).
+The radio is accessible from a host computer over the UART for
+building base stations and repeaters, or for rapidly prototyping radio
+applications in Python.  P25 and DMR support might come soon.
 
 Additionally, we've written our own client for the CC430's BootStrap
 Loader (BSL).  You might find it handy for other projects involving
@@ -43,23 +50,17 @@ with Doxygen.
 
 ## Hardware Status
 
-Our replacement board is based around the CC430F6137, which combines
+Our replacement board is based around the CC430F6147, which combines
 an MSP430 microcontroller with an LCD controller and a sub-GHz radio.
 Thanks to pin compatibility, our fancy linker scripts produce a
-firmware image that works just as well on the more modern CC430F6147
+firmware image that works just as well on the older CC430F6137
 chip.
 
-The initial version, the GoodWatch10, lacks a radio but supports all
-other features, such as the RPN calculator, hex editor, and
-disassembler.  Assembly of the GoodWatch10 is no longer recommended,
-as the PCB requires a bit of whittling to fit the case.
-
-The GoodWatch21 is now our primary target, featuring minor corrections
-to layout and a functional radio.  The radio is in active use, and the
-filter chain is verified to work.
-
-The GoodWatch30 will be manufactured in early 2018 with a wider filter
-and other radio modifications.
+The
+[GoodWatch30](https://github.com/travisgoodspeed/goodwatch/wiki/GoodWatch30)
+is our current hardware revision, with filters that run from 300 MHz
+to either 500MHz or 915MHz.  The GoodWatch20 family had narrower
+filters at 433MHz, but is still supported.
 
 See `BOM.txt` in the hardware directories for a parts list, and the
 wiki for an assembly guide.
@@ -80,7 +81,8 @@ that the two projects will communicate with each other.
 
 [openchronos-ng-elf](https://github.com/BenjaminSoelberg/openchronos-ng-elf)
 seems to be the most recently maintained firmware for TI's OpenChronos
-devkit, which uses the CC430.
+devkit, which uses the CC430F6137.
+
 
 The [CharlieWatch](https://github.com/osresearch/charliewatch) from
 Trammell Hudson is a nice little fork of the GoodWatch that uses a

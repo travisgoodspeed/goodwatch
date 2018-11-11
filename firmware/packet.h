@@ -5,7 +5,7 @@
 #include<stdint.h>
 
 //! Length of the packet buffer.
-#define PACKETLEN 128
+#define PACKETLEN 256
 
 //! Receive packet buffer.
 extern uint8_t rxbuffer[];

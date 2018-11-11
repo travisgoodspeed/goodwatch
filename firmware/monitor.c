@@ -181,7 +181,7 @@ int monitor_handle(uint8_t *buffer, int len){
   case RADIOCONFIG:  //Byte pairs come next.  Host must null-terminate.
     radio_writesettings(buffer+1);
     radio_writepower(0x25);
-    codeplug_setfreq();
+    //codeplug_setfreq();
     break;
   case RADIORX:
     return handlerx(buffer,len);

@@ -9,12 +9,15 @@
 #include "api.h"
 #include "apps/calibrate.h"
 
+//Automatically generated, not a part of the git repo.
+#include "buildtime.h"
+
 //! If this is 0xdeadbeef, the ram time is good.
 static unsigned long magicword __attribute__ ((section (".noinit")));
 //! Time and date, in case of a reboot.
 static unsigned char ramsavetime[8] __attribute__ ((section (".noinit")));
 //! ROM copy of the manufacturing time.
-unsigned char *romsavetime=(unsigned char*) 0xFF00;
+unsigned char *romsavetime=(unsigned char*) BUILDTIME;
 // Alarm tone status
 static unsigned int alarm_ringing = 0;
 
@@ -62,7 +65,8 @@ void rtc_init(){
   RTCCTL01 = RTCTEVIE + RTCSSEL_2 + RTCTEV_0 + RTCMODE + RTCAIE;
   RTCPS0CTL = RT0PSDIV_2;                   // ACLK, /8, start timer
   RTCPS1CTL = RT1SSEL_2 + RT1PSDIV_3;       // out from RT0PS, /16, start timer
-
+  RTCADAY = 0;  // Initialize to 0 to clear alarm flags
+  RTCADOW = 0;  // on Day and Day of Week registers.
   #ifdef CALIBRATE_APP
   //Load the calibration routines.
   calibrate_enforce();

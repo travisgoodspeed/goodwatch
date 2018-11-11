@@ -99,9 +99,6 @@ int main(void) {
   tone(NOTE_C8, 500);
   */
 
-  lcd_zero();
-  lcd_string("UARTINIT");
-  uart_init();
 
   lcd_zero();
   printf("cp ");
@@ -132,8 +129,9 @@ int main(void) {
   //Unused IO pins must be outputs.
   PJDIR |=  0xF;
   PJOUT &= ~0xF;
-  
-  
+
+  //UART must come after the sidebuttons.
+  uart_init();
   
   // Setup and enable WDT 250ms, ACLK, interval timer
   WDTCTL = WDT_ADLY_250;
@@ -178,8 +176,7 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
     //Force a shift to the home if held for 4 seconds (16 polls)
     if(latch>16)
       app_forcehome();
-  
-  }else if(sidebutton_set()){
+    
     /* Similarly, we'll reboot if the SET/PRGM button has been held
        for 10 seconds (40 polls).  We'll draw a countdown if getting
        close, so there's no ambiguity as to whether the chip reset.
@@ -187,9 +184,9 @@ void __attribute__ ((interrupt(WDT_VECTOR))) watchdog_timer (void) {
        The other features of this button are handled within each
        application's draw function.
     */
-    if(latch++>40)
+    if(latch>40)
       PMMCTL0 = PMMPW | PMMSWPOR;
-   
+    
   }else{
     latch=0;
   }

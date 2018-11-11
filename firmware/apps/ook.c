@@ -85,6 +85,8 @@ static const char * const button_array[] = {
   OOKBUTTONS
 };
 
+
+/*
 //! Local function that returns an OOK array index from a button.  -1 on failure.
 static int button2index(char c){
   //For now, only numbers.  Might change this later to have even rows of four buttons.
@@ -95,7 +97,7 @@ static int button2index(char c){
   //Otherwise failure.
   return -1;
 }
-
+*/
 
 //! Handle an incoming packet.
 void ook_packetrx(uint8_t *packet, int len){

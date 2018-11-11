@@ -87,10 +87,13 @@ apps= $(APPS_OBJ)
 
 all: goodwatch.hex
 
-*.c: githash.h
+*.c: githash.h buildtime.h
 
 githash.h:
 	echo "#define GITHASH" 0x`git rev-parse HEAD | head -c7` > githash.h
+buildtime.h:
+	../bin/buildtime.py >buildtime.h
+
 goodwatch.elf: $(modules) $(apps) *.h  
 	$(CC) -T msp430.x -o goodwatch.elf $(modules) $(apps)
 	../bin/printsizes.py goodwatch.elf || echo "Please install python-pyelftools."
@@ -99,13 +102,14 @@ goodwatch.hex: goodwatch.elf
 	msp430-objcopy -O ihex goodwatch.elf goodwatch.hex
 
 clean:
-	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h html latex goodwatch.elf energytrace.png energytrace.txt
+	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h buildtime.h html latex goodwatch.elf energytrace.png energytrace.txt
 erase:
 	$(BSL) -e
-sbwflash: goodwatch.hex
-	mspdebug tilib "prog goodwatch.elf"
+sbwflash: goodwatch.hex codeplug.hex
+	mspdebug tilib "prog goodwatch.elf" "load codeplug.hex"
+
 flash: goodwatch.hex
-	$(BSL) -etf goodwatch.hex
+	$(BSL) -ef goodwatch.hex
 dmesg:
 	$(BSL) -P goodwatch.hex -uD
 sbwdmesg:
@@ -121,17 +125,23 @@ codeplug.hex: codeplug.txt
 	../bin/goodwatch-txt2cp.py -i codeplug.txt -o codeplug.hex
 flashcp: codeplug.hex
 	$(BSL) -Ef codeplug.hex
-sbwflashcp: codeplug.hex
-	mspdebug tilib "load codeplug.hex"
 
 dump:
 	$(BSL) -ed
 
+fmt:
+	clang-format -i -style=LLVM `find . -name \*.c` `find . -name \*.h`
 
 
-energytrace.txt: goodwatch.hex sbwflash
+energytrace.txt: energytrace
+
+energytrace: goodwatch.hex sbwflash
 	energytrace 60 > energytrace.txt #This will take a minute.
 	gnuplot energytrace.gnuplot
 	gnuplot energytrace-txt.gnuplot
 	../bin/batterylife.py <energytrace.txt
 
+docs:
+	doxygen
+docsdeploy: docs
+	rsync -ave ssh html/* goodwatch.org:/var/www/html/doxygen/
