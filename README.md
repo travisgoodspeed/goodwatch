@@ -68,12 +68,20 @@ wiki for an assembly guide.
 ## Related Projects
 
 [Pluto](https://github.com/carrotIndustries/pluto) is a replacement
-PCB for the Casio F-91W that is also based on an MSP430.  We are
-jealous of that project's simulator and energy monitor utility.
+PCB for the Casio F-91W that is also based on an MSP430.  We happily
+use that project's [energy
+monitor](https://github.com/carrotIndustries/energytrace-util)
+utility for measuring our power budget.
 
 [FaradayRF](https://faradayrf.com/) is a CC430 radio board intended
-for amateur use, with a 500mW amplifier and GPS receiver.
+for amateur use, with a 500mW amplifier and GPS receiver.  Their radio
+chain is far more carefully designed than ours, but in time, we hope
+that the two projects will communicate with each other.
 
 [openchronos-ng-elf](https://github.com/BenjaminSoelberg/openchronos-ng-elf)
 seems to be the most recently maintained firmware for TI's OpenChronos
 devkit, which uses the CC430.
+
+The [CharlieWatch](https://github.com/osresearch/charliewatch) from
+Trammell Hudson is a nice little fork of the GoodWatch that uses a
+charlieplexed array of LEDs instead of a Casio watchcase.
