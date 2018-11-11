@@ -78,7 +78,8 @@ CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os  $(addprefix -D, $(APPS_DEFINES))
 
 BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
-modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o bcd.o apps.o applist.o adc.o ref.o \
+modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o bcd.o apps.o\
+	applist.o adc.o ref.o codeplugstr.o \
 	sidebutton.o power.o uart.o monitor.o ucs.o buzz.o \
 	radio.o packet.o dmesg.o codeplug.o rng.o descriptor.o \
 	optim.o libs/assembler.o libs/morse.o
@@ -102,7 +103,7 @@ goodwatch.hex: goodwatch.elf
 	msp430-objcopy -O ihex goodwatch.elf goodwatch.hex
 
 clean:
-	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h buildtime.h html latex goodwatch.elf energytrace.png energytrace.txt
+	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h buildtime.h html latex goodwatch.elf energytrace.png energytrace.txt codeplugstr.c dmesg.bin
 erase:
 	$(BSL) -e
 sbwflash: goodwatch.hex codeplug.hex
@@ -123,6 +124,8 @@ run:
 
 codeplug.hex: codeplug.txt
 	../bin/goodwatch-txt2cp.py -i codeplug.txt -o codeplug.hex
+codeplugstr.c: codeplug.txt
+	../bin/goodwatch-txt2cpstr.py -i codeplug.txt -o codeplugstr.c
 flashcp: codeplug.hex
 	$(BSL) -Ef codeplug.hex
 

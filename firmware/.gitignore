@@ -1,3 +1,5 @@
 config.h
 buildtime.h
 libs/assembler
+codeplugstr.c
+dmesg.bin

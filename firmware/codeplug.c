@@ -11,8 +11,11 @@
 #include "codeplug.h"
 #include "radio.h"
 
+extern const char codeplugstr[];
+
 //! Array of codeplug entries in info flash.
-struct codeplugentry *codeplug = (struct codeplugentry*) 0x1800;
+struct codeplugentry *codeplug =
+  (struct codeplugentry*) codeplugstr; //formerly 0x1800
 
 static struct codeplugentry *selectedentry;
 
