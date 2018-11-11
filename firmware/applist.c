@@ -51,13 +51,7 @@ const struct app subapps[]={
    .keypress=rpn_keypress
   },
 #endif
-  
-#ifdef HEX_APP
-  //Hex Viewer.
-  {.name="hex edit", .init=hex_init, .draw=hex_draw, .exit=hex_exit,
-   .keypress=hex_keypress
-  },
-#endif
+
 
 #ifdef ALARM_APP
   //Alarm
@@ -65,6 +59,21 @@ const struct app subapps[]={
    .keypress=alarm_keypress
   },
 #endif
+
+#ifdef HEX_APP
+  //Hex Viewer.
+  {.name="hex edit", .init=hex_init, .draw=hex_draw, .exit=hex_exit,
+   .keypress=hex_keypress
+  },
+#endif
+
+#ifdef DMESG_APP
+  //DMESG Viewer
+  {.name="dmesg", .init=dmesgapp_init, .draw=dmesgapp_draw, .exit=dmesgapp_exit,
+   .keypress=dmesgapp_keypress
+  },
+#endif
+
 
 #ifdef SHABBAT_APP
   //Kosher applet for Shabbat that disables all inputs except the SET button.

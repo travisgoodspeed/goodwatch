@@ -12,6 +12,7 @@ MORSE_APP = 1
 BEACON_APP = 1
 OOK_APP = 1
 COUNTER_APP = 1
+DMESG_APP = 1
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT = /dev/ttyUSB0
@@ -26,6 +27,10 @@ endif
 ifeq ($(SHABBAT_APP),1)
 APPS_OBJ += apps/shabbat.o 
 APPS_DEFINES += SHABBAT_APP
+endif
+ifeq ($(DMESG_APP),1)
+APPS_OBJ += apps/dmesg.o 
+APPS_DEFINES += DMESG_APP
 endif
 ifeq ($(RPN_APP),1)
 APPS_OBJ += apps/rpn.o 
