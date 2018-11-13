@@ -145,7 +145,7 @@ void app_packettx(uint8_t *packet, int len){
   /* We send it to the active application, but only if that
      application has a handler.
    */
-  if(!applet->packetrx){
+  if(!applet->packettx){
     printf("No packet TX handler for %s.",
 	   applet->name);
     return;
