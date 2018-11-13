@@ -38,7 +38,7 @@ const int lcdmap[10][8]={
 //0x0c10 is beyond the screen.
 
 //0x0240 seems not to be wired to any visible segment, but we use it
-//as the rightmost decimal point because we don't seem to have that
+//as the leftmost decimal point because we don't seem to have that
 //cell.
 
 //! Bit flags for each of the eight segments.
