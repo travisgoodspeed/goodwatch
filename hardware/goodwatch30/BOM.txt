@@ -32,6 +32,7 @@ C6,C7   CL05C120JB5NNNC         1276-1178-1-ND      0402     2     12pF
 C8,C9   GRM152C80J104KE19D      490-9997-1-ND       0402     2     0.1uF (<0.3mm thickness) (Same as C2,C3.)
 L1      BLM15HG102SN1D          490-3999-1-ND       0402     1     Ferrite Bead
 U2      0500LP15A500            712-1117-1-ND       0805     1     500MHz Low Pass Filter (70cm usage)
+U2      0868LP15A020E           712-1585-1-ND       0805     1     868MHz Low Pass Filter (EU unlicensed usage)
 U2      0915LP15B02             712-1122-1-ND       0805     1     915MHz Low Pass Filter (33cm usage)
 U3      B0310J50100AH           1173-1050-1-ND      0805     1     300MHZ-1GHz Balun
 C10     885012205040            732-7535-1-ND       0402     1     220pF DC Bypass Capacitor
