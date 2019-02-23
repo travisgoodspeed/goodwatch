@@ -8,6 +8,7 @@
 
 #include "api.h"
 #include "apps/calibrate.h"
+#include "apps/clock.h"
 
 //Automatically generated, not a part of the git repo.
 #include "buildtime.h"
@@ -170,14 +171,21 @@ void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
     case 4: break;                          // RTCTEVIFG
     case 6:                                 // RTCAIFG Alarm
       if (!alarm_ringing) {
+        //Sound the alarm!
 	alarm_ringing = 1;
 	printf("Sounding the alarm.\n");
-	//! Sound the alarm
+	
+        /* Formerly musical
 	tone(NOTE_C6, 500);
 	tone(NOTE_E6, 500);
 	tone(NOTE_G6, 500);
 	tone(NOTE_B7, 500);
 	tone(NOTE_C7, 500);
+        */
+
+        //Now Morse code.
+        clock_playtime(0);
+        
 	alarm_ringing = 0;
       }
       break;

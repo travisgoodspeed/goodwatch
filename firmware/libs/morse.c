@@ -7,12 +7,20 @@
 #include "api.h"
 
 
+
+#define DITLEN 2000
+#define DAHLEN 6000
+#define SPALEN 6000
+//Inter-character space.
+#define ICSLEN 1000
+
 //! Delay for a while.
 static void morsedelay(uint16_t i){
   while(i--){
     __delay_cycles(100);
   }
 }
+
 
 //! Send a message in Morse, just dits and dahs.
 static void radio_morse_raw(const char *msg){
@@ -24,106 +32,141 @@ static void radio_morse_raw(const char *msg){
 	radio_strobe(RF_STX);
       
       if(*msg=='.' || *msg=='*')
-	morsedelay(2000);
+	morsedelay(DITLEN);
       else if(*msg=='-')
-	morsedelay(6000);
+	morsedelay(DAHLEN);
       else if(*msg==' ')
-	morsedelay(6000);
+	morsedelay(SPALEN);
       
       //End transmission.
       radio_strobe(RF_SIDLE);
       //Intercharacter space.
-      morsedelay(1000);
+      morsedelay(ICSLEN);
       
       msg++;
     }
 }
+//! Plays a message in Morse, just dits and dahs.
+static void audio_morse_raw(const char *msg, const int held){
+  while(*msg!='\0' && (!held || key_pressed())){
+    //beep if not a space.
+    if(*msg!=' ')
+      buzz(32768 / 7000);
+    
+    if(*msg=='.' || *msg=='*')
+      morsedelay(DITLEN);
+    else if(*msg=='-')
+      morsedelay(DAHLEN);
+    else if(*msg==' ')
+      morsedelay(SPALEN);
+    
+    //End transmission.
+    buzz(0);
+    //Intercharacter space.
+    morsedelay(ICSLEN);
+    
+    msg++;
+  }
+}
 
-//! Sends an individual letter in morse.
-static void radio_morse_char(char c){
+//! Returns the string matching a morse character.
+static char* morse_char(char c){
   //Only work with upper case letters.
   if(c>='a' && c<='z')
     c&=~0x20;
-  
+
+  /* This has no breaks in the switch because all cases return. */
   switch(c){
   case 'A':
-    radio_morse_raw(".- "); break;
+    return(".- ");
   case 'B':
-    radio_morse_raw("-..."); break;
+    return("-...");
   case 'C':
-    radio_morse_raw("-.-."); break;
+    return("-.-.");
   case 'D':
-    radio_morse_raw("-.."); break;
+    return("-..");
   case 'E':
-    radio_morse_raw("."); break;
+    return(".");
   case 'F':
-    radio_morse_raw("..-."); break;
+    return("..-.");
   case 'G':
-    radio_morse_raw("--."); break;
+    return("--.");
   case 'H':
-    radio_morse_raw("...."); break;
+    return("....");
   case 'I':
-    radio_morse_raw(".."); break;
+    return("..");
   case 'J':
-    radio_morse_raw(".---"); break;
+    return(".---");
   case 'K':
-    radio_morse_raw("-.-"); break;
+    return("-.-");
   case 'L':
-    radio_morse_raw(".-.."); break;
+    return(".-..");
   case 'M':
-    radio_morse_raw("--"); break;
+    return("--");
   case 'N':
-    radio_morse_raw("-."); break;
+    return("-.");
   case 'O':
-    radio_morse_raw("---"); break;
+    return("---");
   case 'P':
-    radio_morse_raw(".--."); break;
+    return(".--.");
   case 'Q':
-    radio_morse_raw("--.-"); break;
+    return("--.-");
   case 'R':
-    radio_morse_raw(".-."); break;
+    return(".-.");
   case 'S':
-    radio_morse_raw("..."); break;
+    return("...");
   case 'T':
-    radio_morse_raw("-"); break;
+    return("-");
   case 'U':
-    radio_morse_raw("..-"); break;
+    return("..-");
   case 'V':
-    radio_morse_raw("...-"); break;
+    return("...-");
   case 'W':
-    radio_morse_raw(".--"); break;
+    return(".--");
   case 'X':
-    radio_morse_raw("-..-"); break;
+    return("-..-");
   case 'Y':
-    radio_morse_raw("-.--"); break;
+    return("-.--");
   case 'Z':
-    radio_morse_raw("--.."); break;
+    return("--..");
     
   case '1':
-    radio_morse_raw(".----"); break;
+    return(".----");
   case '2':
-    radio_morse_raw("..---"); break;
+    return("..---");
   case '3':
-    radio_morse_raw("...--"); break;
+    return("...--");
   case '4':
-    radio_morse_raw("....-"); break;
+    return("....-");
   case '5':
-    radio_morse_raw("....."); break;
+    return(".....");
   case '6':
-    radio_morse_raw("-...."); break;
+    return("-....");
   case '7':
-    radio_morse_raw("--..."); break;
+    return("--...");
   case '8':
-    radio_morse_raw("---.."); break;
+    return("---..");
   case '9':
-    radio_morse_raw("----."); break;
+    return("----.");
   case '0':
-    radio_morse_raw("-----"); break;
+    return("-----");
   default:
     printf("Unknown Morse character: %c\n",c);
-    break;
   }
+  return "";
+}
+
+
+//! Sends an individual letter in morse.
+static void radio_morse_char(char c){
+  radio_morse_raw(morse_char(c));
   radio_morse_raw(" ");
+}
+
+//! plays an individual letter in morse.
+static void audio_morse_char(char c, int held){
+  audio_morse_raw(morse_char(c), held);
+  audio_morse_raw(" ", held);
 }
 
 
@@ -149,3 +192,32 @@ void radio_morse(const char *msg){
       msg++;
     }
 }
+
+
+
+//! Send a message in Morse.
+void audio_morse(const char *msg, const int held){
+  /* If the held switch is set, then we only play so long as the
+     button is held down. */
+
+  while(*msg!='\0'){
+    switch(*msg){
+    case '.':
+    case '*':
+      audio_morse_raw(".", held);
+      break;
+    case '-':
+      audio_morse_raw("-", held);
+      break;
+    case ' ':
+      audio_morse_raw(" ", held);
+      break;
+    default:
+      audio_morse_char(*msg, held);
+      break;
+    }
+    msg++;
+  }
+}
+
+

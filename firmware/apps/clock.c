@@ -14,6 +14,8 @@
 */
 
 #include <msp430.h>
+#include <stdio.h>
+
 #include "api.h"
 
 #include "applist.h"
@@ -167,6 +169,19 @@ int clock_exit(){
   return 0;
 }
 
+//! Plays the time as audio.
+void clock_playtime(int hold){
+  char buf[12];
+  sprintf(buf,"%02d %02d",
+          RTCHOUR, RTCMIN);
+  lcd_string(buf);
+  //Little delay, so we can quit early with dignity on accidental keypresses.
+  audio_morse("  ", 1);
+  audio_morse(buf, //Buffer to play.
+              hold //Play it only so long as the button is held down.
+              );
+}
+
 
 //! Draws the clock face in the main application.
 void clock_draw(int forced){
@@ -194,6 +209,8 @@ void clock_init(){
   lcd_zero();
   draw_time(1);
 }
+
+
 
 //! A button has been pressed for the clock.
 int clock_keypress(char ch){
@@ -275,6 +292,14 @@ int clock_keypress(char ch){
     }else{
       lcd_string("NO RADIO");
     }
+    break;
+
+
+  case '+':
+    /* + beeps the time as morse code, which might be handy
+       for learning the code or when it's too dark to see the display.
+     */
+    clock_playtime(1);
     break;
   }
   return 1;
