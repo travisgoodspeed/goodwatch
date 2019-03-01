@@ -38,7 +38,7 @@ static const char subs[]={0, 0x25, 0x50, 0x75};
 //! Entry to the stopwatch app.
 void stopwatch_init(){
   //Zero the count.
-  count=hour=min=sec=0;
+  count=hour=hourhex=min=minhex=sec=sechex=0;
   
   //Start off without counting.
   counting=0;
@@ -69,7 +69,7 @@ int stopwatch_keypress(char ch){
       break;
     case '0':
       //Zero the count.
-      count=hour=min=sec=0;
+      count=hour=hourhex=min=minhex=sec=sechex=0;
       break;
   }
   
