@@ -6,17 +6,20 @@
   hit and clears the count when the 0 key is pressed.  Because the
   RTC is busy with the real time, we count in quarter seconds as the
   display is updated.
+  
+  Hold the / key to briefly show the time of day without leaving the
+  stopwatch or abandoning the count.
 
   We do not count time or store the count when in other applications.
   It would be nice to change that, so that something could be timed in
   the background while the user is doing other things.
-
 */
 
 #include "api.h"
 #include "stopwatch.h"
+#include "apps/clock.h"
 
-static int counting=0;
+static int counting=0, showtime=0;
 
 /* It's a crying shame, but you'll break the code if you increase this
    count to a long, because repeated divisions in rendering will take
@@ -42,16 +45,12 @@ void stopwatch_init(){
   
   //Start off without counting.
   counting=0;
-
-  //Draw these once, rather than every frame.
-  lcd_cleardigit(5); //Space
-  lcd_cleardigit(2); //Space
-
+  
   //Force a draw on startup.
   stopwatch_draw(1);
 }
 
-//! Exit form the stopwatch app.
+//! Exit from the stopwatch app.
 int stopwatch_exit(){
   //Give up without a fight when the mode button is pressed.
   return 0;
@@ -64,13 +63,19 @@ int stopwatch_keypress(char ch){
    */
   
   switch(ch){
-    case '+':
-      counting=!counting;
-      break;
-    case '0':
-      //Zero the count.
-      count=hour=hourhex=min=minhex=sec=sechex=0;
-      break;
+  case '+':  //Pause/Resume the count.
+    counting=!counting;
+    break;
+  case '0':  //Zero the count.
+    count=hour=hourhex=min=minhex=sec=sechex=0;
+    break;
+  case '/':  //Briefly show the clock time.
+    showtime=1;
+    break;
+  default:
+    showtime=0;
+    return 1;  //Redraw the whole screen on key-up.
+    break;
   }
   
   /* Stopwatch uses rendering frequency to count time, so we don't
@@ -98,6 +103,7 @@ void stopwatch_draw(int forced){
   if(counting)
     count++;
 
+
   //Update the subhex field.
   subhex=subs[count&3];
 
@@ -122,7 +128,20 @@ void stopwatch_draw(int forced){
     hour++;
     hourhex=int2bcd(hour);
   }
+
   
+  //When / is held, we always show the time and exit.
+  if(showtime){
+    draw_time(1);
+    return;
+  }
+
+  if(forced){
+    //Draw these once, rather than every frame.
+    //lcd_cleardigit(5); //Space
+    //lcd_cleardigit(2); //Space
+    lcd_zero();
+  }
   
   //Blink the colon once a second.
   setcolon((count>>1)&1);
@@ -133,7 +152,7 @@ void stopwatch_draw(int forced){
     lcd_digit(0,sechex&0xF);
     
     //Draw minutes and hours
-    if(!sec){
+    if(!sec || forced){
       //Draw minutes
       lcd_digit(4,minhex>>4);
       lcd_digit(3,minhex&0xF);
@@ -148,12 +167,12 @@ void stopwatch_draw(int forced){
     lcd_digit(0,subhex&0xF);
     
     //Only draw the rest if the subseconds have changed.
-    if(!subhex || count==1){
+    if(!subhex || count==1 || forced){
       lcd_digit(4,sechex>>4);
       lcd_digit(3,sechex&0xF);
       
       //Update minutes if the seconds are zero.
-      if(!sec){
+      if(!sec || forced){
 	lcd_digit(7,minhex>>4);
 	lcd_digit(6,minhex&0xF);
       }
