@@ -161,21 +161,39 @@ ookpackets=[
 
 # 1200 Baud POCSAG for DAPNET
 pocsagconfig=[
-    MDMCFG4, 0xF5,      #  Modem Configuration
+    MDMCFG4, 0xF5,      #  Modem Configuration, wide BW
+    #MDMCFG4, 0xC5,      #  Modem Configuration, narrow BW
     MDMCFG3, 0x83,      #  Modem Configuration
-    MDMCFG2, 0x30,      #  Modem Configuration, no sync
-    FREND0 , 0x11,      #  Front End TX Configuration
+    # #MDMCFG2, 0x30,      #  Modem Configuration, no sync
+    #MDMCFG2, 0x33,      #  Modem Configuration, 30/32 sync
+    MDMCFG2, 0x82,      #  2-FSK, current optimized, 16/16 sync
+    MDMCFG1, 0x72,      #  Long preamble.
+    # FREND0 , 0x11,      #  Front End TX Configuration
+
+    # #DEVIATN, 0x24,      # 9.5 kHz
+    DEVIATN, 0x31,      # 15 kHz
+    
     FSCAL3 , 0xE9,      #  Frequency Synthesizer Calibration
     FSCAL2 , 0x2A,      #  Frequency Synthesizer Calibration
     FSCAL1 , 0x00,      #  Frequency Synthesizer Calibration
     FSCAL0 , 0x1F,      #  Frequency Synthesizer Calibration
-    PKTCTRL0, 0x00,     #Packet automation control, fixed length without CRC.
-    PKTLEN,  64,   # PKTLEN    Packet length.
+    
+    PKTCTRL0, 0x00,     #  Packet automation control, fixed length without CRC.
+    # PKTLEN,  64,        #  PKTLEN    Packet length.
+
+    SYNC1, 0x83,
+    SYNC0, 0x2d,
+
+    TEST0, 0x09, #Who knows?
+    
     0, 0 
 ];
 
 # Example POCSAG packet.  The preamble ought to be a lot longer.
-pocsagpacket="5555555560cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a3dc16875058b680e1947a992d51fa63309468edd5af3ec8c8479e1e35effff87e0cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a";
+#pocsagpacket="5555555560cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a3dc16875058b680e1947a992d51fa63309468edd5af3ec8c8479e1e35effff87e0cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a";
+#pocsagpacket="60cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a3dc16875058b680e1947a992d51fa63309468edd5af3ec8c8479e1e35effff87e0cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a";
+
+pocsagpacket="68656c6c6f20776f726c640000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
 
 
@@ -368,9 +386,12 @@ if __name__=='__main__':
                         help='Sniffs for beacons.',action='count');
     parser.add_argument('-O','--ook',
                         help='Transmits an OOK example packet.');
-    parser.add_argument('-P','--pocsag',
+    parser.add_argument('-Q','--pocsagtx',
                         action='count',
                         help='Transmits a POCSAG page. (BROKEN)');
+    parser.add_argument('-P','--pocsag',
+                        action='count',
+                        help='Listens for POCSAG pages on the DAPNET frequency. (BROKEN)');
     
     
     args = parser.parse_args()
@@ -431,7 +452,7 @@ if __name__=='__main__':
             goodwatch.radiotx(ookpackets[int(args.ook)].decode('hex'));
             time.sleep(0.1);
             
-    if args.pocsag!=None:
+    if args.pocsagtx!=None:
         print "WARNING: POCSAG DOESN'T WORK YET";
         time.sleep(1);
         goodwatch.radioonoff(1);
@@ -442,7 +463,21 @@ if __name__=='__main__':
         goodwatch.radiofreq(439.988);
         while 1:
             print "Transmitting packet.";
-            goodwatch.radiotx(pocsagpacket.decode('hex'),64);
+            goodwatch.radiotx(pocsagpacket.decode('hex'),32);
+            time.sleep(1);
+    if args.pocsag!=None:
+        print "WARNING: POCSAG DOESN'T WORK YET";
+        time.sleep(1);
+        goodwatch.radioonoff(1);
+        print "Configuring radio.";
+        goodwatch.radioconfig(beaconconfig);
+        goodwatch.radioconfig(pocsagconfig);
+        #Standard DAPNET frequency.
+        goodwatch.radiofreq(439.988);
+        while 1:
+            pkt=goodwatch.radiorx();
+            if len(pkt)>1:
+                print pkt.encode('hex');
             time.sleep(1);
     
     if args.beaconsniff!=None:
