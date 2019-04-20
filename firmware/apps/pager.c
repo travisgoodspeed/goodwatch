@@ -122,6 +122,13 @@ void pager_packetrx(uint8_t *packet, int len){
   pocsag_newbatch();
   for(i=0;i<16;i++){
     pocsag_handleword(__builtin_bswap32(words[i])^0xFFFFFFFF);
+
+    
+    //Display the packet if it newly matches our ID, or if we have no ID.
+    if(pocsag_lastid==DAPNETRIC || DAPNETRIC==0){
+      memcpy(lastpacket, pocsag_buffer, 8);
+      printf("Displaying: '%s'\n", lastpacket);
+    }
   }
 
   //Zero the packet just so bugs are clear.
@@ -130,12 +137,7 @@ void pager_packetrx(uint8_t *packet, int len){
          pocsag_lastid, pocsag_buffer
          );
   
-  //Display the packet if it newly matches our ID, or if we have no ID.
-  //FIXME, we need some sort of callback to better match the end of the message.
-  if(pocsag_lastid==DAPNETRIC || DAPNETRIC==0){
-    memcpy(lastpacket, pocsag_buffer, 8);
-    printf("Displaying: '%s'\n", lastpacket);
-  }
+  
 
   packet_rxon();
 }
@@ -174,10 +176,7 @@ int pager_exit(){
 //! Draw the Pager screen.
 void pager_draw(){
   int state=radio_getstate();
-
-  //This will kill your battery.
   
-
   if(state==1 || state==13){
     /* Draw the last incoming packet on the screen. */
     lcd_string(lastpacket);
@@ -186,7 +185,6 @@ void pager_draw(){
     lcd_number(state);
   }
   
-
   switch(state){
   case 1: //IDLE
     packet_rxon();

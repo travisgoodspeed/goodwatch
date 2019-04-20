@@ -25,19 +25,16 @@ uint32_t pocsag_lastid;
 char pocsag_buffer[MAXPAGELEN];
 
 //! Count of words within the batch, roughly twice the frame count.
-static int wordcount;
+static int wordcount=0;
 //! Count of bits in the current byte.
-static int bitcount;
+static int bitcount=0;
 //! Next incoming character.
-static char newchar;
+static char newchar=0;
 //! Character index.
-static int bytecount;
+static int bytecount=0;
 
 void pocsag_newbatch(){
   wordcount=0;
-  bitcount=0;
-  newchar=0;
-  bytecount=0;
   memset(pocsag_buffer,0x00,MAXPAGELEN);
 }
 
@@ -88,6 +85,11 @@ void pocsag_handleword(uint32_t word){
        half of the word count.
      */
     pocsag_lastid=((word>>10)&0x1ffff8) | ((wordcount>>1)&7);
+
+    //Wipe the alphanumeric message state.
+    bitcount=0;
+    newchar=0;
+    bytecount=0;
   }
 
   /* Increment the word count, because we need it to decode the
