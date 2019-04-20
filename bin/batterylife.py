@@ -40,3 +40,5 @@ if ampcount>0:
     years=days/365.2425;
     months=years*12.0;
     print("%f months of CR2016 battery life."%months);
+    if months<1:
+        print("%f hours of CR2016 battery life."%hours);
