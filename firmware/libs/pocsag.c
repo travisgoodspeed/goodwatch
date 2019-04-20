@@ -102,27 +102,6 @@ void pocsag_handleword(uint32_t word){
 #include<stdio.h>
 #include<assert.h>
 
-
-/* This message is already bitflipped and begins after the FCS bytes,
-   which are generally the first two bytes of the incoming frame as it
-   is initially received.
- */
-const char *testmessage=
-  //"15d8" //Ommitting first two bytes.
-
-  //Early pairs are IDLE.
-  "7a89c197" "7a89c197"
-  "7a89c197" "7a89c197"
-  "7a89c197" "7a89c197"
-  "7a89c197" "7a89c197"
-
-  //Address and data come here.
-  "08fa5e2b" "e9d25fc7"
-  "9ae159b4" "ab812aeb"
-  "9f600572" "7a89c197"
-  
-  "7a89f000"; //Damaged at the end.
-
 //! Unix command-line tool for testing.
 int main(){
   int i;
