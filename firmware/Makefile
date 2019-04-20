@@ -9,10 +9,11 @@ SHABBAT_APP = 0
 RNG_APP = 1
 TUNER_APP = 1
 MORSE_APP = 1
-BEACON_APP = 1
+BEACON_APP = 0
 OOK_APP = 1
 COUNTER_APP = 1
 DMESG_APP = 1
+PAGER_APP = 1
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT = /dev/ttyUSB0
@@ -76,6 +77,10 @@ ifeq ($(COUNTER_APP),1)
 APPS_OBJ += apps/counter.o
 APPS_DEFINES += COUNTER_APP 
 endif
+ifeq ($(PAGER_APP),1)
+APPS_OBJ += apps/pager.o
+APPS_DEFINES += PAGER_APP 
+endif
 
 
 #Standard Debian gcc-msp430 and msp430mcu packages.
@@ -87,7 +92,7 @@ modules=rtcasm.o main.o lcd.o lcdtext.o rtc.o  keypad.o bcd.o apps.o\
 	applist.o adc.o ref.o codeplugstr.o \
 	sidebutton.o power.o uart.o monitor.o ucs.o buzz.o \
 	radio.o packet.o dmesg.o codeplug.o rng.o descriptor.o \
-	optim.o libs/assembler.o libs/morse.o
+	optim.o libs/assembler.o libs/morse.o libs/pocsag.o
 
 apps= $(APPS_OBJ)
 

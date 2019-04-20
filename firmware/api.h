@@ -37,6 +37,7 @@
 //Handy libraries.  These are tested host-side.
 #include "libs/assembler.h"
 #include "libs/morse.h"
+#include "libs/pocsag.h"
 
 //Standalone functions.
 

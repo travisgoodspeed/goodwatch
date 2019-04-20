@@ -24,6 +24,7 @@ const struct app apps[]={
   {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
    .keypress=clock_keypress
   },
+ 
   
 #ifdef STOPWATCH_APP
   //Stopwatch
@@ -125,6 +126,14 @@ const struct app subapps[]={
    .init=ook_init, .draw=ook_draw, .exit=ook_exit,
    .packetrx=ook_packetrx, .packettx=ook_packettx,
    .keypress=ook_keypress
+  },
+#endif
+
+#ifdef PAGER_APP
+  //POCSAG Pager
+  {.name="pager", .init=pager_init, .draw=pager_draw, .exit=pager_exit,
+   .packetrx=pager_packetrx,
+   .keypress=pager_keypress
   },
 #endif
 

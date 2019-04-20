@@ -114,7 +114,7 @@ packet_isr (void) {
 	  //Inform the application.
 	  app_packetrx(rxbuffer,rxlen);
 	}else if(state==17){
-	  printf("RX Overflow.\n");
+	  printf("RX Overflow.  Idling.\n");
 	  radio_strobe(RF_SIDLE);
 	}else{
 	  printf("Unknown RX state %d.\n",state);

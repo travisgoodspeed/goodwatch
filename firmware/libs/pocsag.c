@@ -3,14 +3,14 @@
   
   This is a bare bones parser for POCSAG intended to run inside of the
   CC430F6137 and CC430F6147 chips from Texas Instruments, which
-  contain a CC1101 radio core.
+  contain a CC1101 radio core.  Sadly it does not support error
+  correction or even the parity check.
   
   If you define STANDALONE, this will compile as a text case in Unix.
   I miss my big endian machines, but not so much as to keep this
   compatible with them.
   
   --Travis
-
 */
 
 #include<stdint.h>
@@ -51,8 +51,8 @@ static void pocsag_handledataword(uint32_t word){
   int newbit;
 
   for(i=19; i>=0; i--){
-    //This grabs the bits in line order, as in RS232.
-    //Least significant bit comes first.
+    //This grabs the bits in line order. As in RS232, the least
+    //significant bit comes first.
     newbit=((bits>>i) & 1) ? 1 : 0;
     bitcount++;
     

@@ -14,6 +14,11 @@
 #warning "CALLSIGN is not defined in config.h"
 #endif
 
+#ifndef DAPNETRIC
+#define DAPNETRIC 0
+#warning "DAPNET pager RIC is not defined in config.h"
+#endif
+
 #ifndef COREVOLTAGE
 #define COREVOLTAGE 0
 #endif
