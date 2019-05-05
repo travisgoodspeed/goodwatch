@@ -87,3 +87,8 @@ devkit, which uses the CC430F6137.
 The [CharlieWatch](https://github.com/osresearch/charliewatch) from
 Trammell Hudson is a nice little fork of the GoodWatch that uses a
 charlieplexed array of LEDs instead of a Casio watchcase.
+
+[iceSIO](https://github.com/icelord75/icesio) matches the same Casio
+3208 casings as the GoodWatch, but uses a PIC16 platform with
+accelerometer, compass and environmental sensors.
+
