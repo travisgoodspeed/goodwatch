@@ -15,11 +15,15 @@
   
   The power management situation for this applet is ugly, as we only
   have a CR2016 coin cell and replacing it requires disassembling the
-  watch.  Our current solution is to only hit the exit timer when a
-  packet is received for any users, so that the watch will return to
-  the clock when out of radio range.  A better solution will be to
-  match the timeslot of the transmitter, so that we can safely sleep
-  during the interrum between transmissions.
+  watch.  Our current solution is to hit the exit timer when a packet
+  is received for any user, so that the watch will return to the clock
+  when out of radio range.
+
+  The radio is kept in idle mode (1mA) except when checking for the
+  preamble every 250ms, when it comes to RX mode (16mA).  Total power
+  consumption averages 4.25mA, allowing for twenty-four hours of
+  active use.  Hopefully with finer timing, we can drop this down a
+  bit.
 */
 
 #include<stdio.h>
@@ -161,7 +165,7 @@ void pager_packetrx(uint8_t *packet, int len){
      27) to get an array of the packet words.
    */
   words=(uint32_t*) (packet+2);
-
+  
   /* We've triggered at the beginning of the batch, so we inform the
      pocsag library of that and then have it handle each word in
      sequence.  __builtin_bswap32() is a GCC primitive to swap a
@@ -226,7 +230,6 @@ void pager_draw(){
      bug, we'd just leave the radio receiving all the time.  But that
      would kill our coincell in six hours!
      
-     
      Instead we make use of the drawing routine, which is triggered
      every 250ms, to look for a short fragment of POCSAG's 480ms long
      preamble.  We don't need to look for very long, as the preamble
@@ -271,6 +274,7 @@ void pager_draw(){
   
   if(state==1 || state==13){
     /* Draw the last incoming packet on the screen. */
+    lcd_zero();
     lcd_string(lastpacket);
   }else{
     printf("Unexpected state %d\n", state);
