@@ -62,6 +62,7 @@ static void pocsag_handledataword(uint32_t word){
     if(bitcount==7){
       //Record the character.
       pocsag_buffer[bytecount++]=newchar;
+      pocsag_buffer[bytecount]=0;
       //Safety first.
       if(bytecount>MAXPAGELEN-1)
         bytecount=0;
