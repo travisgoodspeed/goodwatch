@@ -59,7 +59,8 @@ static const uint8_t pocsag_settings[]={
 
   
   MCSM1,   0x30,  // MCSM1, return to IDLE after packet.  Or with 2 for TX carrier tes.
-  MCSM0,   0x10,  // MCSM0     Main Radio Control State Machine configuration.
+  MCSM0,   0x10,  // MCSM0     Calibrate before RX or TX.
+  //MCSM0,   0x30,  // MCSM0     Calibrate after every 4th packet.
   IOCFG2,  0x29,  // IOCFG2    GDO2 output pin configuration.
   IOCFG0,  0x06,  // IOCFG0    GDO0 output pin configuration.
   
@@ -128,7 +129,7 @@ void pager_packetrx(uint8_t *packet, int len){
      480ms, and we ought to stay awake for it.
    */
   if(packet[0]==0xaa){
-    printf("Found the preamble!\n");
+    //printf("Found the preamble!\n");
     
     //Keep the radio on for one second.
     wakecount=4;
@@ -141,7 +142,7 @@ void pager_packetrx(uint8_t *packet, int len){
     return;
   }
 
-  printf("Found the packet!\n");
+  //printf("Found the packet!\n");
   
   
   /* See pocsag.c for decoder info, but the jist is that the first two
