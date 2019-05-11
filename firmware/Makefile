@@ -84,7 +84,7 @@ endif
 
 
 #Standard Debian gcc-msp430 and msp430mcu packages.
-CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os  $(addprefix -D, $(APPS_DEFINES))
+CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os  $(addprefix -D, $(APPS_DEFINES)) -Wl,--gc-sections -fdata-sections -ffunction-sections 
 
 BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
