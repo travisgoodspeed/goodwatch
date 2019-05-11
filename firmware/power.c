@@ -174,8 +174,9 @@ int power_setvcore (int level) {
     __delay_cycles(850);
   }
 
-  printf("Power %d->%d.\n",
-	 origlevel,
-	 PMMCTL0 & PMMCOREV_3);
+  if(origlevel!=(PMMCTL0 & PMMCOREV_3))
+    printf("Power %d->%d.\n",
+           origlevel,
+           PMMCTL0 & PMMCOREV_3);
   return status;
 }

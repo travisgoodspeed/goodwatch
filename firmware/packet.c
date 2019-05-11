@@ -98,7 +98,7 @@ packet_isr (void) {
 	//Wait for end of packet.
 	do{
 	  state=radio_getstate();
-	  __delay_cycles(8500);
+	  //__delay_cycles(8500);
 	}while(state==13 || state==14 || state==15 || state==20 || state==21);
 
 

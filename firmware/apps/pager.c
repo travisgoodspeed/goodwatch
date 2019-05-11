@@ -75,7 +75,31 @@ static const uint8_t pocsag_settings[]={
   0, 0
 };
 
+/* Correct addressing for POCSAG.
+ */
+static const uint8_t pocsag_settings_packet[]={
+  PKTLEN,  64,        // PKTLEN    Packet length.
+  
+  SYNC1, 0x83,        //Sync word is 0x7CD215D8, but inverted from differing
+  SYNC0, 0x2d,        //2FSK definitions, the first two bytes become 832d.
+  ADDR,  0xea,        //EA27 is next, and we can at least match the first byte.
+  
+  0, 0
+};
 
+/* Settings to match on the preamble, for waking up.
+ */
+static const uint8_t pocsag_settings_preamble[]={
+  PKTLEN,  3,        // PKTLEN    Packet length.
+  
+  SYNC1, 0xAA,       // Triggers an early match if the preamble is heard.
+  SYNC0, 0xAA,
+  ADDR,  0xAA,
+  
+  0, 0
+};
+
+static uint16_t wakecount=0;
 static char lastpacket[]="IDLE      ";
 
 //! Handle an incoming packet.
@@ -96,6 +120,28 @@ void pager_packetrx(uint8_t *packet, int len){
     
    */
   app_cleartimer();
+
+
+
+  /* When the first byte is AA, it's because we've matched on the
+     preamble.  This indicates that a packet is coming within the next
+     480ms, and we ought to stay awake for it.
+   */
+  if(packet[0]==0xaa){
+    printf("Found the preamble!\n");
+    
+    //Keep the radio on for one second.
+    wakecount=4;
+
+    //Start looking for the real packet.
+    radio_writesettings(pocsag_settings);
+    radio_writesettings(pocsag_settings_packet);
+    packet_rxon();
+
+    return;
+  }
+
+  printf("Found the packet!\n");
   
   
   /* See pocsag.c for decoder info, but the jist is that the first two
@@ -107,6 +153,7 @@ void pager_packetrx(uint8_t *packet, int len){
      /FCS\ /--word0--\ /--word1--\ /--word2--\ ..
      ea 27 ff d8 da c8 3a ee f9 6c 7e 66 3a 50 ..
   */
+
 
   /* Forgive this pointer arithmetic, but in my own head, it really
      makes more sense this way.  First we skip the first two bytes (ea
@@ -137,10 +184,8 @@ void pager_packetrx(uint8_t *packet, int len){
          pocsag_lastid, pocsag_buffer
          );
   
-  
-
-  packet_rxon();
 }
+
 
 
 //! Enter the Pager application.
@@ -157,7 +202,7 @@ void pager_init(){
     radio_writepower(0x25);
     
     radio_setfreq(439988000);
-    packet_rxon();
+    //packet_rxon();
   }else{
     app_next();
   }
@@ -175,30 +220,80 @@ int pager_exit(){
 
 //! Draw the Pager screen.
 void pager_draw(){
+
+  /* So if it weren't for the power budget and the LCD charge pump
+     bug, we'd just leave the radio receiving all the time.  But that
+     would kill our coincell in six hours!
+     
+     
+     Instead we make use of the drawing routine, which is triggered
+     every 250ms, to look for a short fragment of POCSAG's 480ms long
+     preamble.  We don't need to look for very long, as the preamble
+     ought to already be on the air during our spot check, and if it
+     isn't found, we can quickly fall back to sleep until the next
+     frame.
+     
+   */
+  
+  
   int state=radio_getstate();
+  int i=0;
+
+
+  if(state==0 || state==1){
+    /* We are idling or off, so no packet is known to be inbound, and we
+       should wake up to look for a preamble.  If it doesn't come by
+       the end of this function, we'll give up and sleep for a while.
+     */
+
+    
+    //Start looking for the preamble.
+    //radio_on();
+    radio_writesettings(pocsag_settings);
+    radio_writesettings(pocsag_settings_preamble);
+    packet_rxon();
+
+    //Wait until we're in RX mode.
+    while(radio_getstate()!=13);
+
+    //Then wait long enough for the packet.
+    /* 100 works
+       75 works
+       50 doesn't
+     */
+    for(i=0;i<75;i++)
+      __delay_cycles(1000);
+  }
+  
+  
+  state=radio_getstate();
   
   if(state==1 || state==13){
     /* Draw the last incoming packet on the screen. */
     lcd_string(lastpacket);
   }else{
-    lcd_zero();
+    printf("Unexpected state %d\n", state);
     lcd_number(state);
   }
-  
+
   switch(state){
   case 1: //IDLE
-    packet_rxon();
+    /* The idle state still draws 1mA, so we would prefer to shut down
+       the receiver entirely if that's possible.  For now, we'll just
+       be grateful that we aren't drawing the full 16mA of RX mode.
+     */
     break;
-  case 22: //TX_OVERFLOW
-    printf("TX Overflow.\n");
-    radio_strobe(RF_SIDLE);
-    break;
-    
   case 13: //RX Mode
-    /* The screen will dim down in this mode on a CC430F6137 unless we
-       power cycle it, but that's not this module's responsibility.
-       See issue #56 on Github or use a CC430F6147.
-    */
+    /* We only remain in RX mode if we've seen the preamble and know
+       that a packet is coming.  Even then, we give up after a second,
+       because battery life is precious.
+     */
+    if(wakecount){
+      wakecount--;
+    }else{
+      packet_rxoff();
+      //radio_off();
+    }
     break;
   }
 
@@ -210,9 +305,8 @@ int pager_keypress(char ch){
      the future, it might be nice for this to show (1) the timestamp
      of the last received packet and (2) a promiscuous mode showing
      all recent packets.
-     
-     We shouldn't go too far, however, because of the limited battery
-     life.
    */
+
   return 0;
 }
+
