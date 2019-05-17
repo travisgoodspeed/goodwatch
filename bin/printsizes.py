@@ -23,10 +23,12 @@ def printsizes(stream):
     
     text=elffile.get_section_by_name('.text');
     textlen=len(text.data());
-    codeperc=textlen*100.0/32768;
-    print("\t%d bytes of .text (%d %%)" % (textlen,codeperc));
-    if codeperc>80:
-        print("WARNING: %d percent of code is used!"%codeperc);
+    rodata=elffile.get_section_by_name('.rodata');
+    rodatalen=len(rodata.data());
+    codeperc=(textlen+rodatalen)*100.0/32768;
+    print("\t%d bytes of .text, %d bytes of .rodata (%d%% Flash)" % (textlen,rodatalen,codeperc));
+    if codeperc>90:
+        print("WARNING: %d percent of Flash is used!"%codeperc);
     
     datalen=0;
     bsslen=0;
@@ -42,7 +44,7 @@ def printsizes(stream):
     dataperc=(datalen+bsslen+noinitlen)*100.0/4096;
 
     if datalen+bsslen+noinitlen>0:
-        print("\t%d bytes of .data, %d bytes of .bss, %d bytes of .noinit (%d %%)"
+        print("\t%d bytes of .data, %d bytes of .bss, %d bytes of .noinit (%d%% RAM)"
               %(datalen,bsslen,noinitlen,dataperc));
     if dataperc>80:
         print("WARNING: %d percent of data is used!"%dataperc);
