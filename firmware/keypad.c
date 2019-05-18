@@ -133,7 +133,7 @@ const unsigned int keymap[]={
 };
 
 //! Returns a character of the current scan code.
-unsigned int key_chr(code){
+unsigned int key_chr(int code){
   /* Row is the upper nybble, column is the lower nybble.*/
   unsigned int i=0;
   for(i=0;keymap[i];i++){
@@ -147,7 +147,7 @@ unsigned int key_chr(code){
 
 
 //! Gets the currently held button as ASCII.  Don't use for typing.
-char getchar(){
+char key_char(){
   char c=key_chr(key_scan());
   if(c)
     //Clear the app timer when a button is pressed.

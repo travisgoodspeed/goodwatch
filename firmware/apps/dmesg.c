@@ -19,7 +19,7 @@
 #include "apps/dmesg.h"
 
 //! Our index within the buffer.
-static uint16_t index=0;
+static uint16_t dispindex=0;
 
 //! Entry to the hex editor app.
 void dmesgapp_init(){
@@ -59,7 +59,7 @@ int dmesgapp_keypress(char ch){
     lcd_string("CLEARED");
     return 0;
   case '0':// Press 0 to return to the start of the buffer.
-    index=0;
+    dispindex=0;
     break;
   }
 
@@ -93,10 +93,10 @@ void dmesgapp_draw(int forced){
    */
   if(forced || !key_pressed()){
     //Draw eight bytes.
-    dmesgapp_drawbuffer(index++);
+    dmesgapp_drawbuffer(dispindex++);
     
     //Jump to beginning after we catch up with the current pointer.
-    if(index>dmesg_index)
-      index=0;
+    if(dispindex>dmesg_index)
+      dispindex=0;
   }
 }

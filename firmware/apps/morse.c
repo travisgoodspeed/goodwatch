@@ -70,7 +70,7 @@ int morse_keypress(char ch){
     do{
       radio_strobe(RF_STX);
       __delay_cycles(300);
-    }while(getchar()=='+');
+    }while(key_char()=='+');
     radio_strobe(RF_SIDLE);
     __delay_cycles(300);
     break;
@@ -86,7 +86,7 @@ int morse_keypress(char ch){
     lcd_postdraw();
     __delay_cycles(6000);
     do{
-      if(sidebutton_mode() || getchar()=='+'){
+      if(sidebutton_mode() || key_char()=='+'){
 	if(radio_getstate()==1){
 	  radio_strobe(RF_STX);
 	  __delay_cycles(300);

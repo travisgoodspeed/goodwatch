@@ -40,7 +40,7 @@ static int as, ad;
 //! 1 for byte, 0 for word.
 static int bw;
 //! Disassembled string, to display on 7-seg display.
-static char asmstr[8];
+static char asmstr[9];
 
 //! Disassemble an instruction into the local buffer.
 void asm_dis(uint16_t adr, uint16_t ins,
