@@ -74,6 +74,8 @@ static void pocsag_handledataword(uint32_t word){
 }
 
 void pocsag_handleword(uint32_t word){
+
+  
   if(word==0x7a89c197){         //IDLE
     /* Just ignore idle frames, but don't yet return because we need
        to count them.
@@ -105,9 +107,31 @@ void pocsag_handleword(uint32_t word){
 #include<stdio.h>
 #include<assert.h>
 
+
+//! Performs error correction on the word, as best we can.
+static uint32_t pocsag_correct(uint32_t word){
+  /* Ideally we'll do the error correction, but for now we just check
+     parity.
+   */
+  if(__builtin_parityl(word)==1){
+    //printf("0x%lx has bad parity.\n", word);
+
+    //Return idle, rather than damaged frame.
+    return 0x7a89c197;
+  }
+  
+  //Looks good, so return it.
+  return word;
+}
+
 //! Unix command-line tool for testing.
 int main(){
   int i;
+
+  //First, let's test that pocsag_correct() doesn't damage good frames.
+  assert(pocsag_correct(0x7a89c197)==0x7a89c197); //IDLE is IDLE
+  assert(pocsag_correct(0x08fa5e2b)==0x08fa5e2b); //Address isn't damaged.
+  assert(pocsag_correct(0x08fa5e2c)==0x7a89c197); //Damaged address is corrected.
   
   //Initialize a new batch.
   pocsag_newbatch();
