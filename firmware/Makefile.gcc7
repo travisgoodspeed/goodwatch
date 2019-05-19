@@ -84,7 +84,7 @@ endif
 
 
 #Standard Debian gcc-msp430 and msp430mcu packages.
-CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os  $(addprefix -D, $(APPS_DEFINES)) -Wl,--gc-sections -fdata-sections -ffunction-sections 
+CC = msp430-elf-gcc -minrt -msmall -mmcu=cc430f6137 -Wall -I. -I/opt/msp430-gcc-support-files/include -Os  $(addprefix -D, $(APPS_DEFINES)) -Wl,--gc-sections,--print-gc-sections -fdata-sections -ffunction-sections -fno-asynchronous-unwind-tables -flto
 
 BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
@@ -107,7 +107,8 @@ buildtime.h:
 	../bin/buildtime.py >buildtime.h
 
 goodwatch.elf: $(modules) $(apps) *.h  
-	$(CC) -T msp430.x -o goodwatch.elf $(modules) $(apps)
+	#$(CC) -T msp430.x -o goodwatch.elf $(modules) $(apps)
+	$(CC)  -T cc430f6137.ld -o goodwatch.elf $(modules) $(apps)
 	../bin/printsizes.py goodwatch.elf || echo "Please install python-pyelftools."
 
 goodwatch.hex: goodwatch.elf

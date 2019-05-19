@@ -22,13 +22,18 @@ uint16_t dmesg_index __attribute__ ((section (".noinit")));
 char *dmesg_buffer=(char*)0x2400;
 
 //! Writes a character to the dmesg buffer.
-#undef putchar
 int putchar(int c){
   dmesg_index++;
   while(dmesg_index>DMESGLEN)
     dmesg_index=dmesg_index-DMESGLEN;
   return dmesg_buffer[dmesg_index]=(char) c;
 }
+
+//! Writes a character to the dmesg buffer.
+void dmesg_putc(void* p, char c){
+  putchar(c);
+}
+
 
 //! Clears the dmesg buffer.
 void dmesg_clear(){
