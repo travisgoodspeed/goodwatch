@@ -112,7 +112,7 @@ goodwatch.elf: $(modules) $(apps) *.h
 	../bin/printsizes.py goodwatch.elf || echo "Please install python-pyelftools."
 
 goodwatch.hex: goodwatch.elf
-	msp430-objcopy -O ihex goodwatch.elf goodwatch.hex
+	msp430-elf-objcopy -O ihex goodwatch.elf goodwatch.hex
 
 clean:
 	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h buildtime.h html latex goodwatch.elf energytrace.png energytrace.txt codeplugstr.c dmesg.bin
