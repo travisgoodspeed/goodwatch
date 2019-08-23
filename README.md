@@ -81,7 +81,10 @@ that the two projects will communicate with each other.
 
 [openchronos-ng-elf](https://github.com/BenjaminSoelberg/openchronos-ng-elf)
 seems to be the most recently maintained firmware for TI's OpenChronos
-devkit, which uses the CC430F6137.
+devkit, which uses the CC430F6137.  See Adam Laurie's
+[ChronIC](http://adamsblog.rfidiot.org/2013/03/you-can-ring-my-bell-adventures-in-sub.html)
+project for an early example of sniffing OOK traffic and replaying it
+from a watch.
 
 
 The [CharlieWatch](https://github.com/osresearch/charliewatch) from
