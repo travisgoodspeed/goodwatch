@@ -1,0 +1,37 @@
+Howdy y'all,
+
+This is a textfile BOM for the GoodWatch31. Some substitutions will be
+handy, allowing for supplier availability. In general, we use the same
+parts as the GoodWatch30.
+
+The CC430F6147 is now preferred over the CC430F6137, but the older
+chip is still supported by firmware.
+
+
+Base parts, required for all watches.
+
+        MfgrPartNo              Digikey             Pkg      Qty   Cmt
+U1      CC430F6147IRGCR         296-39985-1-ND      VQFN64   1     CPU
+R1      RMCF0402JT75K0          RMCF0402JT75K0CT-ND 0402     1     75K
+C1      CL10A476MR8NZNE         1276-6528-1-ND      0603     1     47uF
+C2,C3   GRM152C80J104KE19D      490-9997-1-ND       0402     2     0.1uF (<0.3mm thickness)
+C4      GRJ155R60J106ME11D      490-13211-1-ND      0402     1     10uF
+C5      CL05A474KP5NNNC         1276-1173-1-ND      0402     1     0.47uF
+Y1      ABS07-120-32.768KHZ-T   535-11937-1-ND      SMDXTAL  1     32.768kHz6pF
+
+Radio parts, only required for the optional SubGHz radio.  Choose one
+of the two options for U2, but not the other.
+
+R2      CRGCQ0402F56K           A129648CT-ND        0402     1     56k, 1%
+Y2      FA-128 26.0000MF10Z-W5  SER4186CT-ND                 1     26MHz SMD Xtal, 12pF
+A1      ANT1204F002R0433A       311-1570-1-ND                1     430MHz Chip Antenna, you probably won't populate this.
+J1      0734120110              WM5587CT-ND                  1     u.FL/UMCC coaxial antenna connector, you probably won't populate this.
+C6,C7   CL05C120JB5NNNC         1276-1178-1-ND      0402     2     12pF
+C8,C9   GRM152C80J104KE19D      490-9997-1-ND       0402     2     0.1uF (<0.3mm thickness) (Same as C2,C3.)
+L1      BLM15HG102SN1D          490-3999-1-ND       0402     1     Ferrite Bead
+U2      0500LP15A500            712-1117-1-ND       0805     1     500MHz Low Pass Filter (70cm usage)
+U2      0868LP15A020E           712-1585-1-ND       0805     1     868MHz Low Pass Filter (EU unlicensed usage)
+U2      0915LP15B02             712-1122-1-ND       0805     1     915MHz Low Pass Filter (33cm usage)
+U3      B0310J50100AH           1173-1050-1-ND      0805     1     300MHZ-1GHz Balun
+C10     885012205040            732-7535-1-ND       0402     1     220pF DC Bypass Capacitor
+

@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name goodwatch31)(type KiCad)(uri ${KIPRJMOD}/goodwatch31.pretty)(options "")(descr ""))
+)
