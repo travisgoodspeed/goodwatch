@@ -182,9 +182,19 @@ pocsagconfig=[
     PKTCTRL0, 0x00,     #  Packet automation control, fixed length without CRC.
     PKTLEN,  60,        #  PKTLEN    Packet length.
 
+
+    #Matches on the packet, after the pramble.
     SYNC1,   0x83,  # 832d first
     SYNC0,   0x2d,
     ADDR,    0xea,  # ea27 next, but we can only match one piece of it.
+
+    #This would match on the preamble, while the packet is still in flight.
+    #Handy for manually seeing the SYNC pattern, and the technique that firmware
+    #will use to wake up.
+    #SYNC1, 0xAA,
+    #SYNC0, 0xAA,
+    #ADDR, 0xAA,
+    
 
     TEST2,   0x81, #Who knows?
     TEST1,   0x35,
@@ -480,7 +490,7 @@ if __name__=='__main__':
             goodwatch.radiotx(pocsagpacket.decode('hex'),32);
             time.sleep(1);
     if args.pocsag!=None:
-        print "WARNING: POCSAG DOESN'T WORK YET";
+        #print "WARNING: POCSAG DOESN'T WORK YET";
         time.sleep(1);
         goodwatch.radioonoff(1);
         print "Configuring radio.";
