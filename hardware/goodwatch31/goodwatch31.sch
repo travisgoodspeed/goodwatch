@@ -1,6 +1,5 @@
 EESchema Schematic File Version 4
-LIBS:goodwatch31-cache
-EELAYER 26 0
+EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -594,7 +593,7 @@ F 3 "" H 4700 5800 50  0000 C CNN
 	1    4700 5800
 	1    0    0    -1  
 $EndComp
-Text Notes 4850 5650 1    60   ~ 0
+Text Notes 4700 5800 2    60   ~ 0
 1%
 Wire Wire Line
 	4700 5200 4700 5450
@@ -713,95 +712,79 @@ F 4 "res-0402-75k" H 0   0   50  0001 C CNN "Key"
 $EndComp
 Wire Wire Line
 	6500 4550 6050 4550
-Text Label 5200 5250 0    60   ~ 0
-RFVCC
 NoConn ~ 5850 3950
 $Comp
 L Device:L_Small L1
 U 1 1 59E2854B
-P 5650 5250
-F 0 "L1" H 5680 5290 50  0000 L CNN
-F 1 "Ferrite 1k" H 5680 5210 50  0000 L CNN
-F 2 "Inductor_SMD:L_0402_1005Metric" V 5600 4850 50  0000 C CNN
-F 3 "" H 5650 5250 50  0000 C CNN
-F 4 "Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
-F 5 "ferrite-0402-1k" H 0   0   50  0001 C CNN "Key"
-	1    5650 5250
+P 5750 6100
+F 0 "L1" H 5780 6140 50  0000 L CNN
+F 1 "Ferrite 1k" H 5780 6060 50  0000 L CNN
+F 2 "Inductor_SMD:L_0402_1005Metric" V 5700 5700 50  0000 C CNN
+F 3 "" H 5750 6100 50  0000 C CNN
+F 4 "Optional: only needed for the RF version" H 100 850 50  0001 C CNN "Notes"
+F 5 "ferrite-0402-1k" H 100 850 50  0001 C CNN "Key"
+	1    5750 6100
 	0    -1   -1   0   
 $EndComp
 $Comp
 L power:VCC #PWR014
 U 1 1 59E287B3
-P 5850 5100
-F 0 "#PWR014" H 5850 4950 50  0001 C CNN
-F 1 "VCC" H 5850 5250 50  0000 C CNN
-F 2 "" H 5850 5100 50  0000 C CNN
-F 3 "" H 5850 5100 50  0000 C CNN
-	1    5850 5100
+P 5950 5950
+F 0 "#PWR014" H 5950 5800 50  0001 C CNN
+F 1 "VCC" H 5950 6100 50  0000 C CNN
+F 2 "" H 5950 5950 50  0000 C CNN
+F 3 "" H 5950 5950 50  0000 C CNN
+	1    5950 5950
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5850 5250 5750 5250
-Wire Wire Line
-	5850 5250 5850 5100
 $Comp
 L Device:C C8
 U 1 1 59E28B92
-P 5150 5450
-F 0 "C8" H 5175 5550 50  0000 L CNN
-F 1 "0.1uF" V 5300 5300 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0402_1005Metric" H 4800 4900 50  0000 C CNN
-F 3 "" H 5150 5450 50  0000 C CNN
-F 4 "cap-cer-0402-03high-100n" H 0   0   50  0001 C CNN "Key"
-F 5 "Use flat versions that are not higher than 0.33mm. Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
-	1    5150 5450
+P 5050 6250
+F 0 "C8" H 5075 6350 50  0000 L CNN
+F 1 "0.1uF" V 5200 6100 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 3900 5450 50  0000 C CNN
+F 3 "" H 5050 6250 50  0000 C CNN
+F 4 "cap-cer-0402-03high-100n" H -100 800 50  0001 C CNN "Key"
+F 5 "Use flat versions that are not higher than 0.33mm. Optional: only needed for the RF version" H -100 800 50  0001 C CNN "Notes"
+	1    5050 6250
 	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:C C9
 U 1 1 59E28F57
-P 5350 5450
-F 0 "C9" H 5375 5550 50  0000 L CNN
-F 1 "0.1uF" V 5200 5300 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0402_1005Metric" H 5200 5000 50  0000 C CNN
-F 3 "" H 5350 5450 50  0000 C CNN
-F 4 "cap-cer-0402-03high-100n" H 0   0   50  0001 C CNN "Key"
-F 5 "Use flat versions that are not higher than 0.33mm. Optional: only needed for the RF version" H 0   0   50  0001 C CNN "Notes"
-	1    5350 5450
+P 5450 6250
+F 0 "C9" H 5475 6350 50  0000 L CNN
+F 1 "0.1uF" V 5300 6100 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 4500 5600 50  0000 C CNN
+F 3 "" H 5450 6250 50  0000 C CNN
+F 4 "cap-cer-0402-03high-100n" H 100 800 50  0001 C CNN "Key"
+F 5 "Use flat versions that are not higher than 0.33mm. Optional: only needed for the RF version" H 100 800 50  0001 C CNN "Notes"
+	1    5450 6250
 	-1   0    0    -1  
 $EndComp
-Wire Wire Line
-	5150 5300 5150 5250
-Connection ~ 5150 5250
-Wire Wire Line
-	5350 5300 5350 5250
-Connection ~ 5350 5250
 $Comp
 L power:GND #PWR015
 U 1 1 59E2945F
-P 5150 5650
-F 0 "#PWR015" H 5150 5400 50  0001 C CNN
-F 1 "GND" H 5150 5500 50  0000 C CNN
-F 2 "" H 5150 5650 50  0000 C CNN
-F 3 "" H 5150 5650 50  0000 C CNN
-	1    5150 5650
+P 5050 6500
+F 0 "#PWR015" H 5050 6250 50  0001 C CNN
+F 1 "GND" H 5050 6350 50  0000 C CNN
+F 2 "" H 5050 6500 50  0000 C CNN
+F 3 "" H 5050 6500 50  0000 C CNN
+	1    5050 6500
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR016
 U 1 1 59E295B4
-P 5350 5650
-F 0 "#PWR016" H 5350 5400 50  0001 C CNN
-F 1 "GND" H 5350 5500 50  0000 C CNN
-F 2 "" H 5350 5650 50  0000 C CNN
-F 3 "" H 5350 5650 50  0000 C CNN
-	1    5350 5650
+P 5450 6500
+F 0 "#PWR016" H 5450 6250 50  0001 C CNN
+F 1 "GND" H 5450 6350 50  0000 C CNN
+F 2 "" H 5450 6500 50  0000 C CNN
+F 3 "" H 5450 6500 50  0000 C CNN
+	1    5450 6500
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5350 5650 5350 5600
-Wire Wire Line
-	5150 5650 5150 5600
 $Comp
 L power:GND #PWR017
 U 1 1 59FA28EB
@@ -894,13 +877,7 @@ Wire Wire Line
 Wire Wire Line
 	4600 5250 4800 5250
 Wire Wire Line
-	4800 5250 5150 5250
-Wire Wire Line
 	2150 1400 2950 1400
-Wire Wire Line
-	5150 5250 5350 5250
-Wire Wire Line
-	5350 5250 5550 5250
 $Comp
 L goodwatch31:0915LP15B02 U2
 U 1 1 5B64268F
@@ -1016,4 +993,20 @@ Wire Wire Line
 	2150 6550 2050 6550
 Wire Wire Line
 	2050 6550 2050 7200
+Text Label 5100 6100 0    60   ~ 0
+RFVCC
+Wire Wire Line
+	4800 6100 5050 6100
+Wire Wire Line
+	4800 5250 4800 6100
+Wire Wire Line
+	5050 6100 5450 6100
+Connection ~ 5050 6100
+Wire Wire Line
+	5650 6100 5450 6100
+Connection ~ 5450 6100
+Wire Wire Line
+	5850 6100 5950 6100
+Wire Wire Line
+	5950 6100 5950 5950
 $EndSCHEMATC
