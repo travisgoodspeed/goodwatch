@@ -1,0 +1,4 @@
+msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os  -DALARM_APP -DDMESG_APP -DRPN_APP -DHEX_APP -DCALIBRATE_APP -DSTOPWATCH_APP -DRNG_APP -DTUNER_APP -DMORSE_APP -DOOK_APP -DCOUNTER_APP -DPAGER_APP -Wl,--gc-sections -fdata-sections -ffunction-sections     -c -o rtcasm.o rtcasm.S
+make: msp430-gcc: Command not found
+<builtin>: recipe for target 'rtcasm.o' failed
+make: *** [rtcasm.o] Error 127
