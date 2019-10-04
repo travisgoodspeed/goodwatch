@@ -62,10 +62,8 @@
    no preamble, no CRC, and 341µs symbol times.
  */
 static const uint8_t ook_settings[]={
-  //Change these to change the rate.
-  //MDMCFG4, OOKMDMCFG4,      // Modem Configuration
-  //MDMCFG3, OOKMDMCFG3,      // Modem Configuration
-  //These rest are consistent for all OOK emulation.
+  // The symbol rate (MDMCFG4 and MDMCFG3) is set with the packet's data.
+  // These rest are consistent for all OOK emulation.
   MDMCFG2, 0x30,      // Modem Configuration, no sync
   FREND0 , 0x11,      // Front End TX Configuration
   FSCAL3 , 0xE9,      // Frequency Synthesizer Calibration
@@ -87,25 +85,9 @@ struct ook_packet
 
 //! Array of keys for button pressing.
 static const struct ook_packet button_array[] = {
-  /* These were recorded with Universal Radio Hacker (URH).  You might
-     need to adjust both these packets and the symbol periods defined
-     above. */
   OOKBUTTONS
 };
 
-
-/*
-//! Local function that returns an OOK array index from a button.  -1 on failure.
-static int button2index(char c){
-  //For now, only numbers.  Might change this later to have even rows of four buttons.
-  if(c<='9' && c>='0'){
-    return c-'0';
-  }
-
-  //Otherwise failure.
-  return -1;
-}
-*/
 
 //! Handle an incoming packet.
 void ook_packetrx(uint8_t *packet, int len){
@@ -133,7 +115,7 @@ void ook_packettx(){
      the bitrate in the keypress handler.
   */
   if(lastch<='9' && lastch>='0'){
-    transmit(lastch-'0');
+    transmit(lastch - '0');
   }
 }
 
