@@ -8,7 +8,7 @@
  * Twitter: @IfNotPike
  * License: MIT
  * 
- *    ==Quick Start==
+ *   ===Quick Start===
  *  ____________________
  * / ,---------------.  \
  * | |    JUKEBOX    |  |
@@ -31,11 +31,11 @@
  * Symbol Period: 566us
  * 
  * ==NEC Format==
- * Short(0): 10 
- * Long (1): 1000
+ * Short(0): 10   (ON OFF)
+ * Long (1): 1000 (ON OFF OFF OFF)
  * 
  * Structure:                 <SYNC> <PREAMBLE> <PIN> <COMMAND>
- * Sync (Literal Symbols):    \xff\xff\x00
+ * Sync (Literal Symbols):    \xFF\xFF\x00
  * Preamble (Decoded NEC):    0x5D
  * PIN 000-255 (Decoded NEC): 0x00-0xFF (LSB)
  * Command (Decoded NEC):
@@ -47,7 +47,7 @@
  * Command:             Pin 000 - On/Off
  * Literal Symbols HEX: ffff00 a2888a2 aaaa 8888aa2aa2220
  * Literal Symbols BIN: 11111111111111110000 10 1000 10 1000 1000 1000 10 1000 10 10 10 10 10 10 10 10 10 1000 1000 1000 1000 10 10 10 1000 10 10 10 10 1000 1000 1000 100000
- * Decoded Symbols:             SYNC         S  L    S  L    L    L    S  L    S  S  S  S  S  S  S  S  S  L    L    L    L    S  S  S  L    S  S  S  S  L    L    L
+ * Decoded Symbols:             SYNC         S  L    S  L    L    L    S  L    S  S  S  S  S  S  S  S  S  L    L    L    L    S  S  S  L    S  S  S  S  L    L    L    TAIL
  * 
  * ==More Info==
  * https://github.com/notpike/The-Fonz
@@ -61,14 +61,17 @@
 #include<msp430.h>
 #include "api.h"
 
-// Variables
+/*=========================== V A R I A B L E S ===========================*/
 #define LEN 16 //Bytes
 static char lastch = 0;
-int pinFlag = 1;
-int pin = 123;
 uint8_t returnValue[16];
 
-//Commands
+// PIN
+static char pinChar[9] = "PIN     ";
+int pinFlag = 1;
+int pin = 0;
+
+// Commands
 const uint8_t jukebox_commands[32] = {
 	0x32, 	// Pause
 	0x78, 	// On/Off
@@ -104,13 +107,49 @@ const uint8_t jukebox_commands[32] = {
 	0x40, 	// Zone 3 Vol-
 };
 
-// Function Refered From Furrtek's Havoc Port
-// https://github.com/furrtek/portapack-havoc/blob/master/firmware/application/apps/ui_touchtunes.cpp#L75
+// MSP430 Config
+static const uint8_t jukebox_settings[] = {
+    MDMCFG4, 0xF6,      // Modem Configuration
+    MDMCFG3, 0x1D,      // Modem Configuration
+    MDMCFG2, 0x30,      // Modem Configuration, no sync
+    FREND0 , 0x11,      // Front End TX Configuration
+    FSCAL3 , 0xE9,      // Frequency Synthesizer Calibration
+    FSCAL2 , 0x2A,      // Frequency Synthesizer Calibration
+    FSCAL1 , 0x00,      // Frequency Synthesizer Calibration
+    FSCAL0 , 0x1F,      // Frequency Synthesizer Calibration
+    PKTCTRL0, 0x00,     // Packet automation control, fixed length without CRC.
+    PKTLEN,  LEN,       // PKTLEN    Packet length.
+    0,0  
+};
+
+/*================================ M A I N ================================*/
+
+// Start
+void jukebox_init() {
+    if (!has_radio) {
+        app_next();
+    }
+    printf("10 button entries are available for Jukebox.\n");
+	lcd_string(pinChar); // Draw screen
+}
+
+// Exit
+int jukebox_exit() {
+	pinChar = "PIN     ";
+	pin = 0;
+    radio_off();
+    return 0;
+}
+
+/*================================= T X =================================*/
+
+// NEC Encoder 
+// Logic refered from Havoc Portapack Firmware
 void encode(uint8_t *out, uint8_t command, int pin) {
 
 	// Variables
-	size_t bit;                                      // Bit counter
-	uint64_t decodeMsg = 0x5D;                       // Sync Word + decoded value
+	size_t bit;                          // Bit counter
+	uint64_t decodeMsg = 0x5D;           // Sync Word + decoded value
 	uint8_t encodeMsg;			    	 // Bit holder before encoded values are moved to *out		      
 	
 	// Preamble 0xFFFF00
@@ -121,53 +160,53 @@ void encode(uint8_t *out, uint8_t command, int pin) {
 	// PIN, LSB First
 	for (bit = 0; bit < 8; bit++) {
 		decodeMsg <<= 1; 			 // Shift left 1 bit
-		if(pin & (1 << bit)) { 			 // If both bits line up add 1
+		if(pin & (1 << bit)) { 	     // If both bits line up add 1
 			decodeMsg |= 1;
 		}
 	}
 
 	// Command and it's complement
-	decodeMsg <<= 16;                                // Shift left 16 bits
+	decodeMsg <<= 16;                        // Shift left 16 bits
 	decodeMsg |= (command << 8); 			 // Add command shift left 8 bits
-	decodeMsg |= (command ^ 0xff); 		         // Add command's complement
+	decodeMsg |= (command ^ 0xff); 		     // Add command's complement
 
 	// NEC Encode
 	size_t bitSize = 0;                              // Size counter for encodeMsg
-	int arrayPos = 3; 				 // Pointer counter for *out
+	int arrayPos = 3; 				                 // Pointer counter for *out
 	for(bit = 0; bit < (8 + 8 + 16); bit++) {        // Sync + Pin + Command == 32bit
-		if(decodeMsg & 0x80000000UL) {           // If 1
+		if(decodeMsg & 0x80000000UL) {               // If 1
 			if(bitSize <= 4) {		
 				encodeMsg <<= 4;
-				encodeMsg |= 0x8; 	     // 1000 
+				encodeMsg |= 0x8; 	          // 1000 
 				decodeMsg <<= 1;
 				bitSize += 4;
-			} else if(bitSize == 6)	{            // Split the Byte
+			} else if(bitSize == 6)	{         // Split the Byte
 				encodeMsg <<= 2;
 				encodeMsg |= 0x2;
-				out[arrayPos] = encodeMsg;   // Add Byte to char array
+				out[arrayPos] = encodeMsg;    // Add Byte to char array
 				arrayPos++;
-				encodeMsg <<= 8;             // Wipe the stack 
+				encodeMsg <<= 8;              // Wipe the stack 
 				decodeMsg <<= 1;
 				bitSize = 2;
 			} else if(bitSize == 8) {
-				out[arrayPos] = encodeMsg;   // Add Byte to char array
+				out[arrayPos] = encodeMsg;    // Add Byte to char array
 				arrayPos++;
-				encodeMsg <<= 8;             // Wipe the stack 
-				encodeMsg |= 0x8; 	     // 1000 
+				encodeMsg <<= 8;              // Wipe the stack 
+				encodeMsg |= 0x8; 	          // 1000 
 				decodeMsg <<= 1;
 				bitSize = 4;
 			}
-		} else { 	                             // Else 0
+		} else { 	                          // Else 0
 			if(bitSize <=6) {
 				encodeMsg <<= 2;
-				encodeMsg |= 0x2; 	     // 10
+				encodeMsg |= 0x2; 	          // 10
 				decodeMsg <<= 1;
 				bitSize += 2;
 			} else if(bitSize == 8) {
-				out[arrayPos] = encodeMsg;   // Add Byte to char array
+				out[arrayPos] = encodeMsg;    // Add Byte to char array
 				arrayPos++;
-				encodeMsg <<= 8;             // Wipe the stack 
-				encodeMsg |= 0x2; 	     // 10
+				encodeMsg <<= 8;              // Wipe the stack 
+				encodeMsg |= 0x2; 	          // 10
 				decodeMsg <<= 1;
 				bitSize = 2;
 			}
@@ -177,12 +216,12 @@ void encode(uint8_t *out, uint8_t command, int pin) {
 	// Add Tail
 	if(bitSize == 2) {
 		encodeMsg <<= 4;
-		encodeMsg |= 0x8; 	    // 1000
+		encodeMsg |= 0x8; 	        // 1000
 		encodeMsg <<= 2; 
 	} else if(bitSize == 4)	{
 		encodeMsg <<= 4;
-		encodeMsg |= 0x8; 	    // 1000 
-	} else if(bitSize == 6)	{           // Split the Byte
+		encodeMsg |= 0x8; 	        // 1000 
+	} else if(bitSize == 6)	{       // Split the Byte
 		encodeMsg <<= 2;
 		encodeMsg |= 0x2;           // 10
 		out[arrayPos] = encodeMsg;  // Add Byte to char array
@@ -203,7 +242,7 @@ void encode(uint8_t *out, uint8_t command, int pin) {
 	} 				
 }
 
-// Build Packet
+// Build Packet Helper Function
 uint8_t* build_jukebox_packet(int cmd, int pin) {
 	static int lastpin=-1, lastcmd=-1;
 	static uint8_t packet[16];  //Must be static so it isn't overwritten.
@@ -216,45 +255,72 @@ uint8_t* build_jukebox_packet(int cmd, int pin) {
 	return packet;
 }
 
-// MSP430 Config
-static const uint8_t jukebox_settings[] = {
-    MDMCFG4, 0xF6,      // Modem Configuration
-    MDMCFG3, 0x1D,      // Modem Configuration
-    MDMCFG2, 0x30,      // Modem Configuration, no sync
-    FREND0 , 0x11,      // Front End TX Configuration
-    FSCAL3 , 0xE9,      // Frequency Synthesizer Calibration
-    FSCAL2 , 0x2A,      // Frequency Synthesizer Calibration
-    FSCAL1 , 0x00,      // Frequency Synthesizer Calibration
-    FSCAL0 , 0x1F,      // Frequency Synthesizer Calibration
-    PKTCTRL0, 0x00,     // Packet automation control, fixed length without CRC.
-    PKTLEN,  LEN,       // PKTLEN    Packet length.
-    0,0  
-};
+/*================================= R X =================================*/
 
-// Start
-void jukebox_init() {
-    if (!has_radio) {
-        app_next();
-    }
-	
-    printf("10 button entries are available for Jukebox.\n");
-}
+/* The plan is have the '+' act is the UI for the user to switch between
+ * RX and TX mode. While in RX mode the radio will tune to 433.92MHz and
+ * decode any messages being transmitted. The PIN of the message will then
+ * be displayed on the LCD. No PIN will be displayed as '***' to prevent 
+ * confusion. Last known PIN will be displayed unless it changes or the user
+ * switches back to TX mode.   
+ */
 
 void jukebox_packetrx(uint8_t *packet, int len) {
     printf("Not yet supported.\n");
 }
 
-// Button Mapping
-void jukebox_packettx() {
-//    while((radio_getstate()&~1)==20) {
-//        break; // This prevents hanging everything up
-//    }	
+/*================================= U I =================================*/
 
+// PIN Input
+void pinInput(char ch) {
+	if(pinChar[5] == ' ') {
+		pinChar[5] = ch;
+		pin = (ch - '0') * 100;
+	} else if(pinChar[6] = ' ') {
+		pinChar[6] = ch;
+		pin += (ch - '0') * 10;
+	} else if(pinChar[7] = ' ') {
+		pinChar[7] = ch;
+		pin += (ch - '0');
+		
+		if(pin <= 255) {          // User can't input a number greater then 255
+			pinFlag = 0;
+		} else {                  // User goofed, try again
+			pinChar = "PIN     ";
+		}
+	}
+	lcd_string(pinChar); // Update screen
+}
+
+// Keypress handler
+int jukebox_keypress(char ch) {
+	if (pinFlag && (lastch = ch) && ch >= '0' && ch<= '9' ) {
+		pinInput(ch);
+	} else if(!pinFlag && (lastch = ch) && ch >= '0' && ch<= '9' ) {
+        // Radio Settings
+        radio_on();
+        radio_writesettings(jukebox_settings);
+        radio_writepower(0x25);
+        radio_setfreq(433920000); // 433.92MHz
+
+        //This handler will be called back as the packet finished transmission.
+        jukebox_packettx(ch);
+    } else {
+        //Shut down the radio when the button is released.
+        radio_off();
+        lcd_zero(); //Clear the clock and radio indicators.
+        lcd_string("JBOX  TX");        
+    }
+    return 0;
+}
+
+// Button Mapping
+void jukebox_packettx(char ch) {
 	// That one printf that keeps everything from failing...
-	printf("lastch: %c",lastch);
+	printf("ch: %c",ch);
 	
     if(radio_getstate() == 1) {
-        switch(lastch) {
+        switch(ch) {
             case '0': // Skip
                 packet_tx(build_jukebox_packet(4, pin), LEN);
 				lcd_string("  Skip  ");
@@ -299,12 +365,6 @@ void jukebox_packettx() {
     }
 }
 
-// Exit
-int jukebox_exit() {
-    radio_off();
-    return 0;
-}
-
 // Draw Screen
 void jukebox_draw() {
     int state = radio_getstate();
@@ -323,24 +383,4 @@ void jukebox_draw() {
             lcd_hex(state);
             break;
     }
-}
-
-// Keypress handler
-int jukebox_keypress(char ch) {
-    if( (lastch = ch) && ch >= '0' && ch<= '9' ) {
-        // Radio Settings
-        radio_on();
-        radio_writesettings(jukebox_settings);
-        radio_writepower(0x25);
-        radio_setfreq(433920000); // 433.92MHz
-
-        //This handler will be called back as the packet finished transmission.
-        jukebox_packettx();
-    } else {
-        //Shut down the radio when the button is released.
-        radio_off();
-        lcd_zero(); //Clear the clock and radio indicators.
-        lcd_string("JBOX  TX");        
-    }
-    return 0;
 }
