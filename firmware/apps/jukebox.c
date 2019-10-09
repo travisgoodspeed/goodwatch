@@ -73,7 +73,7 @@ int pinFlag = 1;
 int pin = 0;
 
 // Commands
-const uint8_t jukebox_commands[32] = {
+const uint32_t jukebox_commands[32] = {
 	0x32, 	// Pause
 	0x78, 	// On/Off
 	0x70, 	// P1 
@@ -147,7 +147,7 @@ int jukebox_exit() {
 // Commands grater then 0x80 fail
 // NEC Encoder 
 // Logic refered from Havoc Portapack Firmware
-void encode(uint8_t *out, uint8_t command, int pin) {
+void encode(uint8_t *out, uint32_t command, int pin) {
 
 	// Variables
 	uint8_t bit;                          // Bit counter
@@ -261,7 +261,7 @@ void encode(uint8_t *out, uint8_t command, int pin) {
 // Build Packet Helper Function
 uint8_t* build_jukebox_packet(int cmd, int pin) {
 	static int lastpin=-1, lastcmd=-1;
-	static uint8_t packet[16];  //Must be static so it isn't overwritten.
+	static uint32_t packet[16];  //Must be static so it isn't overwritten.
 	
 	// Sanity check for the young thug
 	printf("CMD: %i PIN: %i\n",cmd, pin);
@@ -284,7 +284,7 @@ uint8_t* build_jukebox_packet(int cmd, int pin) {
  * switches back to TX mode.   
  */
 
-void jukebox_packetrx(uint8_t *packet, int len) {
+void jukebox_packetrx(uint32_t *packet, int len) {
     printf("Not yet supported.\n");
 }
 
