@@ -8,7 +8,7 @@
  * Twitter: @IfNotPike
  * License: MIT
  * 
- *   ===Quick Start===
+ *  ====Quick Start====
  *  ____________________
  * / ,---------------.  \
  * | |    JUKEBOX    |  |
@@ -60,15 +60,16 @@
 #include <stddef.h>
 #include<msp430.h>
 #include "api.h"
-#include <inttypes.h>
+
+/*========================== P R O T O T Y P E S ==========================*/
+void jukebox_packettx();
 
 /*=========================== V A R I A B L E S ===========================*/
 #define LEN 16 //Bytes
 static char lastch = 0;
-//uint8_t returnValue[16];
 
 // PIN
-char *pinChar = "PIN     ";
+char pinChar[8] = "PIN     ";
 int pinFlag = 1;
 int pin = 0;
 
@@ -78,17 +79,17 @@ const uint32_t jukebox_commands[32] = {
 	0x78, 	// On/Off
 	0x70, 	// P1 
 	0x60, 	// P2 Edit Queue
-	0xCA, 	// P3 Skip (FAIL)
+	0xCA, 	// P3 Skip 
 	0x20, 	// F1 Restart
-	0xF2, 	// Up (FAIL)
+	0xF2, 	// Up 
 	0xA0, 	// F2 Key
-	0x84, 	// Left (FAIL)
+	0x84, 	// Left
 	0x44, 	// OK
 	0xC4, 	// Right
 	0x30, 	// F3 Mic A Mute
-	0x80, 	// Down (FAIL)
+	0x80, 	// Down 
 	0xB0, 	// F4 Mic B Mute
-	0xF0, 	// 1 (FAIL)
+	0xF0, 	// 1 
 	0x08, 	// 2
 	0x88, 	// 3
 	0x48, 	// 4
@@ -131,12 +132,15 @@ void jukebox_init() {
         app_next();
     }
     printf("10 button entries are available for Jukebox.\n");
-	//lcd_string(pinChar); // Draw screen
+	lcd_string(pinChar); // Draw screen
 }
 
 // Exit
 int jukebox_exit() {
-	pinChar = "PIN     ";
+	pinChar[5] = ' ';
+	pinChar[6] = ' ';
+	pinChar[7] = ' ';
+	pinFlag = 1;
 	pin = 0;
     radio_off();
     return 0;
@@ -144,7 +148,6 @@ int jukebox_exit() {
 
 /*================================= T X =================================*/
 
-// Commands grater then 0x80 fail
 // NEC Encoder 
 // Logic refered from Havoc Portapack Firmware
 void encode(uint8_t *out, uint32_t command, int pin) {
@@ -158,9 +161,6 @@ void encode(uint8_t *out, uint32_t command, int pin) {
 	out[0] = 0xFF;
 	out[1] = 0xFF; 	
 	out[2] = 0x00;
-	
-	// Sanity check for the young thug
-	printf("Decode Command: %u\n",command);
 
 	// PIN, LSB First
 	for (bit = 0; bit < 8; bit++) {
@@ -169,16 +169,11 @@ void encode(uint8_t *out, uint32_t command, int pin) {
 			decodeMsg |= 1;
 		}
 	}
-	
-	printf("Decode PIN: %" PRId32 "\n",decodeMsg);
 
-	// This is failing, can't take in anything greater then 0x80
 	// Command and it's complement
 	decodeMsg <<= 16;                        // Shift left 16 bits
 	decodeMsg |= (command << 8); 			 // Add command shift left 8 bits
 	decodeMsg |= (command ^ 0xff); 		     // Add command's complement
-
-	printf("Decode Command: %" PRId32 "\n",decodeMsg);
 
 	// NEC Encode
 	uint8_t bitSize = 0;                              // Size counter for encodeMsg
@@ -249,27 +244,18 @@ void encode(uint8_t *out, uint32_t command, int pin) {
 		out[15] = 0x00;
 	} else {
 		out[15] = 0x00;
-	} 
-	
-	// What is being returned?
-	int i;
-	for(i = 0; i < 16; i++) {
-		printf("Post Out: %u\n",out[i]);
-	}	
+	} 	
 }
 
 // Build Packet Helper Function
 uint8_t* build_jukebox_packet(int cmd, int pin) {
 	static int lastpin=-1, lastcmd=-1;
-	static uint32_t packet[16];  //Must be static so it isn't overwritten.
-	
-	// Sanity check for the young thug
-	printf("CMD: %i PIN: %i\n",cmd, pin);
+	static uint8_t packet[16];  //Must be static so it isn't overwritten.
 	
 	//Update the packet only if the pin has changed.
-	if(lastpin!=pin || lastcmd!=cmd)
+	if(lastpin!=pin || lastcmd!=cmd) {
 		encode(packet, jukebox_commands[cmd], pin);
-
+	}
 	//Return our static packet value.
 	return packet;
 }
@@ -293,6 +279,7 @@ void jukebox_packetrx(uint32_t *packet, int len) {
 // PIN Input
 void pinInput() {
 	if(pinChar[5] == ' ') {
+		printf("char: %c\n",lastch);
 		pinChar[5] = lastch;
 		pin = (lastch - '0') * 100;
 	} else if(pinChar[6] == ' ') {
@@ -305,7 +292,11 @@ void pinInput() {
 		if(pin <= 255) {          // User can't input a number greater then 255
 			pinFlag = 0;
 		} else {                  // User goofed, try again
-			pinChar = "PIN     ";
+			//pinChar[8] = "PIN     ";
+			pinChar[5] = ' ';
+			pinChar[6] = ' ';
+			pinChar[7] = ' ';
+
 		}
 	}
 	lcd_string(pinChar); // Update screen
@@ -313,8 +304,9 @@ void pinInput() {
 
 // Keypress handler
 int jukebox_keypress(char ch) {
-		
-	if((lastch = ch) && ch >= '0' && ch<= '9' ) {
+	if(pinFlag && (lastch = ch) && ch >= '0' && ch<= '9' ) {
+		pinInput();
+	} else if(!pinFlag && (lastch = ch) && ch >= '0' && ch<= '9' ) {
         // Radio Settings
         radio_on();
         radio_writesettings(jukebox_settings);
@@ -323,7 +315,7 @@ int jukebox_keypress(char ch) {
 
         //This handler will be called back as the packet finished transmission.
         jukebox_packettx();
-    } else {
+    } else if(!pinFlag) {
         //Shut down the radio when the button is released.
         radio_off();
         lcd_zero(); //Clear the clock and radio indicators.
