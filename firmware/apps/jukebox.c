@@ -150,9 +150,9 @@ int jukebox_exit() {
 void encode(uint8_t *out, uint8_t command, int pin) {
 
 	// Variables
-	size_t bit;                          // Bit counter
+	uint8_t bit;                          // Bit counter
 	uint32_t decodeMsg = 0x5D;           // Sync Word + decoded value
-	uint8_t encodeMsg;			    	 // Bit holder before encoded values are moved to *out		      
+	uint8_t encodeMsg = 0;			     // Bit holder before encoded values are moved to *out		      
 	
 	// Preamble 0xFFFF00
 	out[0] = 0xFF;
@@ -172,7 +172,7 @@ void encode(uint8_t *out, uint8_t command, int pin) {
 	
 	printf("Decode PIN: %" PRId32 "\n",decodeMsg);
 
-	// This is failing, can't take in anything greather then 0x80
+	// This is failing, can't take in anything greater then 0x80
 	// Command and it's complement
 	decodeMsg <<= 16;                        // Shift left 16 bits
 	decodeMsg |= (command << 8); 			 // Add command shift left 8 bits
@@ -181,7 +181,7 @@ void encode(uint8_t *out, uint8_t command, int pin) {
 	printf("Decode Command: %" PRId32 "\n",decodeMsg);
 
 	// NEC Encode
-	size_t bitSize = 0;                              // Size counter for encodeMsg
+	uint8_t bitSize = 0;                              // Size counter for encodeMsg
 	int arrayPos = 3; 				                 // Pointer counter for *out
 	for(bit = 0; bit < (8 + 8 + 16); bit++) {        // Sync + Pin + Command == 32bit
 		if(decodeMsg & 0x80000000UL) {               // If 1
@@ -295,10 +295,10 @@ void pinInput() {
 	if(pinChar[5] == ' ') {
 		pinChar[5] = lastch;
 		pin = (lastch - '0') * 100;
-	} else if(pinChar[6] = ' ') {
+	} else if(pinChar[6] == ' ') {
 		pinChar[6] = lastch;
 		pin += (lastch - '0') * 10;
-	} else if(pinChar[7] = ' ') {
+	} else if(pinChar[7] == ' ') {
 		pinChar[7] = lastch;
 		pin += (lastch - '0');
 		
@@ -337,53 +337,43 @@ void jukebox_packettx() {
 	if(lastch<='9' && lastch>='0') {
         switch(lastch - '0') {
             case 0: // Skip
-                packet_tx(build_jukebox_packet(16, pin), 15);
-				//transmit(0);
+                packet_tx(build_jukebox_packet(4, pin), LEN);
 				lcd_string("  Skip  ");
                 break;
             case 1: // Pause
                 packet_tx(build_jukebox_packet(0, pin), LEN);
-				//transmit(1);				
 				lcd_string(" Pause  ");
                 break;
             case 2: // Down Arrow
                 packet_tx(build_jukebox_packet(12, pin), LEN);	
-				//transmit(2);
 				lcd_string("D Arrow ");
                 break;  
             case 3: // Lock Queue
                 packet_tx(build_jukebox_packet(25, pin), LEN);			
-				//transmit(3);
 				lcd_string(" Lock Q ");
                 break;
             case 4: // Left Arrow
                 packet_tx(build_jukebox_packet(8, pin), LEN);	
-				//transmit(4);
 				lcd_string("L Arrow ");
                 break;
             case 5: // OK
                 packet_tx(build_jukebox_packet(9, pin), LEN);
-				//transmit(5);				
 				lcd_string("   OK   ");
                 break;
             case 6: // Right Arrow
                 packet_tx(build_jukebox_packet(10, pin), LEN);
-				//transmit(6);				
 				lcd_string("R Arrow ");
                 break;   
             case 7: // Power
                 packet_tx(build_jukebox_packet(1, pin), LEN);	
-				//transmit(7);
 				lcd_string(" Power  ");
                 break;
             case 8: // Up Arrow
                 packet_tx(build_jukebox_packet(6, pin), LEN);
-				//transmit(8);
     			lcd_string("Up Arrow");
                 break;
             case 9: // Edit Queue
                 packet_tx(build_jukebox_packet(3, pin), LEN);
-				//transmit(9);
 				lcd_string(" Edit Q ");
                 break;                
         }
