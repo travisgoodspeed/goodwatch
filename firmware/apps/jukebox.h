@@ -27,6 +27,7 @@ char encode(uint8_t *out, uint8_t command, int pin);
 // Packet Building Helper Function
 uint8_t* build_jukebox_packet(int cmd, int pin);
 
+// UI for PIN Input
 void pinInput(char ch);
 
 
