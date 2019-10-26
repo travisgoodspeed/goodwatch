@@ -308,7 +308,7 @@ int jukebox_keypress(char ch) {
 		// Radio Settings
 		radio_on();
 		radio_writesettings(jukebox_settings);
-		radio_writepower(0x25);
+		radio_writepower(0xB0);
 		radio_setfreq(433920000); // 433.92MHz
 
 		//This handler will be called back as the packet finished transmission.
