@@ -129,6 +129,16 @@ const struct app subapps[]={
   },
 #endif
 
+#ifdef JUKEBOX_APP
+  // TouchTunes Jukebox
+  {.name="JUKEBOX",
+   .init=jukebox_init, .draw=jukebox_draw, .exit=jukebox_exit,
+   .packetrx=jukebox_packetrx, .packettx=jukebox_packettx,
+   .keypress=jukebox_keypress
+  },
+#endif
+
+
 #ifdef PAGER_APP
   //POCSAG Pager
   {.name="pager", .init=pager_init, .draw=pager_draw, .exit=pager_exit,
@@ -146,14 +156,6 @@ const struct app subapps[]={
   },
 #endif
   
-#ifdef JUKEBOX_APP
-  // TouchTunes Jukebox
-  {.name="JUKEBOX",
-   .init=jukebox_init, .draw=jukebox_draw, .exit=jukebox_exit,
-   .packetrx=jukebox_packetrx, .packettx=jukebox_packettx,
-   .keypress=jukebox_keypress
-  },
-#endif
 
   //End on null entry.
   {.name=0, .init=0, .draw=0, .exit=0} 
