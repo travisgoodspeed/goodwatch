@@ -357,7 +357,9 @@ uint8_t radio_strobe(uint8_t strobe){
 	    }
 	  }
 	  
-          // Delay for ~810usec at 1.05MHz CPU clock, see erratum RF1A7
+          // Delay for ~810usec at 1.05MHz CPU clock, see the CC430 Family User's
+          // Guide,§ 25.3.3.7.1 page 698 in rev E. The delay is to provide time
+          // for the radio's oscillator to stabilize.
           __delay_cycles(850);
         }
       }
