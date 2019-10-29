@@ -17,9 +17,9 @@ struct codeplugentry {
   /* The frequency is stored in the CC1101-based radio's internal
      format.  See radio.c for example calculations.
    */
-  const uint8_t freq2;
-  const uint8_t freq1;
-  const uint8_t freq0;
+  uint8_t freq2;
+  uint8_t freq1;
+  uint8_t freq0;
 
   /* The eight character name is *NOT* null terminated. */
   const char name[8];
@@ -34,3 +34,9 @@ void codeplug_prev();
 const char *codeplug_name();
 //! Sets the codeplug frequency.
 void codeplug_setfreq();
+//! Gets the codeplug frequency.
+uint32_t codeplug_getfreq();
+
+//! Sets the VFO frequency.
+void codeplug_setvfofreq(float freq);
+

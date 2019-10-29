@@ -36,7 +36,7 @@ void uart_init(){
   P1MAP6 = PM_UCA0TXD; // Map UCA0TXD output to P1.6 
   PMAPPWD = 0;
   
-  P1DIR |= BIT6;         // Set P1.6 as TX output
+  //P1DIR |= BIT6;         // Set P1.6 as TX output, but we use the pulling resistors instead of the output mode.
   P1SEL |= BIT5 + BIT6;  // Select P1.5 & P1.6 to UART function
 
   UCA0CTL1 |= UCSWRST;                 // **Put state machine in reset**

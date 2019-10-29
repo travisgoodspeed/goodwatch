@@ -1,7 +1,9 @@
 #!/usr/bin/python2
 
 ## This is a quick and dirty python client for communicating with a
-## GoodWatch over its UART.
+## GoodWatch over its UART.  I mostly use it to quickly prototype
+## radio features that I'll later rewrite in clean C, so this is often
+## the ugliest code of the project.
 
 import serial, time, sys, argparse, progressbar;
 
@@ -18,7 +20,7 @@ def chr16(word):
 # Radio Core Registers
 IOCFG2              =0x00    #IOCFG2   - GDO2 output pin configuration 
 IOCFG1              =0x01    #IOCFG1   - GDO1 output pin configuration 
-IOCFG0              =0x02    #IOCFG1   - GDO0 output pin configuration 
+IOCFG0              =0x02    #IOCFG0   - GDO0 output pin configuration 
 FIFOTHR             =0x03    #FIFOTHR  - RX FIFO and TX FIFO thresholds
 SYNC1               =0x04    #SYNC1    - Sync word, high byte
 SYNC0               =0x05    #SYNC0    - Sync word, low byte
@@ -101,13 +103,13 @@ RF_SFTX             =0x3B    #SFTX    - Flush the TX FIFO buffer.
 RF_SWORRST          =0x3C    #SWORRST - Reset real time clock.
 RF_SNOP             =0x3D    #SNOP    - No operation. Returns status byte.
 
-
+# Standard mode for GoodWatch packets.  Needs to be better defined.
 beaconconfig=[
   IOCFG0,0x06,   #GDO0 Output Configuration
   FIFOTHR,0x47,  #RX FIFO and TX FIFO Thresholds
   PKTCTRL1, 0x04, #No address check.
   #PKTCTRL0, 0x05,#Packet Automation Control, variable length.
-  PKTCTRL0, 0x04, #Packet automation control, fixed length.
+  PKTCTRL0, 0x04, #Packet automation control, fixed length with CRC.
   FSCTRL1,0x06,  #Frequency Synthesizer Control
   #FREQ2,0x21,    #Frequency Control Word, High Byte
   #FREQ1,0x62,    #Frequency Control Word, Middle Byte
@@ -116,9 +118,10 @@ beaconconfig=[
   MDMCFG3,0x83,  #Modem Configuration
   MDMCFG2,0x13,  #Modem Configuration
   DEVIATN,0x15,  #Modem Deviation Setting
-  MCSM0,0x10,    #Main Radio Control State Machine Configuration
+#  MCSM0,0x10,    #Main Radio Control State Machine Configuration
   FOCCFG,0x16,   #Frequency Offset Compensation Configuration
   WORCTRL,0xFB,  #Wake On Radio Control
+  FREND0 , 0x11,      #  Front End TX Configuration
   FSCAL3,0xE9,   #Frequency Synthesizer Calibration
   FSCAL2,0x2A,   #Frequency Synthesizer Calibration
   FSCAL1,0x00,   #Frequency Synthesizer Calibration
@@ -134,6 +137,87 @@ beaconconfig=[
   PKTLEN,  32,   # PKTLEN    Packet length.
   0,0  #Null terminator.
 ];
+
+
+# Example configuration from a cheap 4-button keychain remote. 
+ookconfig=[
+    MDMCFG4, 0x86,      #  Modem Configuration
+    MDMCFG3, 0xD9,      #  Modem Configuration
+    MDMCFG2, 0x30,      #  Modem Configuration, no sync
+    FREND0 , 0x11,      #  Front End TX Configuration
+    FSCAL3 , 0xE9,      #  Frequency Synthesizer Calibration
+    FSCAL2 , 0x2A,      #  Frequency Synthesizer Calibration
+    FSCAL1 , 0x00,      #  Frequency Synthesizer Calibration
+    FSCAL0 , 0x1F,      #  Frequency Synthesizer Calibration
+    PKTCTRL1, 0x00,     #Packet automation control, fixed length without CRC.
+    PKTCTRL0, 0x00,     #Packet automation control, fixed length without CRC.
+    PKTLEN,  32,   # PKTLEN    Packet length.
+    0, 0 
+];
+# Might be unique to Travis's set.
+ookpackets=[
+    "0000e8e8ee88e88ee888eee8888e8000", #A
+    "0000e8e8ee88e88ee888eee888e88000", #B
+    "0000e8e8ee88e88ee888eee88e888000", #C
+    "0000e8e8ee88e88ee888eee8e8888000"  #D
+];
+
+# 1200 Baud POCSAG for DAPNET
+pocsagconfig=[
+    MDMCFG4, 0xF5,      #  Modem Configuration, wide BW
+    #MDMCFG4, 0xC5,      #  Modem Configuration, narrow BW
+    MDMCFG3, 0x83,      #  Modem Configuration
+    MDMCFG2, 0x82,      #  2-FSK, current optimized, 16/16 sync
+    MDMCFG1, 0x72,      #  Long preamble.
+    # FREND0 , 0x11,      #  Front End TX Configuration
+
+    # #DEVIATN, 0x24,      # 9.5 kHz
+    DEVIATN, 0x31,      # 15 kHz
+    
+    FSCAL3 , 0xE9,      #  Frequency Synthesizer Calibration
+    FSCAL2 , 0x2A,      #  Frequency Synthesizer Calibration
+    FSCAL1 , 0x00,      #  Frequency Synthesizer Calibration
+    FSCAL0 , 0x1F,      #  Frequency Synthesizer Calibration
+    
+    PKTCTRL0, 0x00,     #  Packet automation control, fixed length without CRC.
+    PKTLEN,  60,        #  PKTLEN    Packet length.
+
+
+    #Matches on the packet, after the pramble.
+    SYNC1,   0x83,  # 832d first
+    SYNC0,   0x2d,
+    ADDR,    0xea,  # ea27 next, but we can only match one piece of it.
+
+    #This would match on the preamble, while the packet is still in flight.
+    #Handy for manually seeing the SYNC pattern, and the technique that firmware
+    #will use to wake up.
+    #SYNC1, 0xAA,
+    #SYNC0, 0xAA,
+    #ADDR, 0xAA,
+    
+
+    TEST2,   0x81, #Who knows?
+    TEST1,   0x35,
+    TEST0,   0x09,
+
+    MCSM1,   0x30,   # MCSM1, return to IDLE after packet.  Or with 2 for TX carrier tes.
+    MCSM0,   0x10,   # MCSM0     Main Radio Control State Machine configuration.
+    IOCFG2,  0x29,   # IOCFG2    GDO2 output pin configuration.
+    IOCFG0,  0x06,   # IOCFG0    GDO0 output pin configuration.
+    
+    FIFOTHR,  0x47,  # RX FIFO and TX FIFO Thresholds
+    #PKTCTRL1, 0x00,  # No address check, no status.
+    PKTCTRL1, 0x01,  # Exact address check, no status.
+    
+    0, 0 
+];
+
+# Example POCSAG packet.  The preamble ought to be a lot longer.
+#pocsagpacket="5555555560cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a3dc16875058b680e1947a992d51fa63309468edd5af3ec8c8479e1e35effff87e0cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a";
+#pocsagpacket="60cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a3dc16875058b680e1947a992d51fa63309468edd5af3ec8c8479e1e35effff87e0cb7a89e15d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a215d8f9a";
+
+pocsagpacket="68656c6c6f20776f726c640000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+
 
 
 def packconfig(config):
@@ -259,6 +343,17 @@ class GoodWatch:
     def dmesg(self):
         """Returns the DMESG buffer."""
         return self.transact("\x04");
+    def randint(self,count):
+	"""Returns count random 16bit integers. """
+	import struct
+	
+	samples=();
+        while count>0:
+            n=min(4,count);
+	    samples=samples+struct.unpack("<"+"H"*n,self.transact("\x05\x00"+chr16(n)));
+            count=count-n;
+        return samples;
+    
     def radioonoff(self,on=1):
         """Turns the radio on or off."""
         return self.transact("\x10"+chr(on));
@@ -275,6 +370,7 @@ class GoodWatch:
         freq2=(num>>16) & 0xFF;
         freq1=(num>> 8) & 0xFF;
         freq0= num      & 0xFF
+        #print "FREQ set to %02x %02x %02x" % (freq2, freq1, freq)
         self.radioconfig([
             FREQ2, freq2,
             FREQ1, freq1,
@@ -285,11 +381,12 @@ class GoodWatch:
     def radiorx(self):
         """Sniffs for packets on the current channel."""
         return self.transact("\x12");
-    def radiotx(self,message):
+    def radiotx(self,message,length=32):
         """Sends a radio packet on the current frequency."""
-        while(len(message)<32):
+        while(len(message)<length):
             message+='\x00';
-        self.transact("\x13"+message);
+        print("Sending %d bytes: %s\n"% (len(message),message.encode('hex')));
+        self.transact("\x13"+message[0:length]);
         
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='GoodWatch Client')
@@ -301,11 +398,25 @@ if __name__=='__main__':
                         help='Write a string the LCD.');
     parser.add_argument('-D','--dmesg',
                         help='Prints the dmesg.',action='count');
-
+    parser.add_argument('-R','--randint',
+                        type=int,
+			help='Get RANDINT random 16bit integers.');
+    parser.add_argument('--randdump',
+                        type=str,
+			help='Dump many RNG samples to a textfile.');
     parser.add_argument('-b','--beacon',
                         help='Transmits a beacon.');
     parser.add_argument('-B','--beaconsniff',
                         help='Sniffs for beacons.',action='count');
+    parser.add_argument('-O','--ook',
+                        help='Transmits an OOK example packet.');
+    parser.add_argument('-Q','--pocsagtx',
+                        action='count',
+                        help='Transmits a POCSAG page. (BROKEN)');
+    parser.add_argument('-P','--pocsag',
+                        action='count',
+                        help='Listens for POCSAG pages on the DAPNET frequency. (BROKEN)');
+    
     
     args = parser.parse_args()
 
@@ -330,6 +441,15 @@ if __name__=='__main__':
 
     if args.dmesg>0:
         print goodwatch.dmesg();
+    if args.randint != None:
+        samples=goodwatch.randint(int(args.randint));
+        print "%04x "*len(samples)%samples
+    if args.randdump != None:
+        print "Fetching samples."
+        samples=goodwatch.randint(1024);
+        f=open(args.randdump,'w');
+        for s in samples:
+            f.write("%d, %d\n" % (s>>8, s&0xFF));
 
     if args.beacon!=None:
         print "Turning radio on.";
@@ -341,6 +461,48 @@ if __name__=='__main__':
             print "Transmitting: %s" % args.beacon;
             goodwatch.radiotx(args.beacon+"\x00");
             time.sleep(1);
+
+    if args.ook!=None:
+        print "Turning radio on.";
+        goodwatch.radioonoff(1);
+        time.sleep(1);
+        print "Configuring radio.";
+        goodwatch.radioconfig(beaconconfig);
+        goodwatch.radioconfig(ookconfig);
+        #Docs say 433.920, but there's a lot of drift.
+        goodwatch.radiofreq(433.920);
+        while 1:
+            print "Transmitting packet %d" % int(args.ook);
+            goodwatch.radiotx(ookpackets[int(args.ook)].decode('hex'));
+            time.sleep(0.1);
+            
+    if args.pocsagtx!=None:
+        print "WARNING: POCSAG DOESN'T WORK YET";
+        time.sleep(1);
+        goodwatch.radioonoff(1);
+        print "Configuring radio.";
+        goodwatch.radioconfig(beaconconfig);
+        goodwatch.radioconfig(pocsagconfig);
+        #Standard DAPNET frequency.
+        goodwatch.radiofreq(439.988);
+        while 1:
+            print "Transmitting packet.";
+            goodwatch.radiotx(pocsagpacket.decode('hex'),32);
+            time.sleep(1);
+    if args.pocsag!=None:
+        #print "WARNING: POCSAG DOESN'T WORK YET";
+        time.sleep(1);
+        goodwatch.radioonoff(1);
+        print "Configuring radio.";
+        #goodwatch.radioconfig(beaconconfig);
+        goodwatch.radioconfig(pocsagconfig);
+        #Standard DAPNET frequency.
+        goodwatch.radiofreq(439.988);
+        while 1:
+            pkt=goodwatch.radiorx();
+            if len(pkt)>1: # and pkt[0]=='\xea' and pkt[1]=='\x27':
+                print pkt.encode('hex');
+            time.sleep(0.1);
     
     if args.beaconsniff!=None:
         print "Turning radio on.";

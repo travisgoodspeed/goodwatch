@@ -2,10 +2,8 @@
 # freq name [flags]
 
 #Handy frequencies in our band.
-433.000 433
-433.92  CAR43392   #EU Car freq band.
-433.450 433.45
-434.000 434
+433.92  433.92  #'433 MHZ' ISM channel.
+446.00  446.0   #70cm calling freq
 
 #DMR Simplex, slightly out of band.
 441.000 DMR441

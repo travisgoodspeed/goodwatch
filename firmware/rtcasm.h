@@ -1,8 +1,8 @@
 /*! \file rtcasm.h
   \brief Hand assembly to set the RTC.
   
-  The CC430 has an awful errata that makes setting the time a bit of a
-  gamble, based on CPU alignment.  These functions ought to work
+  The CC430F6137 has an awful errata that makes setting the time a bit
+  of a gamble, based on CPU alignment.  These functions ought to work
   around it, if we've linked rtcasm.S properly and not one NOP has
   been changed.
 

@@ -14,3 +14,7 @@ void beacon_draw();
 
 //! Handle an incoming packet.
 void beacon_packetrx(uint8_t *packet, int len);
+
+//! Keypress handler for the beacon applet.
+int beacon_keypress(char ch);
+

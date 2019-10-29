@@ -3,6 +3,7 @@
  */
 #include "lcd.h"
 #include "lcdtext.h"
+#include "optim.h"
 
 /* Digits look like this, and we index them with 0 being the
    leftmost.
@@ -30,18 +31,16 @@ const int lcdmap[10][8]={
   {0x0504, 0x0540, 0x0520, 0x0501, 0x0410, 0x0420, 0x0502, 0x0510}, //4
   {0x0c02, 0x0404, 0x0402, 0x0310, 0x0302, 0x0304, 0x0340, 0x0401}, //5
   {0x0204, 0x0220, 0x0210, 0x0201, 0x0110, 0x0120, 0x0202, 0x0301}, //6
-  {0x0040, 0x0104, 0x0102, 0x0010, 0x0001, 0x0002, 0x0020, 0x0240}, //7
+  {0x0040, 0x0104, 0x0102, 0x0010, 0x0001, 0x0002, 0x0020, 0x0101}, //7
 };
 
 //These are the fragments of the day of the week: 0x0904, 0x0a40, 0x0c01
 //0x0c10 is beyond the screen.
 
-//0x0240 seems not to be wired to any visible segment, but we use it
-//as the rightmost decimal point because we don't seem to have that
-//cell.
-
 //! Bit flags for each of the eight segments.
 enum lcdmappos {A=1, B=2, C=4, D=8, E=0x10, F=0x20, G=0x40, DP=0x80};
+
+
 //! Font for numbers.
 const int numfont[]={
   A|B|C|D|E|F,   //0
@@ -72,25 +71,25 @@ const int letterfont[]={
   E|G|C|D|B,     //D
   A|F|E|G|D,     //E
   A|G|F|E,       //F
-  A|F|G|E|C|D,   //G, looks like a six.
+  A|F|G|E|C|D,   //G
   F|G|E|C,       //h
   F|E,           //I, distinguished from a 1 by being on the left side.
   E|B|C|D,       //J
   F|E|B|C|G|DP,  //K, distinguished from an X by the DP.
   F|E|D,         //L
-  F|G|B|C,       //M  (Think mu.)
+  A|E|C,         //M  (Less nerdy than mu, but more readable.)
   E|G|C,         //n
   A|B|C|D|E|F,   //O
   F|A|B|G|E,     //P
   F|A|B|C|D|E|DP,//Q
   E|G,           //R
   A|F|G|C|D,     //S  (Looks like a 5.)
-  F|E|G,         //T
-  F|E|D|C|B,     //U
-  F|E|D|C|B,     //V  (Same as U.  Blame Rome.)
-  F|E|D|C|B,     //W  (Same as U and V.  Blame Germany.)
+  F|E|G|D,       //T
+  E|D|C,         //U  (Like a lowercase V)
+  F|E|D|C|B,     //V  (Like U.  Blame Rome.)
+  F|B|D,         //W  (Inverted M)
   F|G|E|B|C,     //X
-  F|G|B|E,       //Y
+  F|G|B|C|D,     //Y  
   A|B|G|E|D      //Z
 };
 
@@ -123,6 +122,10 @@ void lcd_char(int pos, char c){
     return;
   }else if(c==' '){
     lcd_cleardigit(pos);
+    return;
+  }else if(c=='-'){
+    lcd_cleardigit(pos);
+    DRAWPOINT(lcdmap[pos][6]); //Set the G segment.
     return;
   }else if(c=='.'){
     lcd_cleardigit(pos);
@@ -158,11 +161,15 @@ void lcd_string(const char *str){
 }
 
 //! Draws a decimal number on the screen.
-void lcd_number(long num){
-  static long bcd=0;
+void lcd_unumber(long num){
   static long oldnum=0;
-  int i;
-  
+  static unsigned long bcd=0;
+
+  if (num > 99999999) {
+    lcd_string("overflow");
+    return;
+  }
+
   /* This conversion takes too long at 32kHz, so we cache the last
      value for rendering. */
   if(oldnum==num){
@@ -170,15 +177,20 @@ void lcd_number(long num){
     return;
   }
 
-  /* Otherwise we convert it with expensive divisions. */
-  bcd=0;
-  oldnum=num;
-  for(i=0;i<8 && num;i++){
-    bcd|=((num%10)<<(4*i));
-    num/=10;
-  }
-
+  oldnum = num;
+  bcd = l2bcd(num);
   lcd_hex(bcd);
+}
+
+
+//! Draws a decimal number on the screen.
+void lcd_number(long num){
+  if(num<0){
+    lcd_unumber(0-num);
+    lcd_char(7,'-');
+  }else{
+    lcd_unumber(num);
+  }
 }
 
 //! Draws hex on the screen.
@@ -205,6 +217,14 @@ void setperiod(int digit, int on){
   else               //Off
     CLEARPOINT(lcdmap[digit][7]);
 }
+
+//! Zeroes all the periods.
+void clearperiods(){
+  int i;
+  for(i=0; i<8; i++)
+    setperiod(i,0);
+}
+
 
 //! Activates the colon.  2 for invert.
 void setcolon(int on){

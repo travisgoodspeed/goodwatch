@@ -21,16 +21,23 @@ uint8_t rxlen;
 //! Transmit packet buffer.
 uint8_t txbuffer[PACKETLEN];
 
-static int transmitting=0, receiving=0;
+static int transmitting, receiving;
+
+//! Initialize the packet variables.  Only called from radio_on().
+void packet_init(){
+  transmitting=0;
+  receiving=0;
+}
 
 //! Switch to receiving packets.
 void packet_rxon(){
+  receiving=1;
+  
   RF1AIES |= BIT9;    // Falling edge of RFIFG9
   RF1AIFG &= ~BIT9;   // Clear a pending interrupt
   RF1AIE  |= BIT9;    // Enable the interrupt
   
   radio_strobe( RF_SRX );
-  receiving=1;
 }
 
 //! Stop receiving packets.
@@ -52,6 +59,7 @@ void packet_tx(uint8_t *buffer, uint8_t length){
     printf("Refusing to transmit with pending packet.\n");
     return;
   }
+  transmitting=1;
   
   RF1AIES |= BIT9;                          
   RF1AIFG &= ~BIT9;                         // Clear pending interrupts
@@ -63,7 +71,7 @@ void packet_tx(uint8_t *buffer, uint8_t length){
 
   //Strobe into transmit mode.
   radio_strobe( RF_STX );
-  transmitting=1;
+  
 }
 
 
@@ -90,8 +98,8 @@ packet_isr (void) {
 	//Wait for end of packet.
 	do{
 	  state=radio_getstate();
-	  __delay_cycles(8500);
-	}while(state==13 || state==14 || state==15);
+	  //__delay_cycles(8500);
+	}while(state==13 || state==14 || state==15 || state==20 || state==21);
 
 
 	if(state==1){
@@ -106,10 +114,13 @@ packet_isr (void) {
 	  //Inform the application.
 	  app_packetrx(rxbuffer,rxlen);
 	}else if(state==17){
-	  printf("RX Overflow.\n");
+	  printf("RX Overflow.  Idling.\n");
 	  radio_strobe(RF_SIDLE);
 	}else{
 	  printf("Unknown RX state %d.\n",state);
+	  printf("rx, tx = %d, %d\n",
+		 receiving,
+		 transmitting);
 	}
         /*
         // Check the CRC results
@@ -123,6 +134,8 @@ packet_isr (void) {
 	//printf("Transmitted packet.\n");
         RF1AIE &= ~BIT9;     // Disable TX end-of-packet interrupt
         transmitting = 0;
+	//Inform the application.
+	app_packettx();
       }else{
 	printf("Unexpected packet ISR.\n");
       }

@@ -6,16 +6,21 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "rtc.h"
-#include "lcd.h"
-#include "lcdtext.h"
+#include "api.h"
+#include "apps/calibrate.h"
+#include "apps/clock.h"
+
+//Automatically generated, not a part of the git repo.
+#include "buildtime.h"
 
 //! If this is 0xdeadbeef, the ram time is good.
 static unsigned long magicword __attribute__ ((section (".noinit")));
 //! Time and date, in case of a reboot.
 static unsigned char ramsavetime[8] __attribute__ ((section (".noinit")));
 //! ROM copy of the manufacturing time.
-unsigned char *romsavetime=(unsigned char*) 0xFF00;
+unsigned char *romsavetime=(unsigned char*) BUILDTIME;
+// Alarm tone status
+static unsigned int alarm_ringing = 0;
 
 //! Save the times to RAM.  Must be fast.
 static void rtc_savetime(){
@@ -57,9 +62,16 @@ void rtc_init(){
 
   // Calendar Mode, RTC1PS, 8-bit ovf
   // overflow interrupt enable
-  RTCCTL01 = RTCTEVIE + RTCSSEL_2 + RTCTEV_0 + RTCMODE;
+  // alarm interrupt enable
+  RTCCTL01 = RTCTEVIE + RTCSSEL_2 + RTCTEV_0 + RTCMODE + RTCAIE;
   RTCPS0CTL = RT0PSDIV_2;                   // ACLK, /8, start timer
   RTCPS1CTL = RT1SSEL_2 + RT1PSDIV_3;       // out from RT0PS, /16, start timer
+  RTCADAY = 0;  // Initialize to 0 to clear alarm flags
+  RTCADOW = 0;  // on Day and Day of Week registers.
+  #ifdef CALIBRATE_APP
+  //Load the calibration routines.
+  calibrate_enforce();
+  #endif
 
   rtc_loadtime();
   rtc_setdow();
@@ -157,7 +169,26 @@ void __attribute__ ((interrupt(RTC_VECTOR))) RTC_ISR (void){
     case 0: break;                          // No interrupts
     case 2: break;                          // RTCRDYIFG
     case 4: break;                          // RTCTEVIFG
-    case 6: break;                          // RTCAIFG Alarm
+    case 6:                                 // RTCAIFG Alarm
+      if (!alarm_ringing) {
+        //Sound the alarm!
+	alarm_ringing = 1;
+	printf("Sounding the alarm.\n");
+	
+        /* Formerly musical
+	tone(NOTE_C6, 500);
+	tone(NOTE_E6, 500);
+	tone(NOTE_G6, 500);
+	tone(NOTE_B7, 500);
+	tone(NOTE_C7, 500);
+        */
+
+        //Now Morse code.
+        clock_playtime(0);
+        
+	alarm_ringing = 0;
+      }
+      break;
     case 8: break;                          // RT0PSIFG
     case 10: break;                         // RT1PSIFG
     case 12: break;                         // Reserved

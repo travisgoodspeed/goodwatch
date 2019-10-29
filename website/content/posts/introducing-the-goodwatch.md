@@ -124,7 +124,7 @@ available soon.  See the
 [wiki](https://github.com/travisgoodspeed/goodwatch/wiki) for assembly
 instructions.  A lecture on the GoodWatch will be presented in the
 Build It track at [ShmooCon
-2017](http://shmoocon.org/2017/12/13/speaker-lineup-shmoocon-2018/) in
+2018](http://shmoocon.org/2017/12/13/speaker-lineup-shmoocon-2018/) in
 Washngton, DC the weekend of January 19th.
 
 

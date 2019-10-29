@@ -22,6 +22,7 @@ static const uint8_t goodwatch_settings[]={
   //PKTCTRL0, 0x05,//Packet Automation Control, variable length.
   PKTCTRL0, 0x04, //Packet automation control, fixed length.
   FSCTRL1,0x06, //Frequency Synthesizer Control
+  FREND0,    0x11,   // FREND0    Front end TX configuration, use PA_TABLE[1]
   FREQ2,0x21,   //Frequency Control Word, High Byte
   FREQ1,0x62,   //Frequency Control Word, Middle Byte
   FREQ0,0x76,   //Frequency Control Word, Low Byte
@@ -49,7 +50,7 @@ static const uint8_t goodwatch_settings[]={
 };
 
 
-static char lastpacket[]=" BEACON ";
+static char lastpacket[]="IDLE    ";
 
 //! Handle an incoming packet.
 void beacon_packetrx(uint8_t *packet, int len){
@@ -118,8 +119,11 @@ void beacon_draw(){
     break;
   }
 
+}
 
-  switch(getchar()){
+//! Keypress handler for the beacon applet.
+int beacon_keypress(char ch){
+  switch(ch){
   case '7':
     if(radio_getstate()==1){
       //Schedule packet.
@@ -145,4 +149,6 @@ void beacon_draw(){
   case '0':
     packet_rxoff();
   }
+
+  return 0;
 }

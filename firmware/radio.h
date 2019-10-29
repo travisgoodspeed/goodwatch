@@ -38,6 +38,9 @@ void radio_readburstreg(uint8_t addr,
 void radio_writeburstreg(uint8_t addr,
 			 uint8_t *buffer, uint8_t count);
 
+//! Writes a set of values ot the power table.
+void radio_writepatable(uint8_t *table, uint8_t count);
+
 //! Strobe a radio register.
 uint8_t radio_strobe(uint8_t strobe);
 

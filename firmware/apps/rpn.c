@@ -2,21 +2,27 @@
    \brief RPN Calculator.
 
    This is a simple RPN calculator, so that our calculator watch can
-   still calculate.  The = key is a space, and the stack is STACKSIZE
-   deep.
+   still calculate.  The stack is 10 longs deep, and you should press
+   the side button to push the current value into the stack.  '=' also
+   pushes, and the '.' key is not yet supported.
+   
+   The AM pixel indicates that the current value has not yet been
+   pushed to the stack.
+   
+   A floating-point rewrite of this would be a nice pull request.
+   
 */
 
 
 #include "api.h"
-
+#include "rpn.h"
 
 #define STACKSIZE 10
 
-static unsigned long stack[STACKSIZE];
-static unsigned long buffer=0;
+static long stack[STACKSIZE];
+static long buffer=0;
 static int bufferdirty=0;
 static unsigned int stacki=0;
-
 
 
 //! Peeks at the top item of the stack.
@@ -26,10 +32,13 @@ static long rpn_peek(){
 //! Pushes a new value onto the stack.
 static void rpn_push(long val){
   stack[(++stacki)%STACKSIZE]=val;
+  rpn_draw(1);
 }
 //! Pops the top item from the stack.
 static long rpn_pop(){
-  return stack[(stacki--)%STACKSIZE];
+  long i=stack[(stacki--)%STACKSIZE];
+  rpn_draw(1);
+  return i;
 }
 
 
@@ -56,9 +65,10 @@ static void rpn_pushbuffer(){
 
   //If the buffer is dirty, we'll zero it, mark it clean, and push it
   //to the call stack.
+  bufferdirty=0;
   rpn_push(buffer);
   buffer=0;
-  bufferdirty=0;
+  
 }
 //! Presses one digit into the buffer.
 static void rpn_updatebuffer(int i){
@@ -73,83 +83,93 @@ static void rpn_updatebuffer(int i){
 }
 
 
-//! Last character pressed.
-static char oldch=0;
-
 //! Initializes the calculator.
 void rpn_init(){
   int i;
 
+  
+  
   //Fresh stack when we enter the calculator.
   for(i=0;i<STACKSIZE;i++)
     rpn_push(0);
-  
-  oldch=getchar();
+
+  //Force the first draw.
+  rpn_draw(1);
 }
 
 //! RPN handler for sidebutton.
 int rpn_exit(){
-  // Exit if zero is the latest number.
-  if(rpn_peek()==0)
+  if(bufferdirty){
+    // Push the incoming number if it's not yet committed.
+    rpn_pushbuffer();
+    return 1;
+  } else if(rpn_peek()==0){
+    // Exit if zero is the latest number.
     return 0;
-
+  }
+  
+  
   //Otherwise push a zero and return.
   rpn_push(0);
   return 1;
 }
 
 //! Draws the RPN calculator.
-void rpn_draw(){
-  unsigned long i, j;
-  char ch=getchar();
+void rpn_draw(int forced){
+  //We only draw if forced to.
+  if(forced)
+    rpn_drawstack();
+}
 
-  //Do nothing unless a key has been pressed.
-  if(oldch!=ch)
-    lcd_zero();
-  
-  //Handle key input only when first pressed.
-  if(oldch==0){
-    //Operators
-    switch(ch){
-    case '=':
-      if(bufferdirty)
-	rpn_pushbuffer();
-      else
-	rpn_push(rpn_peek());
-      break;
-    case '.':
-      //What should this do?
-      //It's out only free button.
-      break;
-    case '+':
-      rpn_pushbuffer();
-      rpn_push(rpn_pop()+rpn_pop());
-      break;
-    case '-':
-      rpn_pushbuffer();
-      j=rpn_pop();
-      i=rpn_pop();
-      rpn_push(i-j);
-      break;
-    case '*':
-      rpn_pushbuffer();
-      rpn_push(rpn_pop()*rpn_pop());
-      break;
-    case '/':
-      rpn_pushbuffer();
-      j=rpn_pop();
-      i=rpn_pop();
-      rpn_push(i/j);
-      break;
-    }
+//! A button has been pressed for the calculator.
+int rpn_keypress(char ch){
+  long i, j;
 
-    /* Numbers are special.  They modify a buffer, and the buffer is
-       pushed onto the stack before an operator or when = is pressed.
-     */
-    if(ch>='0' && ch<='9')
-      rpn_updatebuffer(ch&0xf);
+  //Do nothing on a keyup event.
+  if(!ch)
+    return 0;
+
+
+  //Operators
+  switch(ch){
+  case '=':
+    if(bufferdirty)          //Push the value if it's waiting.
+      rpn_pushbuffer();
+    else                     //Otherwise duplicate bottom stack item.
+      rpn_push(rpn_peek()); 
+    break;
+  case '.':
+    //What should this do?
+    //It's our only free button.
+    break;
+  case '+':
+    rpn_pushbuffer();
+    rpn_push(rpn_pop()+rpn_pop());
+    break;
+  case '-':
+    rpn_pushbuffer();
+    j=rpn_pop();
+    i=rpn_pop();
+    rpn_push(i-j);
+    break;
+  case '*':
+    rpn_pushbuffer();
+    rpn_push(rpn_pop()*rpn_pop());
+    break;
+  case '/':
+    rpn_pushbuffer();
+    j=rpn_pop();
+    i=rpn_pop();
+    rpn_push(i/j);
+    break;
   }
+
   
-  oldch=ch;
-  rpn_drawstack();
+  /* Numbers are special.  They modify a buffer, and the buffer is
+     pushed onto the stack before an operator or when = is pressed.
+  */
+  if(ch>='0' && ch<='9')
+    rpn_updatebuffer(ch&0xf);
+
+  return 1;//Redraw.
 }

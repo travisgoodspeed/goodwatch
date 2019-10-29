@@ -30,10 +30,9 @@ class BSL:
 
     def enter_bsl(self):
         """Activates the bootloader by the sequence in SLAU319N."""
-        self.setRST(False)
         self.setTST(False)
-        time.sleep(0.250)
         self.setRST(True)
+        time.sleep(0.10)
 
         #Minimum two rising edges are required, but it helps to have three or more.
         self.setTST(False)
@@ -47,7 +46,7 @@ class BSL:
         
         self.setRST(False)
         self.setTST(False)
-        time.sleep(0.250)
+        time.sleep(0.10)
         self.serial.flushInput();
     def reset(self):
         """Exits the BSL by resetting the chip."""
@@ -337,8 +336,6 @@ if __name__=='__main__':
                         help='Prints the dmesg.',action='count');
     parser.add_argument('-u','--unlock',
                         help='Unlock BSL.',action='count');
-    parser.add_argument('-t','--time',
-                        help='Set the Time.',action='count');
     parser.add_argument('-r','--rate',
                         help='Baud Rate', default=9600);
     
@@ -372,16 +369,22 @@ if __name__=='__main__':
     if args.file!=None:
         print "Writing %s as Intel hex." % args.file
         bsl.writeihexfile(args.file);
-    if args.time!=None:
-        lt=time.localtime()
-        #See firmware/rtc.c for the format.
-        timestr=(
-            #Hour, Minute, Second first.
-            chr(lt.tm_hour)+chr(lt.tm_min)+chr(lt.tm_sec)+"\xFF"+
-            #u16 Year, u8 Month, u8 Day
-            chr(lt.tm_year&0xFF)+chr(lt.tm_year>>8)+chr(lt.tm_mon)+chr(lt.tm_mday)
-            );
-        bsl.write(0xFF00,timestr);
+
+    ## Peviously, we manually wrote the time to 0xFF00.  This is now
+    ## handled by buildtime.h, but I wouldn't object to writing the
+    ## time to SRAM. --Travis
+    
+    # if args.time!=None:
+    #     lt=time.localtime()
+    #     #See firmware/rtc.c for the format.
+    #     timestr=(
+    #         #Hour, Minute, Second first.
+    #         chr(lt.tm_hour)+chr(lt.tm_min)+chr(lt.tm_sec)+"\xFF"+
+    #         #u16 Year, u8 Month, u8 Day
+    #         chr(lt.tm_year&0xFF)+chr(lt.tm_year>>8)+chr(lt.tm_mon)+chr(lt.tm_mday)
+    #         );
+    #     bsl.write(0xFF00,timestr);
+    
     if args.dump!=None:
         coredump(bsl);
     if args.dmesg!=None:

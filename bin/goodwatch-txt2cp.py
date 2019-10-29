@@ -16,6 +16,16 @@ def freqbytes(freq):
     FREQ0= num      & 0xFF
     return FREQ2, FREQ1, FREQ0;
 
+def ihexcrc(hexline):
+    """Calculates an Intel Hex CRC of a line."""
+    #%print("Calculating CRC of %s."%hexline);
+    CRC=0;
+    for b in hexline:
+        CRC=CRC+ord(b);
+    CRC=CRC^0xFF;
+    CRC=CRC+1;
+    return CRC&0xFF;
+
 codeplugadr=0x1800;
 def handleline(line):
     """Handles one line of the file."""
@@ -39,13 +49,15 @@ def handleline(line):
             namehex='20'+namehex;
         FLAGS=0;
         (FREQ2, FREQ1, FREQ0) = freqbytes(freq);
-        CRC=0xFF;  #FIXME This checksum is wrong, but cc430-bsl.py doesn't bother to check.
+
         
-        line=":%02x%04x00%02x%02x%02x%02x%s%02x\n" %(
-            LEN, codeplugadr, FLAGS, FREQ2,FREQ1,FREQ0, namehex, CRC
+        line="%02x%04x00%02x%02x%02x%02x%s" %(
+            LEN, codeplugadr, FLAGS, FREQ2,FREQ1,FREQ0, namehex
             );
+        CRC=ihexcrc(line.decode("hex"));
+        
         codeplugadr=codeplugadr+12;
-        return line;
+        return ":%s%02x\n" % (line, CRC);
     
 def convertcodeplug(infile, outfile):
     """Converts a codeplug textfile into an intel hex file for flashing."""

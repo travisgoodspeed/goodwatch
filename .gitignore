@@ -14,5 +14,10 @@ ftp-lib-table
 # C objects
 *.o
 *.hex
+*.elf
 firmware/goodwatch
-firmware/gittag.h
+firmware/githash.h
+
+# Tracing
+energytrace.png
+energytrace.txt

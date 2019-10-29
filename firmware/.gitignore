@@ -1,2 +1,6 @@
 config.h
+buildtime.h
 libs/assembler
+libs/pocsag
+codeplugstr.c
+dmesg.bin

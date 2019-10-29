@@ -12,6 +12,7 @@
 #include<string.h>
 
 #include "api.h"
+#include "rng.h"
 
 enum {
   SETTURBOMODE = 0x00,
@@ -19,6 +20,7 @@ enum {
   POKE         = 0x02,
   LCDSTRING    = 0x03,
   DMESG        = 0x04,
+  RANDINT      = 0x05,
 
   RADIOONOFF   = 0x10,
   RADIOCONFIG  = 0x11,
@@ -48,6 +50,30 @@ static void send_dmesg(){
   uart_tx(0x00);
 }
 
+//! Local command to generate and send n random integers.
+static void send_randint(uint16_t n){
+
+  uint16_t i;
+  uint16_t len = n*2;
+  uint16_t rints[n]; // are var len arrays ok here?
+
+  for(i = 0; i < n; i++){ //pre-generate enough ints
+    rints[i] = true_rand();
+  }
+  //Start the frame
+  uart_tx(0x00);
+  uart_tx(0x80);
+  //Length
+  uart_tx(len&0xFF);
+  uart_tx(len>>8);
+  //Send integers byte by byte
+  for(i=0;i<len;i++){
+    uart_tx(((char*)rints)[i]);
+  }
+  // no checksum ?
+  uart_tx(0x00);
+  uart_tx(0x00);
+}
 
 //! Local pointer to packet.c's buffer.
 static uint8_t *packetbuf=0;
@@ -112,11 +138,9 @@ int monitor_handle(uint8_t *buffer, int len){
     if(buffer[1]){
       uartactive=1;
       lcd_zero();
-      lcd_string("nnonitor");
-      ucs_fast();
+      lcd_string("monitor ");
     }else{
       uartactive=0;
-      ucs_slow();
     }
     break;
     
@@ -142,6 +166,10 @@ int monitor_handle(uint8_t *buffer, int len){
     len=0;
     break;
 
+  case RANDINT:
+    send_randint((uint16_t)buffer16[1]);
+    len=0;
+    break;
 
   case RADIOONOFF: //One byte parameter, on or off.
     if(buffer[1]){
@@ -153,7 +181,7 @@ int monitor_handle(uint8_t *buffer, int len){
   case RADIOCONFIG:  //Byte pairs come next.  Host must null-terminate.
     radio_writesettings(buffer+1);
     radio_writepower(0x25);
-    codeplug_setfreq();
+    //codeplug_setfreq();
     break;
   case RADIORX:
     return handlerx(buffer,len);

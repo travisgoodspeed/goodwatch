@@ -7,6 +7,7 @@
 
 #include <msp430.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "api.h"
 
@@ -54,13 +55,11 @@ void lcd_init() {
   //LCDBVCTL = LCDCPEN | VLCD_3_02 | LCD2B; //Mid contrast
   //LCDBVCTL = LCDCPEN | VLCD_2_60 | LCD2B; //Weakest contrast.
   LCDBCTL0 |= LCDON + LCDSON;
-  REFCTL0 &= ~REFMSTR;// //Disable legacy mode.
   
   //Select LCD Segments 0-9
   LCDBPCTL0 = 0xFFFF;
   LCDBPCTL1 = 0xFFFF;
-
-
+  
   //Begin by blacking the whole display, for diagnostics if our clocks
   //fail.
   for(i=0;i<13;i++){
@@ -73,25 +72,41 @@ void lcd_init() {
 void lcd_predraw(){
   //Switch to the backup of the previous frame.
   LCDBMEMCTL |= LCDDISP; // Enable blink memory
-  
 }
 
 //! Reverts to the main display.
 void lcd_postdraw(){
-  //Mark some flags no matter what the mode.
-  if((UCSCTL4&SELM_7)!=SELM_0)
-    setmult(1);     //Mult indicates main clock is not from XT1
-  if(UCSCTL7&2)
-    setdivide(1);   //Div indicates a crystal fault.
-  if(power_ishigh())
-    setminus(1);    //Minus indicates the radio is on.
-  
+  static int testcount=0;
+
+  //Every sixteenth frame, we test for clocks and faults.
+  if((testcount++ & 0x0F) == 0x0F){
+    //Mark some flags no matter what the mode.
+    
+    if(UCSCTL7&2){
+      setdivide(1);   //Div indicates a crystal fault.
+      printf("Clock fault, attempting repair.\n");
+      ucs_init();
+      
+      if(UCSCTL7&2){
+	printf("Didn't work.\n");
+      }else{
+	printf("Success!\n");
+      }
+    }
+    if(power_ishigh())
+      setminus(1);    //Minus indicates the radio is on.
+    if(ADCISACTIVE)
+      setplus(1);     //Plus indicates the ADC is on.
+    if(REFCTL0 & REFON)
+      setdivide(1);   //Divide indicates reference is active.
+  }
+
   //Now swap back the buffer.
   LCDBMEMCTL &= ~LCDDISP; // Return to main display memory.
 
   //Copy to blink memory for the next round.
   memcpy((char*) lcdbm,(char*) lcdm,13);
-
+  
   /* This is a sort of CPU monitor, which will darken one
      piece of the day-of-week characters only while the rest of the
      screen is being drawn.  If the segment is very dark, you might be
@@ -102,7 +117,6 @@ void lcd_postdraw(){
      Start it by pressing 6 in clock mode.
    */
   if(flickermode){
-    flickermode--;
     lcdbm[0x0c]|=0x01; //Set a segment to visualize delay times.
   }
 }

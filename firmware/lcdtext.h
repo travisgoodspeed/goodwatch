@@ -22,6 +22,8 @@ void lcd_hex(long num);
 void setcolon(int on);
 //! Turn the period of a digit on or off.
 void setperiod(int digit, int on);
+//! Zeroes all the periods.
+void clearperiods();
 //! Set the AM symbol.
 void setam(int on);
 //! Set the PM symbol.

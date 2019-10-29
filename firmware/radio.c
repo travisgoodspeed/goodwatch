@@ -84,6 +84,9 @@ uint32_t radio_getfreq(){
 }
 
 
+// Only called from here.
+extern void packet_init();
+
 //! Called at boot.  Gracefully fails if no radio.
 void radio_init(){
   /* If the radio components are missing, the AVCC_RF lines will be
@@ -95,7 +98,7 @@ void radio_init(){
   /* We can't check RF1AIFERR&1 to tell whether the radio circuit is
      powered, because Errata RF1A6 makes that bit useless.  Instead,
      we run a radio strobe and look for its reply.
-   */
+  */
   radio_strobe(RF_SCAL);
   printf("This watch has %s radio.\n",
 	 has_radio?"a":"no");
@@ -108,6 +111,10 @@ void radio_on(){
   if(!has_radio){
     return;
   }
+
+  //Be sure to reset the radio variables, in case the state machine is
+  //out of whack.  This should only be called from here, nowhere else.
+  packet_init();
 
   //Enable high power mode so that LPM3 can be used with an active
   //radio.
@@ -139,13 +146,11 @@ void radio_resetcore(){
 //! Turns the radio off.
 void radio_off(){
   //Cut the radio's oscillator.
-  radio_strobe(RF_SIDLE);
+  radio_strobe(RF_SRES);
   radio_strobe(RF_SXOFF);
-
   
-  /* We really ought to lower the
-     core voltage, but seems that it
-     can never come back up.
+  /* We really ought to lower the core voltage, but seems that it can
+     never come back up.
   */
   //Drop the voltage first.
   power_setvcore(0);
@@ -263,7 +268,7 @@ const uint8_t morsesettings[]={
   CHANNR,    0x00,   // CHANNR    Channel number.
   DEVIATN,   0x34,   // DEVIATN   Modem deviation setting (when FSK modulation is enabled).
   FREND1,    0x56,   // FREND1    Front end RX configuration.
-  FREND0,    0x10,   // FREND0    Front end TX configuration.
+  FREND0,    0x11,   // FREND0    Front end TX configuration.
   MCSM0,     0x18,   // MCSM0     Main Radio Control State Machine configuration.
   FOCCFG,    0x16,   // FOCCFG    Frequency Offset Compensation Configuration.
   BSCFG,     0x6C,   // BSCFG     Bit synchronization Configuration.
@@ -297,8 +302,14 @@ void radio_writesettings(const uint8_t *settings){
   if(!settings)
     settings=morsesettings;
 
+  /* This is ugly as sin, and it deserves a bit of an explanation.  We
+     are terminating on a null *pair* in the settings, so that every
+     pair can be set except setting IOCFG2 to 0, as that would be a
+     null pair.
+   */
   while(settings[i]!=0 || settings[i+1]!=0){
     radio_writereg(settings[i],settings[i+1]);
+    //printf("%02x,%02x\n",settings[i],settings[i+1]);
     i+=2;
   }
 }
@@ -311,8 +322,10 @@ uint8_t radio_strobe(uint8_t strobe){
   uint16_t count=0;
   uint16_t gdo_state;
 
+  /*
   if(!has_radio)
     return 0xFF;
+  */
   
   // Check for valid strobe command 
   if((strobe == 0xBD) || ((strobe >= RF_SRES) && (strobe <= RF_SNOP))){
@@ -338,7 +351,7 @@ uint8_t radio_strobe(uint8_t strobe){
 	   */
           while ((RF1AIN&0x04)== 0x04){
 	    if(count++>1000){
-	      printf("Timeout in radio_strobe.  Broken XT2?\n");
+	      //printf("Timeout in radio_strobe.  Broken XT2?\n");
 	      has_radio=0;
 	      return 0xFF;
 	    }
@@ -361,11 +374,26 @@ uint8_t radio_strobe(uint8_t strobe){
 
 //! Writes one value to the power table.
 void radio_writepower(uint8_t value) {
-  while( !(RF1AIFCTL1 & RFINSTRIFG));
-  RF1AINSTRW = 0x3E00 + value;              // PA Table single write
+  uint8_t powertable[2];
+
+  /* To make AFSK and OOK play nice with eachother, powertable[0] is
+     always zero and powertable[1] is the selected power setting.
+     
+     Use radio_writepowertable() if you need to control the entire table.
+   */
+  powertable[0]=0;
+  powertable[1]=value;
+
+  radio_writepatable(powertable, 2);
   
   while( !(RF1AIFCTL1 & RFINSTRIFG));
   RF1AINSTRB = RF_SNOP;                     // reset PA_Table pointer
+}
+
+
+//! Writes a set of values ot the power table.
+void radio_writepatable(uint8_t *table, uint8_t count) {
+  radio_writeburstreg(PATABLE, table, count);
 }
 
 //! Read the RSSI.
