@@ -174,14 +174,17 @@ void hex_draw(int forced){
   // The sidebutton needs to be polled for a change
   if (sidebutton_set()) {
     editing = !editing;
-    if (!editing) {
+    if (editing) {
+      if(!hex_can_edit(adr)){
+        // do not allow editing of memory regions that do not support editing
+        editing = 0;
+      } else {
+        // Initialize the new value to the value currently in memory
+        new_val = ((unsigned int*)adr)[0];
+      }
+    } else {
       forced = 1; // The screen needs to be redrawn. Cancelling editing using
       // the set button will not trigger a redraw, so we do it manually.
-    }
-
-    // do not allow editing of memory regions that do not support editing
-    if(!hex_can_edit(adr)){
-      editing = 0;
     }
   }
 
