@@ -107,6 +107,7 @@ all: goodwatch.hex
 
 githash.h:
 	echo "#define GITHASH" 0x`git rev-parse HEAD | head -c7` > githash.h
+	echo "#define GITHASH_STR \"`git rev-parse HEAD | head -c7`\"" >> githash.h
 buildtime.h:
 	../bin/buildtime.py >buildtime.h
 

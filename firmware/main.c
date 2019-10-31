@@ -64,6 +64,8 @@ int main(void) {
   //Initialize the various modules.
   dmesg_init();
 
+  printf("Firmware git version %s\n", GITHASH_STR);
+
   printf("RNG ");
   srand(true_rand()); // we do this as early as possible, because it messes with clocks
 
