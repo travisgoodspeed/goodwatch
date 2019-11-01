@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 ## This quick and dirty tool converts a textfile of frequencies and
 ## names into a GoodWatch codeplug, for storage in the firmware image.
@@ -6,7 +6,7 @@
 ## 0x1800, but this caused problems with mspdebug's tilib driver,
 ## which can't seem to unlock info flash.
 
-import sys, argparse;
+import sys, argparse, codecs;
 
 
 def freqbytes(freq):
@@ -35,7 +35,7 @@ def handleline(line):
         words=line.split();
         freq=float(words[0]);
         name=words[1];
-        namehex=name.encode('hex');
+        namehex=codecs.encode(bytes(name, 'utf-8'), 'hex').decode('utf-8');
         assert(len(name)<=8);
         while len(namehex)<16:
             namehex='20'+namehex;
@@ -43,7 +43,7 @@ def handleline(line):
         (FREQ2, FREQ1, FREQ0) = freqbytes(freq);
 
         hexline="\"\\x%02x\\x%02x\\x%02x\\x%02x\" \"%s\"" % (
-            FLAGS, FREQ2,FREQ1,FREQ0, namehex.decode("hex")
+            FLAGS, FREQ2,FREQ1,FREQ0, name
             );
         
         line="%s       //%s \n" %(

@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 
 ## This is a quick and dirty script for placing the build time into
