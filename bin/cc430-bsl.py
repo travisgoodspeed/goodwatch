@@ -82,7 +82,7 @@ class BSL:
         #Get the reply.
         reply=self.serial.read(1);
         if len(reply)!=1:
-            print "Error, missing reply.";
+            print("Error, missing reply.");
             sys.exit(1);
         elif msg[0]=='\x52':
             #Change baud rate command has a briefer reply.
@@ -98,7 +98,7 @@ class BSL:
             assert(crc==self.crc(rep));
             return rep;
         else:
-            print "Error 0x%02x." % ord(reply[0]);
+            print("Error 0x%02x." % ord(reply[0]));
             #Not sure whether data is coming, so grab a chunk just in case.
             self.serial.read(10);
     
@@ -122,13 +122,13 @@ class BSL:
         code=ord(resp[1]);
     
         if code==0x05:
-            print "Incorrect password.  Flash was erased."
+            print("Incorrect password.  Flash was erased.");
             return self.unlock();
         elif code==0x00:
             #success
             return True;
         else:
-            print "Unexpected password core message 0x%02x."%code;
+            print("Unexpected password core message 0x%02x."%code);
             return False;
         
     def version(self):
@@ -156,7 +156,7 @@ class BSL:
         lh=chr((length>>8)&0xFF)
         resp=self.transact("\x18"+al+am+ah+ll+lh)
         if resp[0]=="\x3b":
-            print "Error: You need to unlock before reading."
+            print("Error: You need to unlock before reading.");
         assert(resp[0]=="\x3a");
         
         return resp[1:]
@@ -279,47 +279,47 @@ class BSL:
 def coredump(bsl):
     """Prints all of memory."""
 
-    print "\n\n\nDumping most of memory as a read test.";
+    print("\n\n\nDumping most of memory as a read test.");
     
     ##Dump the BSL
     bulk=bsl.readbulk(0x1000,2048)
-    print "Got %d bytes of the BSL." % len(bulk);
-    print bulk.encode('hex');
+    print("Got %d bytes of the BSL." % len(bulk));
+    print(bulk.encode('hex'));
 
     ##Dump Info
     bulk=bsl.readbulk(0x1800,512)
-    print "Got %d bytes of Info Flash." % len(bulk);
-    print bulk.encode('hex');
+    print("Got %d bytes of Info Flash." % len(bulk));
+    print(bulk.encode('hex'));
 
     ##Dump RAM
     bulk=bsl.readbulk(0x1C00,4096)
-    print "Got %d bytes of RAM." % len(bulk);
-    print bulk.encode('hex');
+    print("Got %d bytes of RAM." % len(bulk));
+    print(bulk.encode('hex'));
 
     ##Dump ROM
-    print "Dumping Flash ROM.  Please be patient."
+    print("Dumping Flash ROM.  Please be patient.")
     bulk=bsl.readbulk(0x8000,32*1024)
-    print "Got %d bytes of Flash ROM." % len(bulk);
-    print bulk.encode('hex');
+    print("Got %d bytes of Flash ROM." % len(bulk));
+    print(bulk.encode('hex'));
 
 def dmesg(bsl):
     """Prints the dmesg buffer."""
 
     ##Dump RAM
     bulk=bsl.readbulk(0x2400,2048)
-    print bulk;
+    print(bulk);
 
 def writetest(bsl):
     """Tests writing an image to Flash."""
 
-    print "\n\n\nMass erasing, then performing a write test.";
+    print("\n\n\nMass erasing, then performing a write test.");
     bsl.masserase();
     
     msg="Hello world!  Hogy vagy?  Jo vagyok!"*35
     bsl.writebulk(0x8000,msg);
     readmsg=bsl.readbulk(0x8000,len(msg));
-    print "Wrote: %s" % msg.encode('hex');
-    print "Read:  %s" % readmsg.encode('hex');
+    print("Wrote: %s" % msg.encode('hex'));
+    print("Read:  %s" % readmsg.encode('hex'));
     assert(readmsg==msg);
 
 if __name__=='__main__':
@@ -349,11 +349,11 @@ if __name__=='__main__':
         bsl.setbaud(int(args.rate));
 
     if args.erase!=None:
-        print "Mass erasing."
+        print("Mass erasing.")
         bsl.masserase();
         bsl.unlock();
     if args.eraseinfo!=None:
-        print "Mass erasing, plus Info."
+        print("Mass erasing, plus Info.")
         bsl.masserase();
         bsl.unlock();
         #We don't need to call unlocklockinfo() because we are
@@ -367,7 +367,7 @@ if __name__=='__main__':
         #print "Unlocking."
         bsl.unlock(args.password);
     if args.file!=None:
-        print "Writing %s as Intel hex." % args.file
+        print("Writing %s as Intel hex." % args.file)
         bsl.writeihexfile(args.file);
 
     ## Peviously, we manually wrote the time to 0xFF00.  This is now
