@@ -22,7 +22,7 @@ void jukebox_packettx();
 int jukebox_keypress(char ch);
 
 //! NEC Encoder
-char encode(uint8_t *out, uint8_t command, int pin);
+void encode(uint8_t *out, uint8_t command, int pin);
 
 // Packet Building Helper Function
 uint8_t* build_jukebox_packet(int cmd, int pin);
