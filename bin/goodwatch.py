@@ -266,7 +266,7 @@ class GoodWatch:
         time.sleep(1);
 
     def crc(self,msg):
-        """Returns a two-byte string of the checksum of a message."""
+        """Returns a two-byte list of the checksum of a message."""
         crc=0xFFFF
         
         #msg should already include header bytes.
@@ -275,7 +275,7 @@ class GoodWatch:
             x=((crc>>8)^byte)&0xFF;
             x^=x>>4;
             crc=(crc<<8)^(x<<12)^(x<<5)^x;
-        return chr(crc&0xFF)+""+chr((crc>>8)&0xFF);
+        return [(crc&0xFF), ((crc>>8)&0xFF)];
 
     def transact(self,msg):
         """Sends a message, wrapped with a prefix and checksum.
@@ -283,10 +283,9 @@ class GoodWatch:
 
         #Send the message.
         length=len(msg);
-        ll=chr(length&0xFF);
-        lh=chr((length>>8)&0xFF);
         crc=self.crc(msg);
-        self.serial.write("\x80"+ll+lh+msg+crc);
+        frame = b"\x80"+length.to_bytes(2, byteorder='little')+msg.encode()+bytes(crc);
+        self.serial.write(frame);
 
         #Get the reply.
         reply=self.serial.read(1);
@@ -312,22 +311,22 @@ class GoodWatch:
         """Enable turbo mode.  We have to do this slowly because the
         chip is running slowly."""
         #self.transact("\x00"+chr(enable));
-        self.serial.write("\x00");
+        self.serial.write(b"\x00");
         time.sleep(0.2);
-        self.serial.write("\x80");
+        self.serial.write(b"\x80");
         time.sleep(0.2);
-        self.serial.write("\x02");
+        self.serial.write(b"\x02");
         time.sleep(0.2);
         #Command packet.
-        self.serial.write("\x00");
+        self.serial.write(b"\x00");
         time.sleep(0.2);
-        self.serial.write("\x00");
+        self.serial.write(b"\x00");
         time.sleep(0.2);
-        self.serial.write(chr(enable));
+        self.serial.write(chr(enable).encode());
         time.sleep(0.2);
-        self.serial.write("\xde");  #TODO Fix this checksum.
+        self.serial.write(b"\xde");  #TODO Fix this checksum.
         time.sleep(0.2);
-        self.serial.write("\xad");
+        self.serial.write(b"\xad");
         time.sleep(0.2);
         
         reply=self.serial.read(9);
