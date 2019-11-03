@@ -65,7 +65,7 @@
 void jukebox_packettx();
 
 /*=========================== V A R I A B L E S ===========================*/
-#define LEN 16 //Bytes
+#define LEN 17 //Bytes
 static char lastch = 0;
 
 // PIN
@@ -179,39 +179,39 @@ void encode(uint8_t *out, uint32_t command, int pin) {
 	uint8_t bitSize = 0; // Size counter for encodeMsg
 	int arrayPos = 3; // Pointer counter for *out
 	for (bit = 0; bit < (8 + 8 + 16); bit++) { // Sync + Pin + Command == 32bit
-		if (decodeMsg & 0x80000000UL) { // If 1
+		if (decodeMsg & 0x80000000UL) {		   // If 1
 			if (bitSize <= 4) {
 				encodeMsg <<= 4;
-				encodeMsg |= 0x8; // 1000 
+				encodeMsg |= 0x8;			   // 1000 
 				decodeMsg <<= 1;
 				bitSize += 4;
-			} else if (bitSize == 6) { // Split the Byte
+			} else if (bitSize == 6) {		   // Split the Byte
 				encodeMsg <<= 2;
 				encodeMsg |= 0x2;
-				out[arrayPos] = encodeMsg; // Add Byte to char array
+				out[arrayPos] = encodeMsg;	   // Add Byte to char array
 				arrayPos++;
-				encodeMsg <<= 8; // Wipe the stack 
+				encodeMsg <<= 8;			   // Wipe the stack 
 				decodeMsg <<= 1;
 				bitSize = 2;
 			} else if (bitSize == 8) {
-				out[arrayPos] = encodeMsg; // Add Byte to char array
+				out[arrayPos] = encodeMsg;	  // Add Byte to char array
 				arrayPos++;
-				encodeMsg <<= 8; // Wipe the stack 
-				encodeMsg |= 0x8; // 1000 
+				encodeMsg <<= 8;			  // Wipe the stack 
+				encodeMsg |= 0x8;			  // 1000 
 				decodeMsg <<= 1;
 				bitSize = 4;
 			}
 		} else { // Else 0
 			if (bitSize <= 6) {
 				encodeMsg <<= 2;
-				encodeMsg |= 0x2; // 10
+				encodeMsg |= 0x2;			  // 10
 				decodeMsg <<= 1;
 				bitSize += 2;
-			} else if (bitSize == 8) {
-				out[arrayPos] = encodeMsg; // Add Byte to char array
+			} else if (bitSize == 8) {	
+				out[arrayPos] = encodeMsg;	  // Add Byte to char array
 				arrayPos++;
-				encodeMsg <<= 8; // Wipe the stack 
-				encodeMsg |= 0x2; // 10
+				encodeMsg <<= 8;			  // Wipe the stack 
+				encodeMsg |= 0x2;			  // 10
 				decodeMsg <<= 1;
 				bitSize = 2;
 			}
@@ -221,36 +221,39 @@ void encode(uint8_t *out, uint32_t command, int pin) {
 	// Add Tail
 	if (bitSize == 2) {
 		encodeMsg <<= 4;
-		encodeMsg |= 0x8; // 1000
+		encodeMsg |= 0x8;					 // 1000
 		encodeMsg <<= 2;
+		out[arrayPos++] = encodeMsg;		 // Add Byte to char array
+
 	} else if (bitSize == 4) {
 		encodeMsg <<= 4;
-		encodeMsg |= 0x8; // 1000 
-	} else if (bitSize == 6) { // Split the Byte
+		encodeMsg |= 0x8;					 // 1000 
+		out[arrayPos++] = encodeMsg;		 // Add Byte to char array
+
+	} else if (bitSize == 6) {				 // Split the Byte
 		encodeMsg <<= 2;
-		encodeMsg |= 0x2; // 10
-		out[arrayPos] = encodeMsg; // Add Byte to char array
-		arrayPos++;
-		encodeMsg <<= 8; // Wipe the stack 
+		encodeMsg |= 0x2;					 // 10
+		out[arrayPos++] = encodeMsg;		 // Add Byte to char array
+		encodeMsg <<= 8;					 // Wipe the stack
+		
 	} else if (bitSize == 8) {
-		out[arrayPos] = encodeMsg; // Add Byte to char array
-		arrayPos++;
-		encodeMsg <<= 8; // Wipe the stack 
+		out[arrayPos++] = encodeMsg;		 // Add Byte to char array
+		encodeMsg <<= 4;					 // Wipe the stack
+		encodeMsg |= 0x8;					 // 1000 
+		encodeMsg <<= 4;					 // Wipe the stack		
+		out[arrayPos++] = encodeMsg;		 // Add Byte to char array	
 	}
 
-	// Pad with 0x00 if msg length is not 16 Bytes
-	if (arrayPos == 14) {
-		out[14] = encodeMsg;
-		out[15] = 0x00;
-	} else {
-		out[15] = 0x00;
+	// Pad with 0x00 if msg length is not 18 Bytes
+	while(arrayPos < LEN){
+		out[arrayPos++] = 0x00;		
 	}
 }
 
 // Build Packet Helper Function
 uint8_t* build_jukebox_packet(int cmd, int pin) {
 	static int lastpin = -1, lastcmd = -1;
-	static uint8_t packet[16]; //Must be static so it isn't overwritten.
+	static uint8_t packet[LEN]; //Must be static so it isn't overwritten.
 
 	//Update the packet only if the pin has changed.
 	if (lastpin != pin || lastcmd != cmd) {
