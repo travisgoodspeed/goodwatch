@@ -16,20 +16,25 @@
 #include<string.h>
 #include<math.h>
 
+#ifdef STANDALONE
+# include<stdio.h>
+# include<assert.h>
+#endif
+
 #include "bruijn.h"
 
 // we're making these global because we have limited stack and we're
 // calling some functions recursively
-uint8_t a[MAXBITS+1]; // largest bit size possible
-uint16_t s, k;
-uint8_t tmpi;
-uint8_t firstTx;
+static uint8_t a[MAXBITS+1]; // largest bit size possible
+static uint16_t s, k;
+static uint8_t tmpi;
+static uint8_t firstTx;
 
 // we could read from garages[] directly but this is faster
-uint8_t codelen;
-uint8_t bits, len;
-uint8_t tri;
-uint32_t b0, b1;
+static uint8_t codelen;
+static uint8_t bits, len;
+static uint8_t tri;
+static uint32_t b0, b1;
 //#define bits g.bits
 //#define len  g.len
 //#define tri  g.tri
@@ -115,8 +120,10 @@ void convert_bits(){
   for (z = k / len; z < s; z++) {
     tb = testBit(sequence, z) ? b1 : b0;
 
+    #ifdef STANDALONE
     //Uncomment this to dump the sequence bits.
-    //printf("%d", tb==b1);
+    printf("%d", tb==b1);
+    #endif
     
     tlen = len;
     while (tlen--){
@@ -174,27 +181,25 @@ uint8_t _garage_id=0;
 
 //! Unix command-line tool for testing.
 int main(){
+  int i;
   
-
-  //We'd first set power to maximum, except there's no radio in
-  //simulation.
-
-  //Then we'd set the frequency and CHANNR.
-
-  //And finally the fields of some garage door.
-  bits    = g.bits;
-  len     = g.len;
-  tri     = g.tri;
-  b0      = g.b0;
-  b1      = g.b1;
-  codelen = ceilf(bits * (len / 8.0));
-  
-  printf("\n");
-  
-  de_bruijn();
-
-  printf("\n");
-  
+  for(i=0; i<4; i++){
+    //And finally the fields of some garage door.
+    bits    = g.bits;
+    len     = g.len;
+    tri     = g.tri;
+    b0      = g.b0;
+    b1      = g.b1;
+    codelen = ceilf(bits * (len / 8.0));
+    
+    printf("%s: bits=%d, len=%d, tri=%d, b0=%x, b1=%x, codelen=%d\n",
+	   g.name,
+	   bits, len, tri, b0, b1, codelen);
+    
+    de_bruijn();
+    
+    printf("\n");
+  }
   return 0; //All Good.
 }
 

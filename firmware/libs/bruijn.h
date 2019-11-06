@@ -50,29 +50,30 @@ void doTx();
 
 
 const static struct {
-	uint32_t hz;
-	uint32_t baud;
-	uint8_t bits;
-	uint8_t len;
-	uint8_t tri;
-	uint32_t b0;
-	uint32_t b1;
-	uint32_t b2;
+  const char name[9];
+  uint32_t hz;
+  uint32_t baud;
+  uint8_t bits;
+  uint8_t len;
+  uint8_t tri;
+  uint32_t b0;
+  uint32_t b1;
+  uint32_t b2;
 } garages[] = {
 //        HZ, BAUD, BITS, LEN, TRI, B0,  B1,  B2
 
 	// Stanley, Linear Multicode & Moore-o-Matic, 8 & 10 dip switch, 310MHz
-	{310000000, 2000,   10,   4,   0, 0x8, 0xe, 0x0},
+	{" 310 mhz", 310000000, 2000,   10,   4,   0, 0x8, 0xe, 0x0},
 
 	// Chamberlain, 7, 8 & 9 dip switch, 390MHz
-	{390000000, 2000,    9,   4,   0, 0x8, 0xe, 0x0},
+	{" 390 mhz", 390000000, 2000,    9,   4,   0, 0x8, 0xe, 0x0},
 
 	// Chamberlain Canada, 9 dip switch, 315MHz
-	{315000000, 2000,    9,   4,   0, 0x8, 0xe, 0x0},
+	{" 315 mhz", 315000000, 2000,    9,   4,   0, 0x8, 0xe, 0x0},
 
 	// NSCD is 2k baud rate but tri-state
   // 0 = 100000000100000000, 1 = 111111110100000000, 2 = 111111110111111110
-	{318000000, 2000,    9,  18,   1, 0x020100, 0x03fd00, 0x03fdfe},
+	{" 318 mhz", 318000000, 2000,    9,  18,   1, 0x020100, 0x03fd00, 0x03fdfe},
 
 };
 
