@@ -28,6 +28,7 @@ extern const struct app clock_applet;
 #include "apps/counter.h"
 #include "apps/pager.h"
 #include "apps/jukebox.h"
+#include "apps/sesame.h"
 
 
 /* For each application, the init() function is called at entry.  The

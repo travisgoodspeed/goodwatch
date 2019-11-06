@@ -15,6 +15,7 @@ COUNTER_APP = 1
 DMESG_APP = 1
 PAGER_APP = 1
 JUKEBOX_APP = 1
+SESAME_APP = 1
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT = /dev/ttyUSB0
@@ -85,6 +86,10 @@ endif
 ifeq ($(JUKEBOX_APP),1)
 APPS_OBJ += apps/jukebox.o
 APPS_DEFINES += JUKEBOX_APP 
+endif
+ifeq ($(SESAME_APP),1)
+APPS_OBJ += apps/sesame.o
+APPS_DEFINES += SESAME_APP 
 endif
 
 

@@ -137,6 +137,14 @@ const struct app subapps[]={
    .keypress=jukebox_keypress
   },
 #endif
+  
+#ifdef SESAME_APP
+  // TouchTunes Jukebox
+  {.name="SESAME",
+   .init=sesame_init, .draw=sesame_draw, .exit=sesame_exit,
+   .packettx=sesame_packettx, .keypress=sesame_keypress
+  },
+#endif
 
 
 #ifdef PAGER_APP
