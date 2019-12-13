@@ -14,6 +14,9 @@ revoked if you try to pass off a pilsner instead.
 In addition to the source code, there is handy documentation in the
 [wiki](https://github.com/travisgoodspeed/goodwatch/wiki) and a
 general interest website at [goodwatch.org](https://goodwatch.org/).
+The wiki's
+[DeveloperGuide](https://github.com/travisgoodspeed/goodwatch/wiki/DeveloperGuide)
+page might be particularly handy.
 
 73 from Knoxville,
 
