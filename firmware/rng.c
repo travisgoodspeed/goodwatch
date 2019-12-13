@@ -1,9 +1,27 @@
 /*! \file rng.c
   \brief Better random number generator.
+
+  This module implements both the hardware RNG library and the
+  rand/srand() functions from the standard library.  We do this
+  because for some damned reason srand() calls malloc() in GCC8's
+  libc.
 */
 
 #include <msp430.h>
 #include "rng.h"
+
+#define RAND_MAX 0x7fffffffL
+static unsigned long int next = 1;
+
+int rand(){
+  return ((next = next * 1103515245 + 12345) % ((unsigned long int)RAND_MAX + 1));
+}
+
+void srand(unsigned int seed){
+  next=seed;
+}
+
+
 
 
 //SLA338 inspired RNG to be used as a seed for regular PRNG
