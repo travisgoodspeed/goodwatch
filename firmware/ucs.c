@@ -24,11 +24,18 @@ void ucs_slow(){
 
 //! Initialize the XT1 crystal, and stabilize it.
 void ucs_init(){
-  P5SEL |= BIT0 + BIT1;                     // Select XT1
-  UCSCTL6 |= XCAP_1;                        // Internal load cap
+  uint16_t i=0;
+  
 
   // Loop until XT1 & DCO stabilizes
   do{
+    if(i++==0){
+      UCSCTL6 |= XT1DRIVE_3;                 // Higher drive strength.
+      P5SEL |= BIT0 + BIT1;                     // Select XT1
+      UCSCTL6 |= XCAP_1;                        // Internal load cap
+    }
+    
+    
     UCSCTL7 &= ~(XT1LFOFFG + DCOFFG);
                                             // Clear LFXT1,DCO fault flags
     SFRIFG1 &= ~OFIFG;                      // Clear fault flags

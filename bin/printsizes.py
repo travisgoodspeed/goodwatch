@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 ## Quick little pyelftools script to test the size of a CC430F6137
 ## firmware image, warning the user if it looks too big.
@@ -24,7 +24,9 @@ def printsizes(stream):
     text=elffile.get_section_by_name('.text');
     textlen=len(text.data());
     rodata=elffile.get_section_by_name('.rodata');
-    rodatalen=len(rodata.data());
+    rodatalen=0;
+    try: rodatalen=len(rodata.data());
+    except: pass;
     codeperc=(textlen+rodatalen)*100.0/32768;
     print("\t%d bytes of .text, %d bytes of .rodata (%d%% Flash)" % (textlen,rodatalen,codeperc));
     if codeperc>90:

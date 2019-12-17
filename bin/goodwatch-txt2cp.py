@@ -1,10 +1,10 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 ## This quick and dirty tool converts a textfile of frequencies and
 ## names into a GoodWatch codeplug, for storage in information flash
 ## at 0x1800.  Use cc430-bsl.py to write the codeplug to flash.
 
-import sys, argparse;
+import sys, argparse, codecs;
 
 
 def freqbytes(freq):
@@ -20,8 +20,8 @@ def ihexcrc(hexline):
     """Calculates an Intel Hex CRC of a line."""
     #%print("Calculating CRC of %s."%hexline);
     CRC=0;
-    for b in hexline:
-        CRC=CRC+ord(b);
+    for b in bytes(hexline):
+        CRC=CRC+int(b);
     CRC=CRC^0xFF;
     CRC=CRC+1;
     return CRC&0xFF;
@@ -43,7 +43,7 @@ def handleline(line):
         words=line.split();
         freq=float(words[0]);
         name=words[1];
-        namehex=name.encode('hex');
+        namehex=codecs.encode(bytes(name, 'utf-8'), 'hex').decode('utf-8');
         assert(len(name)<=8);
         while len(namehex)<16:
             namehex='20'+namehex;
@@ -54,7 +54,7 @@ def handleline(line):
         line="%02x%04x00%02x%02x%02x%02x%s" %(
             LEN, codeplugadr, FLAGS, FREQ2,FREQ1,FREQ0, namehex
             );
-        CRC=ihexcrc(line.decode("hex"));
+        CRC=ihexcrc(codecs.decode(bytes(line, 'utf-8'), 'hex'));
         
         codeplugadr=codeplugadr+12;
         return ":%s%02x\n" % (line, CRC);

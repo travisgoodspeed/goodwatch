@@ -61,10 +61,12 @@ static const uint8_t pocsag_settings[]={
   TEST0,   0x09,
 
 
-  
-  MCSM1,   0x30,  // MCSM1, return to IDLE after packet.  Or with 2 for TX carrier tes.
-  MCSM0,   0x10,  // MCSM0     Calibrate before RX or TX.
+  MCSM1,   0x30,  // MCSM1, return to IDLE after packet.
+  //MCSM0,   0x10,  // MCSM0     Calibrate before RX or TX.
   //MCSM0,   0x30,  // MCSM0     Calibrate after every 4th packet.
+  //MCSM0,   0x31,  // MCSM0     Calibrate after every 4th packet, keep osc on.
+  //MCSM0,   0x3C,  // MCSM0
+  MCSM0,   0x1C,  // MCSM0     Calibrate every packet.
   IOCFG2,  0x29,  // IOCFG2    GDO2 output pin configuration.
   IOCFG0,  0x06,  // IOCFG0    GDO0 output pin configuration.
   
@@ -89,17 +91,21 @@ static const uint8_t pocsag_settings_packet[]={
   SYNC0, 0x2d,        //2FSK definitions, the first two bytes become 832d.
   ADDR,  0xea,        //EA27 is next, and we can at least match the first byte.
   
+  PKTCTRL1, 0x01, //Exact address check, no appended status.
+  
   0, 0
 };
 
 /* Settings to match on the preamble, for waking up.
  */
 static const uint8_t pocsag_settings_preamble[]={
-  PKTLEN,  3,        // PKTLEN    Packet length.
+  PKTLEN,  1,        // PKTLEN    Packet length of one, so that we match as soon as possible.
   
   SYNC1, 0xAA,       // Triggers an early match if the preamble is heard.
   SYNC0, 0xAA,
   ADDR,  0xAA,
+
+  PKTCTRL1, 0x00, //No address check, no appended status.
   
   0, 0
 };
@@ -125,9 +131,9 @@ void pager_packetrx(uint8_t *packet, int len){
     
    */
   app_cleartimer();
-
-
-
+  
+  
+  
   /* When the first byte is AA, it's because we've matched on the
      preamble.  This indicates that a packet is coming within the next
      480ms, and we ought to stay awake for it.
@@ -185,7 +191,7 @@ void pager_packetrx(uint8_t *packet, int len){
 
   //Zero the packet just so bugs are clear.
   memset(packet,0xFF,len);
-  printf("\n%ld: %s\n",
+  printf("%ld: %s\n\n",
          pocsag_lastid, pocsag_buffer
          );
   
@@ -250,7 +256,6 @@ void pager_draw(){
        the end of this function, we'll give up and sleep for a while.
      */
 
-    
     //Start looking for the preamble.
     //radio_on();
     radio_writesettings(pocsag_settings);
@@ -263,9 +268,11 @@ void pager_draw(){
     //Then wait long enough for the packet.
     /* 100 works
        75 works
-       50 doesn't
+       60 seems to work reliably, 3.9mA or 25h
+       55 loses some packets, 3.7mA or 26h
+       50 can be tempermental, 3.6mA or 27h
      */
-    for(i=0;i<75;i++)
+    for(i=0;i<60;i++)
       __delay_cycles(1000);
   }
   
@@ -282,6 +289,7 @@ void pager_draw(){
   }
 
   switch(state){
+  case 0: //OFF
   case 1: //IDLE
     /* The idle state still draws 1mA, so we would prefer to shut down
        the receiver entirely if that's possible.  For now, we'll just
@@ -300,6 +308,9 @@ void pager_draw(){
       //radio_off();
     }
     break;
+  default:
+    printf("state=%d\n",
+           state);
   }
 
 }
