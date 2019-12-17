@@ -273,7 +273,7 @@ uint8_t* build_jukebox_packet(int cmd, int pin) {
  * switches back to TX mode.   
  */
 
-void jukebox_packetrx(uint32_t *packet, int len) {
+void jukebox_packetrx(uint8_t *packet, int len) {
 	printf("Not yet supported.\n");
 }
 
