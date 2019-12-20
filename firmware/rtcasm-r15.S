@@ -3,7 +3,7 @@
 
    I've modified this code from the CCE example to work with GCC,
    which mostly involved correcting the calling convention.  (The first
-   parameter is R12 is CCE but R15 in GCC.)
+   parameter is R12 in CCE and GCC8 but R15 in GCC4.)
 
    This module ought to be 32-bit aligned, and every NOP counts.  I've
    not yet verified that GNU LD isn't screwing up the alignment.
@@ -33,7 +33,7 @@
 ;	.cdecls C,LIST,"msp430x54x.h" ; Include device header file
 #include <msp430.h>	
 ;-------------------------------------------------------------------------------
-            .text                           ; Progam Start
+            .text                           ; Program Start
 ;-------------------------------------------------------------------------------
 				;            .align  32
 .balign 4

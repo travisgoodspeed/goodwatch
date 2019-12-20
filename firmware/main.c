@@ -61,6 +61,9 @@ int post(){
 int main(void) {
   WDTCTL = WDTPW + WDTHOLD; // Stop WDT
 
+  //Initialize the printf library.
+  init_printf(NULL, dmesg_putc);
+
   //Initialize the various modules.
   dmesg_init();
 
