@@ -22,6 +22,8 @@ page might be particularly handy.
 
 --Travis
 
+![POCSAG Goodwatch Photo](photos/pocsag.jpg)
+
 ## Software Status
 
 Our firmware is freely available in this repository, compiling with
