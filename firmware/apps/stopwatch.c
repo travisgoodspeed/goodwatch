@@ -147,7 +147,7 @@ void stopwatch_draw(int forced){
   setcolon((count>>1)&1);
   
   //We either draw hhmmss or mmssSS.
-  if(hour && !subhex){
+  if(hour){ //hhmmss
     lcd_digit(1,sechex>>4);
     lcd_digit(0,sechex&0xF);
     
@@ -161,7 +161,7 @@ void stopwatch_draw(int forced){
       lcd_digit(7,hourhex>>4);
       lcd_digit(6,hourhex&0xF);
     }
-  }else if(!hour){
+  }else{ // mmssSS
     //Draw the subsecond first.
     lcd_digit(1,subhex>>4);
     lcd_digit(0,subhex&0xF);
