@@ -14,8 +14,10 @@
 */
 
 #include <stdint.h>
+#include <stdio.h>
 
 #include "hebrew.h"
+
 
 /* Test whether the given year is a Hebrew calendar leap year. */
 static int hebrew_calendar_leap_year_p (uint16_t year) {
@@ -23,7 +25,7 @@ static int hebrew_calendar_leap_year_p (uint16_t year) {
 }
 
 /* Months up to mean conjunction of Tishri of the given year. */
-static uint32_t hebrew_calendar_elapsed_months (uint16_t year) {
+static uint32_t hebrew_calendar_elapsed_months (uint32_t year) {
   return ((year - 1) / 19) * 235
          + ((year - 1) % 19) * 12
          + (((year - 1) % 19) * 7 + 1) / 19;
@@ -126,19 +128,20 @@ static int hebrew_calendar_last_day_of_month (uint16_t year, uint16_t month) {
      hebrew_calendar_from_universal (37889) = { 5764, 7,  1 }
 */
 void hebrew_calendar_from_universal (uint32_t udate, struct hebrew_date *result) {
-  uint16_t year;
   uint32_t elapsed_days;
   uint32_t remaining_days;
-  int max_month;
-  int month;
-
-  year = (uint16_t)((float)udate/(float)365.2422) + 5661;
+  uint16_t max_month;
+  uint16_t month;
   
-  for (;; year--) {
-    elapsed_days = hebrew_calendar_elapsed_days (year) - 2067024;
-    if (udate >= elapsed_days)
-      break;
-  }
+  //Floating point solution fails in MSP430.
+  //uint16_t year = (uint16_t)((float)udate/(float)365.2422) + 5661;
+  uint16_t year = udate*10000/3652422 + 5661;
+  
+  year++;
+  do{
+    year--;
+    elapsed_days = hebrew_calendar_elapsed_days(year) - 2067024L;
+  }while(udate<elapsed_days);
 
   remaining_days = udate - elapsed_days;
   max_month = hebrew_calendar_months_in_year (year);
@@ -148,6 +151,7 @@ void hebrew_calendar_from_universal (uint32_t udate, struct hebrew_date *result)
       break;
     remaining_days -= mlength;
   }
+
   if (month > max_month) {
     for (month = 1; month < 7; month++) {
       uint16_t mlength = hebrew_calendar_last_day_of_month (year, month);
@@ -199,7 +203,7 @@ static int countLeapYears(int y, int m, int d) {
 } 
   
 // This function returns number of days since 1900-01-01
-uint32_t hebrew_get_universal(int y, int m, int d)  {
+uint32_t hebrew_get_universal(uint16_t y, uint16_t m, uint16_t d)  {
   // Total number of days since 0.
   uint32_t n = ((uint32_t)y)*365 + d; 
   for (uint16_t i=0; i< m-1; i++) 
@@ -222,6 +226,9 @@ const char *hdaysofweek[7]={
 
 /* Months are in the religious order, not the civil one, so that the
    leap years come at the end.  0 is an error.
+   
+   I've shortened these to leave room for the number, so the left two
+   spaces are reserved for that.
  */
 const char *hmonths[14]={
   "   Error",
@@ -229,18 +236,42 @@ const char *hmonths[14]={
   "   Nisan", //7 Civil
   "    Iyar",
   "   Sivan",
-  "  Tammuz",
+  "   Tamuz", //Tammuz
   "      Av",
   "    Elul", //6 Civil
-  " Tishrei", //1 Civil
-  "Cheshvan",
+  "  Tishri", //1 Civil, Tishrei
+  "  Chshvn", //Cheshvan
   "  Kislev",
   "   Tevet",
   "  Shevat",
   "    Adar", //Adar I in leap hears.
-  " Adar II"
+  "   Adar2"
 };
 
+
+
+int hebrew_selftest(){
+  //Quick sanity check.
+
+  if(!hebrew_calendar_leap_year_p (5763)
+     || hebrew_calendar_leap_year_p (5764)){
+    printf("Error in leap years.\n");
+    return 0;
+  }
+  
+  if(hebrew_calendar_elapsed_months (5763) != 71266
+     || hebrew_calendar_elapsed_months (5764) != 71279){
+    printf("Error in elapsed months.\n");
+    return 0;
+  }
+  
+  if(hebrew_calendar_elapsed_days (5763) != 2104528){
+    printf("Error in elapsed days.\n");
+    return 0;
+  }
+
+  return 1;
+}
 
 //Define this for unit testing in Unix.
 #ifdef STANDALONE
@@ -320,7 +351,6 @@ int main(){
 	 y,m,d,dow);
 
   udate=hebrew_get_universal(y,m,d);
-  //udate=hebrew_get_universal(1900,1,1);
   printf("Days since 1900: %d\n",
 	 udate);
 
@@ -328,6 +358,8 @@ int main(){
   printf("Hebrew: %02d %s %04d, %s\n",
 	 hdate.day, hmonths[hdate.month], hdate.year,
 	 hdaysofweek[dow]);
+
+  assert(hebrew_selftest());
   
   return 0;
 }

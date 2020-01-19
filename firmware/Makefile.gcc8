@@ -5,16 +5,18 @@ RPN_APP = 1
 HEX_APP = 1
 STOPWATCH_APP = 1
 PHRASE_APP = 0
-SHABBAT_APP = 0
+HEBREW_APP = 1
+SHABBAT_APP = 1
 RNG_APP = 1
-TUNER_APP = 1
-MORSE_APP = 1
+TUNER_APP = 0
+MORSE_APP = 0
 BEACON_APP = 0
 OOK_APP = 1
 COUNTER_APP = 1
-DMESG_APP = 1
-PAGER_APP = 1
+DMESG_APP = 0
+PAGER_APP = 0
 JUKEBOX_APP = 1
+
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT = /dev/ttyUSB0
@@ -29,6 +31,10 @@ endif
 ifeq ($(SHABBAT_APP),1)
 APPS_OBJ += apps/shabbat.o 
 APPS_DEFINES += SHABBAT_APP
+endif
+ifeq ($(HEBREW_APP),1)
+APPS_OBJ += apps/hebrew.o libs/hebrew.o
+APPS_DEFINES += HEBREW_APP
 endif
 ifeq ($(DMESG_APP),1)
 APPS_OBJ += apps/dmesg.o 
@@ -121,6 +127,7 @@ goodwatch.hex: goodwatch.elf
 
 clean:
 	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h buildtime.h html latex goodwatch.elf energytrace.png energytrace.txt codeplugstr.c dmesg.bin
+	cd libs && make clean
 erase:
 	$(BSL) -e
 sbwflash: goodwatch.hex codeplug.hex
