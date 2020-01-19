@@ -18,27 +18,27 @@
 #include "hebrew.h"
 
 /* Test whether the given year is a Hebrew calendar leap year. */
-static int hebrew_calendar_leap_year_p (int year) {
+static int hebrew_calendar_leap_year_p (uint16_t year) {
   return ((7 * year + 1) % 19) < 7;
 }
 
 /* Months up to mean conjunction of Tishri of the given year. */
-static int hebrew_calendar_elapsed_months (int year) {
+static uint32_t hebrew_calendar_elapsed_months (uint16_t year) {
   return ((year - 1) / 19) * 235
          + ((year - 1) % 19) * 12
          + (((year - 1) % 19) * 7 + 1) / 19;
 }
 
 /* Days up to mean conjunction of Tishri of the given year. */
-static int hebrew_calendar_elapsed_days (int year) {
-  int months_elapsed = hebrew_calendar_elapsed_months (year);
-  int parts_elapsed = (months_elapsed % 1080) * 793 + 204;
-  int hours_elapsed =
+static uint32_t hebrew_calendar_elapsed_days (uint16_t year) {
+  uint32_t months_elapsed = hebrew_calendar_elapsed_months (year);
+  uint32_t parts_elapsed = (months_elapsed % 1080) * 793 + 204;
+  uint32_t hours_elapsed =
     5 + months_elapsed * 12 + (months_elapsed / 1080) * 793
     + (parts_elapsed / 1080);
-  int parts = (hours_elapsed % 24) * 1080 + (parts_elapsed % 1080);
-  int day = 1 + months_elapsed * 29 + (hours_elapsed / 24);
-  int day1 =
+  uint32_t parts = (hours_elapsed % 24) * 1080 + (parts_elapsed % 1080);
+  uint32_t day = 1 + months_elapsed * 29 + (hours_elapsed / 24);
+  uint32_t day1 =
     (parts >= 19440
      || ((day % 7) == 2 && parts >= 9924
          && !hebrew_calendar_leap_year_p (year))
@@ -46,7 +46,7 @@ static int hebrew_calendar_elapsed_days (int year) {
          && hebrew_calendar_leap_year_p (year - 1))
      ? day + 1
      : day);
-  int day2 =
+  uint32_t day2 =
     ((day1 % 7) == 0 || (day1 % 7) == 3 || (day1 % 7) == 5
      ? day1 + 1
      : day1);
@@ -60,28 +60,28 @@ static int hebrew_calendar_elapsed_days (int year) {
    Note that the result                is in the range 351..357 or 380..386.
    Probably (but I cannot prove it) it is in the range 353..355 or 383..385.
 */
-static int hebrew_calendar_days_in_year (int year) {
+static int hebrew_calendar_days_in_year (uint16_t year) {
   return hebrew_calendar_elapsed_days (year + 1)
          - hebrew_calendar_elapsed_days (year);
 }
 
 /* Test whether in the given year, the Heshvan month is long. */
-static int hebrew_calendar_long_heshvan_p (int year) {
+static int hebrew_calendar_long_heshvan_p (uint16_t year) {
   return (hebrew_calendar_days_in_year (year) % 10) == 5;
 }
 
 /* Test whether in the given year, the Kislev month is short. */
-static int hebrew_calendar_short_kislev_p (int year) {
+static int hebrew_calendar_short_kislev_p (uint16_t year) {
   return (hebrew_calendar_days_in_year (year) % 10) == 3;
 }
 
 /* Return the number of months of the given year. */
-static int hebrew_calendar_months_in_year (int year) {
+static int hebrew_calendar_months_in_year (uint16_t year) {
   return (hebrew_calendar_leap_year_p (year) ? 13 : 12);
 }
 
 /* Return the number of days in the given month of the given year. */
-static int hebrew_calendar_last_day_of_month (int year, int month) {
+static int hebrew_calendar_last_day_of_month (uint16_t year, uint16_t month) {
   /* Note that month 7 is the first month, and month 6 is the last one. */
   switch (month) {
   case 7: /* Tishri */
@@ -117,25 +117,6 @@ static int hebrew_calendar_last_day_of_month (int year, int month) {
   }
 }
 
-/* Return the number of days since 1900-01-01 of a given Hebrew date. */
-static int hebrew_calendar_to_universal (int year, int month, int day) {
-  int days;
-  int m;
-
-  days = hebrew_calendar_elapsed_days (year) - 2067024;
-  if (month < 7) {
-    int max_month = hebrew_calendar_months_in_year (year);
-    for (m = 7; m <= max_month; m++)
-      days += hebrew_calendar_last_day_of_month (year, m);
-    for (m = 1; m < month; m++)
-      days += hebrew_calendar_last_day_of_month (year, m);
-  } else {
-    for (m = 7; m < month; m++)
-      days += hebrew_calendar_last_day_of_month (year, m);
-  }
-  days += day - 1;
-  return days;
-}
 
 
 /* Return the Hebrew date corresponding to a given universal date (= number
@@ -144,14 +125,15 @@ static int hebrew_calendar_to_universal (int year, int month, int day) {
      hebrew_calendar_from_universal (37888) = { 5763, 6, 29 }
      hebrew_calendar_from_universal (37889) = { 5764, 7,  1 }
 */
-void hebrew_calendar_from_universal (int udate, struct hebrew_date *result) {
-  int year;
-  int elapsed_days;
-  int remaining_days;
+void hebrew_calendar_from_universal (uint32_t udate, struct hebrew_date *result) {
+  uint16_t year;
+  uint32_t elapsed_days;
+  uint32_t remaining_days;
   int max_month;
   int month;
 
-  year = (int)((float)udate/(float)365.2422) + 5661;
+  year = (uint16_t)((float)udate/(float)365.2422) + 5661;
+  
   for (;; year--) {
     elapsed_days = hebrew_calendar_elapsed_days (year) - 2067024;
     if (udate >= elapsed_days)
@@ -161,14 +143,14 @@ void hebrew_calendar_from_universal (int udate, struct hebrew_date *result) {
   remaining_days = udate - elapsed_days;
   max_month = hebrew_calendar_months_in_year (year);
   for (month = 7; month <= max_month; month++) {
-    int mlength = hebrew_calendar_last_day_of_month (year, month);
+    uint16_t mlength = hebrew_calendar_last_day_of_month (year, month);
     if (remaining_days < mlength)
       break;
     remaining_days -= mlength;
   }
   if (month > max_month) {
     for (month = 1; month < 7; month++) {
-      int mlength = hebrew_calendar_last_day_of_month (year, month);
+      uint16_t mlength = hebrew_calendar_last_day_of_month (year, month);
       if (remaining_days < mlength)
         break;
       remaining_days -= mlength;
@@ -183,9 +165,9 @@ void hebrew_calendar_from_universal (int udate, struct hebrew_date *result) {
   result->day = remaining_days + 1;
 }
 
-/* Return the number of Hanukka candles for a given universal date. */
+/* Return the number of Hanukka candles for a given universal date.
 static int hebrew_calendar_hanukka_candles (int udate) {
-  /* The first day of Hanukka is on 25 Kislev. */
+  // The first day of Hanukka is on 25 Kislev.
   struct hebrew_date date;
   int hanukka_first_day;
 
@@ -196,6 +178,7 @@ static int hebrew_calendar_hanukka_candles (int udate) {
   else
     return 0;
 }
+*/
 
 // To store number of days in all months from January to Dec. 
 const int monthDays[12] = {31, 28, 31, 30, 31, 30, 
@@ -216,10 +199,10 @@ static int countLeapYears(int y, int m, int d) {
 } 
   
 // This function returns number of days since 1900-01-01
-uint32_t get_universal(int y, int m, int d)  {
+uint32_t hebrew_get_universal(int y, int m, int d)  {
   // Total number of days since 0.
   uint32_t n = ((uint32_t)y)*365 + d; 
-  for (int i=0; i< m-1; i++) 
+  for (uint16_t i=0; i< m-1; i++) 
     n += monthDays[i]; 
   n += countLeapYears(y, m, d); 
   
@@ -237,7 +220,8 @@ const char *hdaysofweek[7]={
   " Shabbat"
 };
 
-/* Months are in the Civil order number, not the religious order.
+/* Months are in the religious order, not the civil one, so that the
+   leap years come at the end.  0 is an error.
  */
 const char *hmonths[14]={
   "   Error",
@@ -260,6 +244,27 @@ const char *hmonths[14]={
 
 //Define this for unit testing in Unix.
 #ifdef STANDALONE
+
+/* Return the number of days since 1900-01-01 of a given Hebrew date. */
+static int hebrew_calendar_to_universal (int year, int month, int day) {
+  uint32_t days;
+  int m;
+
+  days = hebrew_calendar_elapsed_days (year) - 2067024;
+  if (month < 7) {
+    int max_month = hebrew_calendar_months_in_year (year);
+    for (m = 7; m <= max_month; m++)
+      days += hebrew_calendar_last_day_of_month (year, m);
+    for (m = 1; m < month; m++)
+      days += hebrew_calendar_last_day_of_month (year, m);
+  } else {
+    for (m = 7; m < month; m++)
+      days += hebrew_calendar_last_day_of_month (year, m);
+  }
+  days += day - 1;
+  return days;
+}
+
 
 #include <stdio.h>
 #include <assert.h>
@@ -314,8 +319,8 @@ int main(){
   printf("Gregorian: %04d.%02d.%02d, DOW=%d\n",
 	 y,m,d,dow);
 
-  udate=get_universal(y,m,d);
-  //udate=get_universal(1900,1,1);
+  udate=hebrew_get_universal(y,m,d);
+  //udate=hebrew_get_universal(1900,1,1);
   printf("Days since 1900: %d\n",
 	 udate);
 
