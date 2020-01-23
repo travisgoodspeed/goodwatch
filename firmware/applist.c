@@ -78,11 +78,21 @@ const struct app subapps[]={
 
 #ifdef SHABBAT_APP
   //Kosher applet for Shabbat that disables all inputs except the SET button.
-  {.name="shabbat ", .init=shabbat_init, .draw=shabbat_draw, .exit=shabbat_exit,
+  {.name="shabbat", .init=shabbat_init, .draw=shabbat_draw, .exit=shabbat_exit,
    .keypress=shabbat_keypress
   },
 #endif
-  
+
+
+#ifdef HEBREW_APP
+  //Hebrew Calendar applet.  Falls through so that it can run from the clock.
+  {.name="hebrew", .fallthrough=hebrew_keypress
+   //.init=hebrew_init, .draw=hebrew_draw, .exit=hebrew_exit,
+   //.keypress=hebrew_keypress,
+   
+  },
+#endif
+
 #ifdef PHRASE_APP
   // Phrase - passphrase generator
   {.name="phrase", .init=phrase_init, .draw=phrase_draw, .exit=phrase_exit,

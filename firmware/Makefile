@@ -5,16 +5,18 @@ RPN_APP = 1
 HEX_APP = 1
 STOPWATCH_APP = 1
 PHRASE_APP = 0
-SHABBAT_APP = 0
+HEBREW_APP = 1
+SHABBAT_APP = 1
 RNG_APP = 1
-TUNER_APP = 1
-MORSE_APP = 1
+TUNER_APP = 0
+MORSE_APP = 0
 BEACON_APP = 0
 OOK_APP = 1
 COUNTER_APP = 1
-DMESG_APP = 1
-PAGER_APP = 1
+DMESG_APP = 0
+PAGER_APP = 0
 JUKEBOX_APP = 1
+
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT = /dev/ttyUSB0
@@ -29,6 +31,10 @@ endif
 ifeq ($(SHABBAT_APP),1)
 APPS_OBJ += apps/shabbat.o 
 APPS_DEFINES += SHABBAT_APP
+endif
+ifeq ($(HEBREW_APP),1)
+APPS_OBJ += apps/hebrew.o libs/hebrew.o
+APPS_DEFINES += HEBREW_APP
 endif
 ifeq ($(DMESG_APP),1)
 APPS_OBJ += apps/dmesg.o 
@@ -88,12 +94,12 @@ APPS_DEFINES += JUKEBOX_APP
 endif
 
 
-#Standard Debian gcc-msp430 and msp430mcu packages.
-CC = msp430-gcc -mmcu=cc430f6137 -Wall -I. -Os  $(addprefix -D, $(APPS_DEFINES)) -Wl,--gc-sections -fdata-sections -ffunction-sections 
+#GCC8 from Texas Instruments, not the GCC4 that ships with Debian.
+CC = msp430-elf-gcc -minrt -msmall -mmcu=cc430f6137 -Wall -I. -I/opt/msp430-gcc-support-files/include -Os  $(addprefix -D, $(APPS_DEFINES)) -Wl,--gc-sections,--print-gc-sections -fdata-sections -ffunction-sections -fno-asynchronous-unwind-tables -flto
 
 BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
-modules=rtcasm-r15.o main.o lcd.o lcdtext.o rtc.o  keypad.o bcd.o apps.o\
+modules=rtcasm-r12.o main.o lcd.o lcdtext.o rtc.o  keypad.o bcd.o apps.o\
 	applist.o adc.o ref.o codeplugstr.o \
 	sidebutton.o power.o uart.o monitor.o ucs.o buzz.o \
 	radio.o packet.o dmesg.o codeplug.o rng.o descriptor.o \
@@ -112,14 +118,16 @@ buildtime.h:
 	../bin/buildtime.py >buildtime.h
 
 goodwatch.elf: $(modules) $(apps) *.h  
-	$(CC) -T msp430.x -o goodwatch.elf $(modules) $(apps)
+	#$(CC) -T msp430.x -o goodwatch.elf $(modules) $(apps)
+	$(CC)  -T cc430f6137.ld -o goodwatch.elf $(modules) $(apps)
 	../bin/printsizes.py goodwatch.elf || echo "Please install python-pyelftools."
 
 goodwatch.hex: goodwatch.elf
-	msp430-objcopy -O ihex goodwatch.elf goodwatch.hex
+	msp430-elf-objcopy -O ihex goodwatch.elf goodwatch.hex
 
 clean:
 	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h buildtime.h html latex goodwatch.elf energytrace.png energytrace.txt codeplugstr.c dmesg.bin
+	cd libs && make clean
 erase:
 	$(BSL) -e
 sbwflash: goodwatch.hex codeplug.hex

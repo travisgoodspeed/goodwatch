@@ -72,7 +72,15 @@ int submenu_exit(){
   return 1;
 }
 
-//! Draw the submenu selected.
-void submenu_drawselected(){
-  lcd_string("selected");
+//! Lets a keypress fall through from the clock to the select submenu applet.
+int submenu_fallthrough(char ch){
+  /* Technically any key which is not handled by the clock applet will
+     fall through, but only the third row (1,2,3,-) is expected to
+     remain unused.
+   */
+  if(subapps[subindex].fallthrough)
+    return subapps[subindex].fallthrough(ch);
+
+  //Return 1 if there is no handler, so tha the screen is redrawn.
+  return 1;
 }

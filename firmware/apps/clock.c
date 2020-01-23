@@ -264,9 +264,10 @@ int clock_keypress(char ch){
     break;
 
       
-  case '1':
-    /* 1 shows the the voltage.  To save on power, the reference is
-       not active when idling. */
+  case '=':
+    /* = shows the the voltage.  To save on power, the reference is
+     *   not active when idling.  This used to be the 1 button.
+     */
     ref_on();
     vcc=adc_getvcc();
     ref_off();
@@ -300,6 +301,14 @@ int clock_keypress(char ch){
        for learning the code or when it's too dark to see the display.
      */
     clock_playtime(1);
+    break;
+
+  default:
+    /* All unused buttons fall through to the handler of the selected
+       submenu applet, but only the third row (1,2,3,-) is expected to
+       remain unused in the long run.
+     */
+    return submenu_fallthrough(ch);
     break;
   }
   return 1;

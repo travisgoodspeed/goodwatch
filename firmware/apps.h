@@ -11,7 +11,7 @@ extern const struct app *applet;
 struct app {
   char *name;         //Shows when entering the app.
   void (*init)(void); //Called exactly once at startup.
-  void (*draw)(int); //Called four times per second to draw display.
+  void (*draw)(int);  //Called four times per second to draw display.
   
   /* Called once when moving to the next applet.  Returns zero (or is
      NULL) if the application may move on, or returns non-zero if the
@@ -29,9 +29,23 @@ struct app {
   */
   int (*keypress)(char ch);//A keypress has arrived.
 
+  /* Sometimes an app would like to operate without being explicitly
+     entered.  For example, we might want the OOK app to be able to
+     ring a doorbell or buzz a dog collar without taking the trouble
+     to manually enter it.  For those cases, we have a fallthrough
+     handler with the same calling convention as the keypress()
+     function.  They might even be defined to the same handler.
+     
+     For now, only the clock applet falls through to another, and it
+     only falls through for the buttons 1,2,3,-.  This is subject to
+     change.
+   */
+  int (*fallthrough)(char ch);//A keypress has fallen through from the clock.
+
   /* Callbacks for packets being sent and received.  Set to null if unused. */
   void (*packetrx)(uint8_t *packet, int len); //A packet has arrived.
   void (*packettx)(void); //A packet has been sent.
+
 };
 
 
