@@ -20,7 +20,7 @@
 
 
 /* Test whether the given year is a Hebrew calendar leap year. */
-static int hebrew_calendar_leap_year_p (uint16_t year) {
+int hebrew_calendar_leap_year_p (uint16_t year) {
   return ((7 * year + 1) % 19) < 7;
 }
 
@@ -218,7 +218,7 @@ const char *hdaysofweek[7]={
   "  Rishon",
   "   Sheni",
   " Shlishi",
-  "  Revi'i",
+  "   Revii",
   "Chamishi",
   "  Shishi",
   " Shabbat"
@@ -233,18 +233,18 @@ const char *hdaysofweek[7]={
 const char *hmonths[14]={
   "   Error",
   //Religious year begins here.
-  "   Nisan", //7 Civil
+  "    Nssn", //Nisan, 7 Civil
   "    Iyar",
-  "   Sivan",
-  "   Tamuz", //Tammuz
+  "     Svn", //Sivan
+  "    TMMZ", //Tammuz
   "      Av",
   "    Elul", //6 Civil
-  "  Tishri", //1 Civil, Tishrei
-  "  Chshvn", //Cheshvan
-  "  Kislev",
+  "    Tish", //1 Civil, Tishrei
+  "   Chesh", //Cheshvan
+  "    Kslv",
   "   Tevet",
-  "  Shevat",
-  "    Adar", //Adar I in leap hears.
+  "    Shvt", //Shevat
+  "    Adar", //Adar I in leap years.
   "   Adar2"
 };
 

@@ -42,12 +42,6 @@ static void hebrew_update(){
   uint32_t udate=hebrew_get_universal(RTCYEAR, RTCMON, RTCDAY);
   //uint32_t udate=hebrew_get_universal(1900, 1, 1);
   hebrew_calendar_from_universal(udate, &hdate);
-
-  /*
-  printf("Hebrew: %02d %s %04d, %s\n",
-	 hdate.day, hmonths[hdate.month], hdate.year,
-	 hdaysofweek[RTCDOW]);
-  */
 }
 
 //! Draw the day of the week.
@@ -59,8 +53,19 @@ static void hebrew_draw_dow(){
 static void hebrew_draw_date(){
   //Call this before anything that uses the date!
   hebrew_update();
-  
-  lcd_string(hmonths[hdate.month]);
+
+  /* Because the month index is ambiguous between the Biblical and
+     Civil calendars, we must display the month.  hmonths[] is an
+     array of abreviated strings that are right-aligned on the
+     display, leaving the two leftmost digits for the number.
+     
+     Also, Adar 1 is the "extra month" in leap years, and we must
+     manually override the table as an exception to that.
+   */
+  if(hdate.month==12 && hebrew_calendar_leap_year_p(hdate.year))
+    lcd_string("  adar1");
+  else
+    lcd_string(hmonths[hdate.month]);
   lcd_digit(7, (hdate.day/10)%10);
   lcd_digit(6, hdate.day%10);
 }
