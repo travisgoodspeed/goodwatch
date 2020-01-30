@@ -36,6 +36,8 @@ static const uint8_t prefix[SHADERS_PREFIX_LENGTH] = "\xff\xff"
                                     //preamble
                                     "\x01\xe1\xe1\xfe";
 
+static uint32_t selected_id = 1;
+
 // TODO: optimize by doing it in place with an already 2*data_size array
 // size is 14 and data to encode are starting at position size/2 (7)
 static void manchester_encode(uint8_t *data, size_t size){
@@ -129,8 +131,23 @@ static void transmit(int command){
 void shaders_packettx(){
   /* Schedule next packet if a number is being held.  We should send the same packet?
   */
-  if(lastch<='9' && lastch>='0'){
+  if(lastch<='9' && lastch>='1'){
+    selected_id = lastch-'0';
+    return;
+  }
+  switch (lastch)
+  {
+  case '/':
     transmit(SHADERS_UP);
+    break;
+  case '*':
+    transmit(SHADERS_MY);
+    break;
+  case '-':
+    transmit(SHADERS_DOWN);
+    break;
+  case '=':
+    transmit(SHADERS_PROG);
   }
 }
 
