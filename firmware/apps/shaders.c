@@ -25,6 +25,14 @@ static const uint8_t shaders_settings[]={
   0,0
 };
 
+//prefix to add before encoded data
+static const uint8_t prefix[SHADERS_PREFIX_LENGTH] = "\xff\xff"  
+                                    //pad with zeros
+                                    "\x00\x00\x00\x00"
+                                    "\x00\x00\x00\x00"
+                                    "\x00\x00\x00\x00"
+                                    //preamble
+                                    "\x01\xe1\xe1\xfe";
 
 // TODO: optimize by doing it in place with an already 2*data_size array
 // size is 14 and data to encode are starting at position size/2 (7)
@@ -74,10 +82,10 @@ static void set_crc(uint8_t *data){
 static void make_raw_payload(uint8_t *data, uint32_t id, uint32_t rollingcode, uint8_t command){
   data[0] = SHADERS_ENC_KEY;
   data[1] = command << 4;
-  data[2] = rollingcode >> 4;
+  data[2] = rollingcode >> 8;
   data[3] = rollingcode;
-  data[4] = id >> 8;
-  data[5] = id >> 4;
+  data[4] = id >> 16;
+  data[5] = id >> 8;
   data[6] = id;
 
   set_crc(data);
@@ -100,10 +108,11 @@ static void transmit(int command){
   int selected = 5; //TODO replace that
 
   uint32_t id = SHADERS_BASE_ID + selected;
-  make_raw_payload(packet+SHADERS_PACKET_LENGTH-7, id, 12345, command);
-  encrypt(packet+SHADERS_PACKET_LENGTH-7, 7);
-  manchester_encode(packet, SHADERS_PACKET_LENGTH);
-  packet_tx(packet, 14);
+  make_raw_payload(packet+SHADERS_PACKET_LENGTH-SHADERS_RAW_PAYLOAD_LENGTH, id, 12345, command);
+  encrypt(packet+SHADERS_PACKET_LENGTH-SHADERS_RAW_PAYLOAD_LENGTH, SHADERS_RAW_PAYLOAD_LENGTH);
+  manchester_encode(packet+SHADERS_PACKET_LENGTH-2*SHADERS_RAW_PAYLOAD_LENGTH, 2*SHADERS_RAW_PAYLOAD_LENGTH);
+  memcpy(packet, prefix, SHADERS_PREFIX_LENGTH);
+  packet_tx(packet, SHADERS_PACKET_LENGTH);
 }
 
 //! Set the rate.

@@ -13,10 +13,13 @@
 #define SHADERS_BASE_ID 0x232320
 
 // TODO double check that
-#define SHADERS_PACKET_LENGTH 14
+#define SHADERS_PACKET_LENGTH 32
+#define SHADERS_PREFIX_LENGTH 18
 
 // https://pushstack.wordpress.com/somfy-rts-protocol/
 #define SHADERS_RAW_PAYLOAD_LENGTH 7
+
+// /!\ NORMALLY SHADERS_PACKET_LENGTH = SHADERS_PREFIX_LENGTH + SHADERS_RAW_PAYLOAD_LENGTH*2
 
 #define SHADERS_ENC_KEY 0xA8
 
