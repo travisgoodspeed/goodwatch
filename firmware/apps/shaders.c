@@ -35,20 +35,20 @@ static void manchester_encode(uint8_t *data, size_t size){
   uint8_t v;
   uint8_t bit;
   for(i=starting_pos ; i<size ; i++){
-    //vl
-    v = 0;
-    for(j=0 ; j<4 ; j++){
-      bit = ((data[i] << (7-j)) & 255) >> 7;
-      v += (2 ^ (bit << 1 | bit)) << (2*j);
-    }
-    data[2*(i-starting_pos)+1] = v;
     //vh
     v = 0;
     for(j=4 ; j<8 ; j++){
       bit = ((data[i] << (7-j)) & 255) >> 7;
       v += (2 ^ (bit << 1 | bit)) << (2*(j-4));
     }
+    //vl
     data[2*(i-starting_pos)] = v;
+    v = 0;
+    for(j=0 ; j<4 ; j++){
+      bit = ((data[i] << (7-j)) & 255) >> 7;
+      v += (2 ^ (bit << 1 | bit)) << (2*j);
+    }
+    data[2*(i-starting_pos)+1] = v;
   }
 }
 
