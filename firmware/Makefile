@@ -2,20 +2,21 @@
 ALARM_APP = 1
 CALIBRATE_APP = 1
 RPN_APP = 1
-HEX_APP = 1
+HEX_APP = 0
 STOPWATCH_APP = 1
 PHRASE_APP = 0
-HEBREW_APP = 1
-SHABBAT_APP = 1
+HEBREW_APP = 0
+SHABBAT_APP = 0
 RNG_APP = 1
 TUNER_APP = 0
 MORSE_APP = 0
 BEACON_APP = 0
-OOK_APP = 1
-COUNTER_APP = 1
+OOK_APP = 0
+SHADERS_APP = 1
+COUNTER_APP = 0
 DMESG_APP = 0
 PAGER_APP = 0
-JUKEBOX_APP = 1
+JUKEBOX_APP = 0
 
 
 #set default flashing serial port, dont override if passed in as an argument
@@ -79,6 +80,10 @@ endif
 ifeq ($(OOK_APP),1)
 APPS_OBJ += apps/ook.o
 APPS_DEFINES += OOK_APP 
+endif
+ifeq ($(SHADERS_APP),1)
+APPS_OBJ += apps/shaders.o
+APPS_DEFINES += SHADERS_APP 
 endif
 ifeq ($(COUNTER_APP),1)
 APPS_OBJ += apps/counter.o
