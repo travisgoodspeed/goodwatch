@@ -3,7 +3,6 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <msp430.h>
 #include "api.h"
@@ -28,29 +27,29 @@ static const uint8_t shaders_settings[]={
 
 
 // TODO: optimize by doing it in place with an already 2*data_size array
-static unsigned char* manchester_encode(uint8_t *data, size_t size){
+// size is 14 and data to encode are starting at position size/2 (7)
+static void manchester_encode(uint8_t *data, size_t size){
+  unsigned int starting_pos = size/2;
   unsigned int i;
-  uint8_t * out = malloc(2*size);
   unsigned int j;
   uint8_t v;
   uint8_t bit;
-  for(i=0 ; i<size ; i++){
+  for(i=starting_pos ; i<size ; i++){
     //vl
     v = 0;
     for(j=0 ; j<4 ; j++){
       bit = ((data[i] << (7-j)) & 255) >> 7;
       v += (2 ^ (bit << 1 | bit)) << (2*j);
     }
-    out[2*i+1] = v;
+    data[2*(i-starting_pos)+1] = v;
     //vh
     v = 0;
     for(j=4 ; j<8 ; j++){
       bit = ((data[i] << (7-j)) & 255) >> 7;
       v += (2 ^ (bit << 1 | bit)) << (2*(j-4));
     }
-    out[2*i] = v;
+    data[2*(i-starting_pos)] = v;
   }
-  return out;
 }
 
 // encrypts in place
@@ -93,7 +92,7 @@ static char lastch=0;
 
 //! Send a packet.
 static void transmit(int command){
-  uint8_t *packet = malloc(SHADERS_PACKET_LENGTH);
+  uint8_t packet[SHADERS_PACKET_LENGTH];
   memset(packet, 0, SHADERS_PACKET_LENGTH);
     
   //get the currently selected remote id
@@ -101,12 +100,10 @@ static void transmit(int command){
   int selected = 5; //TODO replace that
 
   uint32_t id = SHADERS_BASE_ID + selected;
-  make_raw_payload(packet+PACKETLEN-7, id, 12345, command);
+  make_raw_payload(packet+SHADERS_PACKET_LENGTH-7, id, 12345, command);
   encrypt(packet+SHADERS_PACKET_LENGTH-7, 7);
-  uint8_t *packet_final = manchester_encode(packet+SHADERS_PACKET_LENGTH-7, 7);
-  free(packet);
-  packet_tx(packet_final, 14);
-  free(packet_final);
+  manchester_encode(packet, SHADERS_PACKET_LENGTH);
+  packet_tx(packet, 14);
 }
 
 //! Set the rate.
