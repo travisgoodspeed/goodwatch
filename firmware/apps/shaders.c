@@ -25,6 +25,8 @@ static const uint8_t shaders_settings[]={
   0,0
 };
 
+static uint16_t rolling_codes[9] = {0,0,0,0,0,0,0,0,0}
+
 //prefix to add before encoded data
 static const uint8_t prefix[SHADERS_PREFIX_LENGTH] = "\xff\xff"  
                                     //pad with zeros
@@ -79,11 +81,11 @@ static void set_crc(uint8_t *data){
   data[1] = data[1] | (crc & 0x0f);
 }
 
-static void make_raw_payload(uint8_t *data, uint32_t id, uint32_t rollingcode, uint8_t command){
+static void make_raw_payload(uint8_t *data, uint32_t id, uint8_t command){
   data[0] = SHADERS_ENC_KEY;
   data[1] = command << 4;
-  data[2] = rollingcode >> 8;
-  data[3] = rollingcode;
+  data[2] = rolling_codes[selected_id-1] >> 8;
+  data[3] = rolling_codes[selected_id-1];
   data[4] = id >> 16;
   data[5] = id >> 8;
   data[6] = id;
@@ -108,7 +110,7 @@ static void transmit(int command){
   int selected = 5; //TODO replace that
 
   uint32_t id = SHADERS_BASE_ID + selected;
-  make_raw_payload(packet+SHADERS_PACKET_LENGTH-SHADERS_RAW_PAYLOAD_LENGTH, id, 12345, command);
+  make_raw_payload(packet+SHADERS_PACKET_LENGTH-SHADERS_RAW_PAYLOAD_LENGTH, id, command);
   encrypt(packet+SHADERS_PACKET_LENGTH-SHADERS_RAW_PAYLOAD_LENGTH, SHADERS_RAW_PAYLOAD_LENGTH);
   manchester_encode(packet+SHADERS_PACKET_LENGTH-2*SHADERS_RAW_PAYLOAD_LENGTH, 2*SHADERS_RAW_PAYLOAD_LENGTH);
   memcpy(packet, prefix, SHADERS_PREFIX_LENGTH);
@@ -195,6 +197,7 @@ int shaders_keypress(char ch){
     shaders_packettx();
   }else{
     //Shut down the radio when the button is released.
+    rolling_codes[selected_id-1] = rolling_codes[selected_id-1]+1;
     radio_off();
     lcd_zero(); //Clear the clock and radio indicators.
     lcd_string(" SHADERS");
