@@ -1,5 +1,33 @@
 /*! \file shaders.c
   \brief Implements somfy RTS protocol
+
+  This is an implementation of the somfy RTS protocol to control
+  window blinds using the goodwatch.
+  
+  With the RTS protocol, each remote has a unique id and a rolling code 
+  associated. We a button is pressed, a packet is broadcasted and the 
+  window blinds around are triggered depending on if the id is registered as
+  one of their controler(s) and if the rolling code matches.
+
+  Ths app lets you register your goodwatch as a new remote for your blind.
+  It will have its own rolling code and so will not desynchronise your real
+  remote. To register and use a remote do:
+   - put the blind is learn mode by holding the red button at the back of an
+     already adopted remote. The shader will go up and down to mean it's in 
+     learn mode.
+   - on the watch, press for instance '3' to select id '3' and then press '=' to
+     send the 'register' packet. The shaders will go up and down. From now on,
+     the shader will accept packets from your watch from your id '3'.
+   - you can now press '/' to go up, '*' for the 'MY' button, and '-' to go down.
+     If you want to change id (let's say 5), press 5 and then the command you want.
+     Rolling codes are updated per id.
+
+  Since the protocol contains rolling codes, checksums and is obfuscated, the 
+  packets are recomputed for every keypress.
+  The packet is made of a prefix (wake up + preamble) to with manchester encoded 
+  data is appended. The data itself is xor obfuscated. Take a look at 
+  https://pushstack.wordpress.com/somfy-rts-protocol/ for more information.
+  
 */
 
 #include <stdio.h>
@@ -25,7 +53,8 @@ static const uint8_t shaders_settings[]={
   0,0
 };
 
-static uint16_t rolling_codes[9] = {0,0,0,0,0,0,0,0,0}
+//! All rolling codes are initialized to 0 at boot.
+static uint16_t rolling_codes[9] = {0,0,0,0,0,0,0,0,0};
 
 //prefix to add before encoded data
 static const uint8_t prefix[SHADERS_PREFIX_LENGTH] = "\xff\xff"  
@@ -38,8 +67,7 @@ static const uint8_t prefix[SHADERS_PREFIX_LENGTH] = "\xff\xff"
 
 static uint32_t selected_id = 1;
 
-// TODO: optimize by doing it in place with an already 2*data_size array
-// size is 14 and data to encode are starting at position size/2 (7)
+// size should be 14 and data to encode are starting at position size/2 (7)
 static void manchester_encode(uint8_t *data, size_t size){
   unsigned int starting_pos = size/2;
   unsigned int i;
@@ -106,12 +134,8 @@ static char lastch=0;
 static void transmit(int command){
   uint8_t packet[SHADERS_PACKET_LENGTH];
   memset(packet, 0, SHADERS_PACKET_LENGTH);
-    
-  //get the currently selected remote id
-  //TODO
-  int selected = 5; //TODO replace that
 
-  uint32_t id = SHADERS_BASE_ID + selected;
+  uint32_t id = SHADERS_BASE_ID + selected_id;
   make_raw_payload(packet+SHADERS_PACKET_LENGTH-SHADERS_RAW_PAYLOAD_LENGTH, id, command);
   encrypt(packet+SHADERS_PACKET_LENGTH-SHADERS_RAW_PAYLOAD_LENGTH, SHADERS_RAW_PAYLOAD_LENGTH);
   manchester_encode(packet+SHADERS_PACKET_LENGTH-2*SHADERS_RAW_PAYLOAD_LENGTH, 2*SHADERS_RAW_PAYLOAD_LENGTH);
@@ -131,10 +155,6 @@ static void transmit(int command){
 void shaders_packettx(){
   /* Schedule next packet if a number is being held.  We should send the same packet?
   */
-  if(lastch<='9' && lastch>='1'){
-    selected_id = lastch-'0';
-    return;
-  }
   switch (lastch)
   {
   case '/':
@@ -201,8 +221,14 @@ int shaders_keypress(char ch){
      transmission.  That function is also the callback from the packet
      library, so it will keep running in a loop until the key is
      released.
-   */
-  if( (lastch=ch) && ch>='0' && ch<='9' ){
+   */ 
+  if(ch<='9' && ch>='1'){
+    selected_id = ch-'0';
+    return 0;
+  }
+
+  if(ch=='/' || ch=='*' || ch=='-' || ch=='='){
+    lastch = ch;
     //Radio settings.
     radio_on();
     radio_writesettings(shaders_settings);
@@ -213,8 +239,12 @@ int shaders_keypress(char ch){
     //This handler will be called back as the packet finished transmission.
     shaders_packettx();
   }else{
+    if (lastch=='/' || lastch=='*' || lastch=='-' || lastch=='='){
+      //Increase rolling code when the button is release
+      rolling_codes[selected_id-1] = rolling_codes[selected_id-1]+1;
+    }
+    lastch = ch;
     //Shut down the radio when the button is released.
-    rolling_codes[selected_id-1] = rolling_codes[selected_id-1]+1;
     radio_off();
     lcd_zero(); //Clear the clock and radio indicators.
     lcd_string(" SHADERS");
