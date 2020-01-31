@@ -9,9 +9,9 @@
   window blinds around are triggered depending on if the id is registered as
   one of their controler(s) and if the rolling code matches.
 
-  Ths app lets you register your goodwatch as a new remote for your blind.
-  It will have its own rolling code and so will not desynchronise your real
-  remote. To register and use a remote do:
+  This app lets you register your goodwatch as a new remote for your blind.
+  It will have its own rolling code and so will not desynchronize your real
+  remote. To register and use a remote:
    - put the blind is learn mode by holding the red button at the back of an
      already adopted remote. The shader will go up and down to mean it's in 
      learn mode.
@@ -143,14 +143,6 @@ static void transmit(int command){
   packet_tx(packet, SHADERS_PACKET_LENGTH);
 }
 
-//! Set the rate.
-//TODO: don't need that ?
-// static void setrate(int index){
-//   //First two bytes are the rate.
-//   radio_writereg(MDMCFG4, ((uint8_t*) button_array[index])[0]);
-//   radio_writereg(MDMCFG3, ((uint8_t*) button_array[index])[1]);
-// }
-
 //! Called after a transmission, or on a button press.
 void shaders_packettx(){
   /* Schedule next packet if a number is being held.  We should send the same packet?
@@ -172,7 +164,7 @@ void shaders_packettx(){
 }
 
 
-//! Enter the OOK transmitter application.
+//! Enter the shaders transmitter application.
 void shaders_init(){
   /* Skip this application if we haven't got a radio.
    */
@@ -181,11 +173,9 @@ void shaders_init(){
   }
 
   lcd_string(" SHADERS");
-
-  //printf("%d button entries are available.\n", sizeof(button_array)/2);
 }
 
-//! Exit the OOK application.
+//! Exit the shaders application.
 int shaders_exit(){
   //Cut the radio off.
   radio_off();
@@ -193,14 +183,13 @@ int shaders_exit(){
   return 0;
 }
 
-//! Draw the OOK screen.
+//! Draw the shaders screen.
 void shaders_draw(){
   int state=radio_getstate();
 
   switch(state){
   case 0:
   case 1:
-    //lcd_string("     OOK");
     break;
   case 19: //RX IDLE between transmit packets.
     lcd_string("TRANSMIT");
