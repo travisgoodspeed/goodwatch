@@ -2,21 +2,21 @@
 ALARM_APP = 1
 CALIBRATE_APP = 1
 RPN_APP = 1
-HEX_APP = 0
+HEX_APP = 1
 STOPWATCH_APP = 1
 PHRASE_APP = 0
-HEBREW_APP = 0
-SHABBAT_APP = 0
+HEBREW_APP = 1
+SHABBAT_APP = 1
 RNG_APP = 1
 TUNER_APP = 0
 MORSE_APP = 0
 BEACON_APP = 0
-OOK_APP = 0
+OOK_APP = 1
 SHADERS_APP = 1
-COUNTER_APP = 0
+COUNTER_APP = 1
 DMESG_APP = 0
 PAGER_APP = 0
-JUKEBOX_APP = 0
+JUKEBOX_APP = 1
 
 
 #set default flashing serial port, dont override if passed in as an argument
