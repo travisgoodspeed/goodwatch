@@ -25,14 +25,6 @@ const struct app apps[]={
    .keypress=clock_keypress
   },
  
-  #ifdef SHADERS_APP
-  //OOK
-  {.name="SHADERS",
-   .init=shaders_init, .draw=shaders_draw, .exit=shaders_exit,
-   .packetrx=shaders_packetrx, .packettx=shaders_packettx,
-   .keypress=shaders_keypress
-  },
-#endif
 #ifdef STOPWATCH_APP
   //Stopwatch
   {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit,
@@ -143,6 +135,15 @@ const struct app subapps[]={
    .init=ook_init, .draw=ook_draw, .exit=ook_exit,
    .packetrx=ook_packetrx, .packettx=ook_packettx,
    .keypress=ook_keypress
+  },
+#endif
+
+#ifdef SHADERS_APP
+  //OOK
+  {.name="SHADERS",
+   .init=shaders_init, .draw=shaders_draw, .exit=shaders_exit,
+   .packetrx=shaders_packetrx, .packettx=shaders_packettx,
+   .keypress=shaders_keypress
   },
 #endif
 
