@@ -12,6 +12,7 @@ TUNER_APP = 0
 MORSE_APP = 0
 BEACON_APP = 0
 OOK_APP = 1
+SHADERS_APP = 1
 COUNTER_APP = 1
 DMESG_APP = 0
 PAGER_APP = 0
@@ -79,6 +80,10 @@ endif
 ifeq ($(OOK_APP),1)
 APPS_OBJ += apps/ook.o
 APPS_DEFINES += OOK_APP 
+endif
+ifeq ($(SHADERS_APP),1)
+APPS_OBJ += apps/shaders.o
+APPS_DEFINES += SHADERS_APP 
 endif
 ifeq ($(COUNTER_APP),1)
 APPS_OBJ += apps/counter.o

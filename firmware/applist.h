@@ -26,6 +26,7 @@ extern const struct app clock_applet;
 #include "apps/tuner.h"
 #include "apps/beacon.h"
 #include "apps/ook.h"
+#include "apps/shaders.h"
 #include "apps/counter.h"
 #include "apps/pager.h"
 #include "apps/jukebox.h"

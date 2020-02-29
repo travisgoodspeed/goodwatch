@@ -24,8 +24,7 @@ const struct app apps[]={
   {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
    .keypress=clock_keypress
   },
- 
-  
+
 #ifdef STOPWATCH_APP
   //Stopwatch
   {.name="timer", .init=stopwatch_init, .draw=stopwatch_draw, .exit=stopwatch_exit,
@@ -136,6 +135,15 @@ const struct app subapps[]={
    .init=ook_init, .draw=ook_draw, .exit=ook_exit,
    .packetrx=ook_packetrx, .packettx=ook_packettx,
    .keypress=ook_keypress
+  },
+#endif
+
+#ifdef SHADERS_APP
+  //somfy RTS
+  {.name="shaders",
+   .init=shaders_init, .draw=shaders_draw, .exit=shaders_exit,
+   .packetrx=shaders_packetrx, .packettx=shaders_packettx,
+   .keypress=shaders_keypress
   },
 #endif
 
