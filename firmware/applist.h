@@ -20,6 +20,7 @@ extern const struct app clock_applet;
 #include "apps/shabbat.h"
 #include "apps/hebrew.h"
 #include "apps/dmesg.h"
+#include "apps/beats.h"
 
 //Then radio apps.
 #include "apps/morse.h"

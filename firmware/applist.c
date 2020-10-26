@@ -174,8 +174,14 @@ const struct app subapps[]={
   },
 #endif
   
+#ifdef BEATS_APP
+  {
+    .name="beats",
+    .draw=beats_draw, .init=beats_init, .exit=beats_exit,
+    .keypress=beats_keypress
+  },
+#endif
 
   //End on null entry.
   {.name=0, .init=0, .draw=0, .exit=0} 
 };
-
