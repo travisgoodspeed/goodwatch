@@ -8,4 +8,4 @@
   https://en.wikipedia.org/wiki/Swatch_Internet_Time
 */
 
-uint16_t clock2beats(uint16_t hours, uint16_t minutes, uint16_t seconds);
+uint16_t clock2beats(uint16_t hours, uint16_t minutes, uint16_t seconds, int16_t utc_offset);

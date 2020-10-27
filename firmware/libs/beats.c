@@ -10,13 +10,11 @@
 
 #include <stdint.h>
 
-#define UTC_OFFSET 4
-
-uint16_t clock2beats(uint16_t hours, uint16_t minutes, uint16_t seconds) {
+uint16_t clock2beats(uint16_t hours, uint16_t minutes, uint16_t seconds, int16_t utc_offset) {
     uint32_t beats = seconds;
     beats += 60 * minutes;
     beats += (uint32_t)hours * 60 * 60; //explicit hour cast to work with 16-bit MSP430 arch
-    beats += (UTC_OFFSET + 1) * 60 * 60; // offset from utc + 1 since beats in in UTC+1
+    beats += (utc_offset + 1) * 60 * 60; // offset from utc + 1 since beats in in UTC+1
 
     beats /= 86.4; // convert to beats
     beats %= 1000; // truncate to 3 digits for overflow
@@ -29,6 +27,8 @@ uint16_t clock2beats(uint16_t hours, uint16_t minutes, uint16_t seconds) {
 #include <stdio.h>
 #include <time.h>
 
+#define UTC_OFFSET 4
+
 int main(void) {
     time_t rawtime;
     struct tm * timeinfo;
@@ -36,8 +36,7 @@ int main(void) {
     time(&rawtime);
     timeinfo = localtime(&rawtime);
     printf("Current local time and date: %s", asctime(timeinfo));
-    printf("%u\n", timeinfo->tm_hour);
-    uint16_t beats = clock2beats(timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+    uint16_t beats = clock2beats(timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, UTC_OFFSET);
     printf("@%u\n", beats);
 }
 
