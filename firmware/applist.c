@@ -178,7 +178,7 @@ const struct app subapps[]={
   {
     .name="beats",
     .draw=beats_draw, .init=beats_init, .exit=beats_exit,
-    .keypress=beats_keypress
+    .keypress=beats_keypress, .fallthrough=beats_fallthrough_keypress
   },
 #endif
 

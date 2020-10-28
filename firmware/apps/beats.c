@@ -89,3 +89,12 @@ int beats_keypress(char ch) {
         return 0;
     }
 };
+
+//! A button has been pressed in fallthrough mode
+int beats_fallthrough_keypress(char ch) {
+    if(ch == '1') {
+        beats_draw(1);
+    }
+
+    return 1;
+}
