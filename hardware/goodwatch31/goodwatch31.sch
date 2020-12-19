@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 1 1
 Title "GoodWatch"
 Date ""
-Rev "30"
+Rev "31"
 Comp ""
 Comment1 "by Travis Goodspeed"
 Comment2 "the CC430F6137.  Tuned for either 70cm (<500MHz) or 33cm (<1GHz)."
@@ -1009,4 +1009,22 @@ Wire Wire Line
 	5850 6100 5950 6100
 Wire Wire Line
 	5950 6100 5950 5950
+Text Notes 6500 3750 1    60   ~ 0
+See keypad.c for pinout.
+Text Label 5400 3850 0    60   ~ 0
+P26
+Text Label 5400 3750 0    60   ~ 0
+P25
+Text Label 5400 3650 0    60   ~ 0
+P24
+Text Label 5400 3550 0    60   ~ 0
+P23
+Text Label 5400 3450 0    60   ~ 0
+P22
+Text Label 5400 3350 0    60   ~ 0
+P21
+Text Label 5400 3250 0    60   ~ 0
+P20
+Text Label 5400 3150 0    60   ~ 0
+P17
 $EndSCHEMATC
