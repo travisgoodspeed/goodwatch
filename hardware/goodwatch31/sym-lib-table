@@ -1,3 +1,6 @@
 (sym_lib_table
   (lib (name goodwatch31)(type Legacy)(uri ${KIPRJMOD}/goodwatch31.lib)(options "")(descr ""))
+  (lib (name Device)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/Device.lib)(options "")(descr ""))
+  (lib (name power)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/power.lib)(options "")(descr ""))
+  (lib (name Connector)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/Connector.lib)(options "")(descr ""))
 )
