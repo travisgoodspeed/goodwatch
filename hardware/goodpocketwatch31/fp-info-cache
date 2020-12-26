@@ -1,4 +1,4 @@
-214780821845424
+216390024328424
 LED_SMD
 R_0201_0603Metric
 Resistor SMD 0201 (0603 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://www.vishay.com/docs/20052/crcw0201e3.pdf), generated with kicad-footprint-generator
@@ -902,6 +902,13 @@ LP15
 0
 8
 8
+goodpocketwatch31
+PT-1203-3
+
+
+0
+0
+0
 goodpocketwatch31
 SN74AXC4T774RSVR
 

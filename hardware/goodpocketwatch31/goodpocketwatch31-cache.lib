@@ -26,6 +26,26 @@ X Ext 2 0 -200 100 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
+# Device_Buzzer
+#
+DEF Device_Buzzer BZ 0 1 Y N 1 F N
+F0 "BZ" 150 50 50 H V L CNN
+F1 "Device_Buzzer" 150 -50 50 H V L CNN
+F2 "" -25 100 50 V I C CNN
+F3 "" -25 100 50 V I C CNN
+$FPLIST
+ *Buzzer*
+$ENDFPLIST
+DRAW
+A 0 0 125 -899 899 0 1 0 N 0 -125 0 125
+P 2 0 1 0 -65 75 -45 75 N
+P 2 0 1 0 -55 85 -55 65 N
+P 2 0 1 0 0 125 0 -125 N
+X - 1 -100 100 100 R 50 50 1 1 P
+X + 2 -100 -100 100 R 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
 # Device_C
 #
 DEF Device_C C 0 10 N Y 1 F N

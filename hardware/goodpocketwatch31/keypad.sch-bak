@@ -1,0 +1,328 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 2 3
+Title "GPW Keypad"
+Date "2020-12-20"
+Rev "31"
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Switch:SW_Push SW7
+U 1 1 5FDF8EE0
+P 3700 2500
+F 0 "SW7" H 3700 2785 50  0000 C CNN
+F 1 "SW_Push" H 3700 2694 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 3700 2700 50  0001 C CNN
+F 3 "~" H 3700 2700 50  0001 C CNN
+	1    3700 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW8
+U 1 1 5FDF9E05
+P 4700 2500
+F 0 "SW8" H 4700 2785 50  0000 C CNN
+F 1 "SW_Push" H 4700 2694 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 4700 2700 50  0001 C CNN
+F 3 "~" H 4700 2700 50  0001 C CNN
+	1    4700 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW9
+U 1 1 5FDFA771
+P 5700 2500
+F 0 "SW9" H 5700 2785 50  0000 C CNN
+F 1 "SW_Push" H 5700 2694 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 5700 2700 50  0001 C CNN
+F 3 "~" H 5700 2700 50  0001 C CNN
+	1    5700 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW15
+U 1 1 5FDFABF5
+P 6700 2500
+F 0 "SW15" H 6700 2785 50  0000 C CNN
+F 1 "SW_Push" H 6700 2694 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 6700 2700 50  0001 C CNN
+F 3 "~" H 6700 2700 50  0001 C CNN
+	1    6700 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW4
+U 1 1 5FDFF2A4
+P 3700 3000
+F 0 "SW4" H 3700 3285 50  0000 C CNN
+F 1 "SW_Push" H 3700 3194 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 3700 3200 50  0001 C CNN
+F 3 "~" H 3700 3200 50  0001 C CNN
+	1    3700 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW1
+U 1 1 5FDFF52A
+P 3700 3500
+F 0 "SW1" H 3700 3785 50  0000 C CNN
+F 1 "SW_Push" H 3700 3694 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 3700 3700 50  0001 C CNN
+F 3 "~" H 3700 3700 50  0001 C CNN
+	1    3700 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW0
+U 1 1 5FDFF7C7
+P 3700 4000
+F 0 "SW0" H 3700 4285 50  0000 C CNN
+F 1 "SW_Push" H 3700 4194 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 3700 4200 50  0001 C CNN
+F 3 "~" H 3700 4200 50  0001 C CNN
+	1    3700 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW5
+U 1 1 5FDFFC17
+P 4700 3000
+F 0 "SW5" H 4700 3285 50  0000 C CNN
+F 1 "SW_Push" H 4700 3194 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 4700 3200 50  0001 C CNN
+F 3 "~" H 4700 3200 50  0001 C CNN
+	1    4700 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW2
+U 1 1 5FE00064
+P 4700 3500
+F 0 "SW2" H 4700 3785 50  0000 C CNN
+F 1 "SW_Push" H 4700 3694 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 4700 3700 50  0001 C CNN
+F 3 "~" H 4700 3700 50  0001 C CNN
+	1    4700 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW6
+U 1 1 5FE007EF
+P 5700 3000
+F 0 "SW6" H 5700 3285 50  0000 C CNN
+F 1 "SW_Push" H 5700 3194 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 5700 3200 50  0001 C CNN
+F 3 "~" H 5700 3200 50  0001 C CNN
+	1    5700 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW3
+U 1 1 5FE00AE1
+P 5700 3500
+F 0 "SW3" H 5700 3785 50  0000 C CNN
+F 1 "SW_Push" H 5700 3694 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 5700 3700 50  0001 C CNN
+F 3 "~" H 5700 3700 50  0001 C CNN
+	1    5700 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW14
+U 1 1 5FE0124C
+P 6700 3000
+F 0 "SW14" H 6700 3285 50  0000 C CNN
+F 1 "SW_Push" H 6700 3194 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 6700 3200 50  0001 C CNN
+F 3 "~" H 6700 3200 50  0001 C CNN
+	1    6700 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW13
+U 1 1 5FE017AB
+P 6700 3500
+F 0 "SW13" H 6700 3785 50  0000 C CNN
+F 1 "SW_Push" H 6700 3694 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 6700 3700 50  0001 C CNN
+F 3 "~" H 6700 3700 50  0001 C CNN
+	1    6700 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW10
+U 1 1 5FE00459
+P 4700 4000
+F 0 "SW10" H 4700 4285 50  0000 C CNN
+F 1 "SW_Push" H 4700 4194 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 4700 4200 50  0001 C CNN
+F 3 "~" H 4700 4200 50  0001 C CNN
+	1    4700 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW12
+U 1 1 5FE01B51
+P 6700 4000
+F 0 "SW12" H 6700 4285 50  0000 C CNN
+F 1 "SW_Push" H 6700 4194 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 6700 4200 50  0001 C CNN
+F 3 "~" H 6700 4200 50  0001 C CNN
+	1    6700 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW11
+U 1 1 5FE00F36
+P 5700 4000
+F 0 "SW11" H 5700 4285 50  0000 C CNN
+F 1 "SW_Push" H 5700 4194 50  0000 C CNN
+F 2 "goodpocketwatch31:TL6700" H 5700 4200 50  0001 C CNN
+F 3 "~" H 5700 4200 50  0001 C CNN
+	1    5700 4000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3500 2000 3500 2500
+Connection ~ 3500 2500
+Wire Wire Line
+	3500 2500 3500 3000
+Connection ~ 3500 3000
+Wire Wire Line
+	3500 3000 3500 3500
+Connection ~ 3500 3500
+Wire Wire Line
+	3500 3500 3500 4000
+Wire Wire Line
+	4500 2000 4500 2500
+Connection ~ 4500 2500
+Wire Wire Line
+	4500 2500 4500 3000
+Connection ~ 4500 3000
+Wire Wire Line
+	4500 3000 4500 3500
+Connection ~ 4500 3500
+Wire Wire Line
+	4500 3500 4500 4000
+Wire Wire Line
+	5500 2000 5500 2500
+Connection ~ 5500 2500
+Wire Wire Line
+	5500 2500 5500 3000
+Connection ~ 5500 3000
+Wire Wire Line
+	5500 3000 5500 3500
+Connection ~ 5500 3500
+Wire Wire Line
+	5500 3500 5500 4000
+Wire Wire Line
+	6500 2000 6500 2500
+Connection ~ 6500 2500
+Wire Wire Line
+	6500 2500 6500 3000
+Connection ~ 6500 3000
+Wire Wire Line
+	6500 3000 6500 3500
+Connection ~ 6500 3500
+Wire Wire Line
+	6500 3500 6500 4000
+Wire Wire Line
+	3000 2600 3900 2600
+Wire Wire Line
+	6900 3100 5900 3100
+Wire Wire Line
+	6900 3600 5900 3600
+Wire Wire Line
+	6900 4100 5900 4100
+Wire Wire Line
+	3900 2500 3900 2600
+Connection ~ 3900 2600
+Wire Wire Line
+	3900 2600 4900 2600
+Wire Wire Line
+	4900 2500 4900 2600
+Connection ~ 4900 2600
+Wire Wire Line
+	4900 2600 5900 2600
+Wire Wire Line
+	5900 2500 5900 2600
+Connection ~ 5900 2600
+Wire Wire Line
+	5900 2600 6900 2600
+Wire Wire Line
+	6900 2500 6900 2600
+Wire Wire Line
+	3900 3000 3900 3100
+Connection ~ 3900 3100
+Wire Wire Line
+	3900 3100 3000 3100
+Wire Wire Line
+	4900 3000 4900 3100
+Connection ~ 4900 3100
+Wire Wire Line
+	4900 3100 3900 3100
+Wire Wire Line
+	5900 3000 5900 3100
+Connection ~ 5900 3100
+Wire Wire Line
+	5900 3100 4900 3100
+Wire Wire Line
+	6900 3000 6900 3100
+Wire Wire Line
+	3900 3500 3900 3600
+Connection ~ 3900 3600
+Wire Wire Line
+	3900 3600 3000 3600
+Wire Wire Line
+	4900 3500 4900 3600
+Connection ~ 4900 3600
+Wire Wire Line
+	4900 3600 3900 3600
+Wire Wire Line
+	5900 3500 5900 3600
+Connection ~ 5900 3600
+Wire Wire Line
+	5900 3600 4900 3600
+Wire Wire Line
+	6900 3500 6900 3600
+Wire Wire Line
+	6900 4000 6900 4100
+Wire Wire Line
+	5900 4000 5900 4100
+Connection ~ 5900 4100
+Wire Wire Line
+	5900 4100 4900 4100
+Wire Wire Line
+	4900 4000 4900 4100
+Connection ~ 4900 4100
+Wire Wire Line
+	4900 4100 3900 4100
+Wire Wire Line
+	3900 4000 3900 4100
+Connection ~ 3900 4100
+Wire Wire Line
+	3900 4100 3000 4100
+Text GLabel 3000 2600 0    60   Input ~ 0
+P23
+Text GLabel 3000 3100 0    60   Input ~ 0
+P24
+Text GLabel 3000 3600 0    60   Input ~ 0
+P25
+Text GLabel 3000 4100 0    60   Input ~ 0
+P26
+Text GLabel 3500 2000 1    60   Input ~ 0
+P22
+Text GLabel 4500 2000 1    60   Input ~ 0
+P21
+Text GLabel 5500 2000 1    60   Input ~ 0
+P20
+Text GLabel 6500 2000 1    60   Input ~ 0
+P17
+$EndSCHEMATC

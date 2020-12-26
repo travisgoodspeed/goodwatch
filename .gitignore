@@ -4,7 +4,7 @@
 *.bak
 *.bck
 *.kicad_pcb-bak
-*-cache.lib
+# *-cache.lib
 # *-rescue.lib
 ftp-lib-table
 

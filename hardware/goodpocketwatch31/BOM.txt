@@ -23,6 +23,8 @@ Y1      ABS07-120-32.768KHZ-T   535-11937-1-ND      SMDXTAL  1     32.768kHz6pF
 B1-17   TODO
 BPGM    TODO
 
+BZ1     PT-1203-3               433-1201-2-ND       THP      1
+
 Radio parts, only required for the optional SubGHz radio.  Choose one
 of the two options for U2, but not the other.
 
