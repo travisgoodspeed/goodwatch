@@ -1,5 +1,6 @@
 (fp_lib_table
   (lib (name goodpocketwatch31)(type KiCad)(uri ${KIPRJMOD}/goodpocketwatch31.pretty)(options "")(descr ""))
   (lib (name Resistor_SMD)(type KiCad)(uri ${KISYSMOD}/Resistor_SMD.pretty)(options "")(descr ""))
-  (lib (name LED_SMD)(type KiCad)(uri ${KISYSMOD}/Resistor_SMD.pretty)(options "")(descr ""))
+  (lib (name LED_SMD)(type KiCad)(uri ${KISYSMOD}/LED_SMD.pretty)(options "")(descr ""))
+  (lib (name Capacitor_SMD)(type KiCad)(uri ${KISYSMOD}/Capacitor_SMD.pretty)(options "")(descr ""))
 )
