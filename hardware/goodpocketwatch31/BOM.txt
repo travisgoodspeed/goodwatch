@@ -25,6 +25,7 @@ BPGM    TODO
 
 BZ1     PT-1203-3               433-1201-2-ND       THP      1
 BT1,2   BE-AAAA-PC-ND           BE-AAAA-PC	    THP	     2     AAAA Battery Holder
+J3      132289                  ACX1426-ND	    THP	     	   Amphenol SMA Connector
 
 Radio parts, only required for the optional SubGHz radio.  Choose one
 of the two options for U2, but not the other.
