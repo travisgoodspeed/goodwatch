@@ -25,7 +25,7 @@ BPGM    TODO
 
 BZ1     PT-1203-3               433-1201-2-ND       THP      1
 BT1,2   BE-AAAA-PC-ND           BE-AAAA-PC	    THP	     2     AAAA Battery Holder
-J3      132289                  ACX1426-ND	    THP	     	   Amphenol SMA Connector
+
 
 Radio parts, only required for the optional SubGHz radio.  Choose one
 of the two options for U2, but not the other.
@@ -34,6 +34,7 @@ R2      CRGCQ0402F56K           A129648CT-ND        0402     1     56k, 1%
 Y2      FA-128 26.0000MF10Z-W5  SER4186CT-ND                 1     26MHz SMD Xtal, 12pF
 A1      ANT1204F002R0433A       311-1570-1-ND                1     430MHz Chip Antenna, you probably won't populate this.
 J1      0734120110              WM5587CT-ND                  1     u.FL/UMCC coaxial antenna connector, you probably won't populate this.
+J3      132289                  ACX1426-ND	    	     1	   Amphenol SMA Connector
 C6,C7   CL05C120JB5NNNC         1276-1178-1-ND      0402     2     12pF
 C8,C9   GRM152C80J104KE19D      490-9997-1-ND       0402     2     0.1uF (<0.3mm thickness) (Same as C2,C3.)
 L1      BLM15HG102SN1D          490-3999-1-ND       0402     1     Ferrite Bead
@@ -47,11 +48,9 @@ USB parts, for on-device reprogramming.
 
 U4      FTDI FT232RQ
 U5      level converter from TI
-J2      USB C receptacle 
+J2      USB C receptacle
 R3,R4	5.1k 0402 resistors for USB C sensing.
+R5,R6   270 Ohm 0402 resistors
 D1,D2   0402 LEDs
 C11-13  GRM152C80J104KE19D      490-9997-1-ND       0402     3     0.1uF (<0.3mm thickness) (Same as C2,C3.)
 
-Battery Holder
-
-B1      COM1305  1778-1223-ND
