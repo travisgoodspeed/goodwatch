@@ -20,8 +20,8 @@ C4      GRJ155R60J106ME11D      490-13211-1-ND      0402     1     10uF
 C5      CL05A474KP5NNNC         1276-1173-1-ND      0402     1     0.47uF
 Y1      ABS07-120-32.768KHZ-T   535-11937-1-ND      SMDXTAL  1     32.768kHz6pF
 
-B1-17   TODO
-BPGM    TODO
+B1-17   TL6700AF160QG           EG4385TR-ND                 17     SPST Tactile Switch
+BPGM    TL6700NF260QG           EG4386TR-ND                  1     SPST Tactile Switch
 
 BZ1     PT-1203-3               433-1201-2-ND       THP      1
 BT1,2   BE-AAAA-PC-ND           BE-AAAA-PC	    THP	     2     AAAA Battery Holder
@@ -46,11 +46,11 @@ C10     885012205040            732-7535-1-ND       0402     1     220pF DC Bypa
 
 USB parts, for on-device reprogramming.
 
-U4      FTDI FT232RQ
-U5      level converter from TI
-J2      USB C receptacle
-R3,R4	5.1k 0402 resistors for USB C sensing.
-R5,R6   270 Ohm 0402 resistors
-D1,D2   0402 LEDs
-C11-13  GRM152C80J104KE19D      490-9997-1-ND       0402     3     0.1uF (<0.3mm thickness) (Same as C2,C3.)
+U4      FT232RQ                 768-1008-2-ND                1       USB controller IC
+U5      SN74AXC4T774RSVR        296-SN74AXC4T774RSVRTR-ND    1       Voltage Level Translator
+J2      DX07S016JA1R1500        670-DX07S016JA1R1500TR-ND    1       USB Type C Receptacle
+R3,R4	ERJ-PA2F5101X           P124488TR-ND        0402     2       5.1k, 1%
+R5,R6   CR0402-JW-271GLF        CR0402-JW-271GLFTR-ND 0402   2       270 Ohm 5%
+D1,D2   VLMS1500-GS08           VLMS1500-GS08TR-ND  0402     2       Red LED
+C11-13  GRM152C80J104KE19D      490-9997-1-ND       0402     3       0.1uF (<0.3mm thickness) (Same as C2,C3.)
 
