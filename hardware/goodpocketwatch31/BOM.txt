@@ -20,8 +20,12 @@ C4      GRJ155R60J106ME11D      490-13211-1-ND      0402     1     10uF
 C5      CL05A474KP5NNNC         1276-1173-1-ND      0402     1     0.47uF
 Y1      ABS07-120-32.768KHZ-T   535-11937-1-ND      SMDXTAL  1     32.768kHz6pF
 
+Keypad parts.
+
 B1-17   TL6700AF160QG           EG4385TR-ND                 17     SPST Tactile Switch
 BPGM    TL6700NF260QG           EG4386TR-ND                  1     SPST Tactile Switch
+
+Misc Parts
 
 BZ1     PT-1203-3               433-1201-2-ND       THP      1
 BT1,2   BE-AAAA-PC-ND           BE-AAAA-PC	    THP	     2     AAAA Battery Holder
