@@ -20,7 +20,7 @@ JUKEBOX_APP = 1
 
 
 #set default flashing serial port, dont override if passed in as an argument
-PORT = /dev/ttyUSB0
+PORT ?= /dev/ttyUSB0
 #Mandatory applets.
 APPS_OBJ += apps/clock.o apps/settime.o apps/submenu.o 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 
 ## This is a quick and dirty BSL client by Travis Goodspeed for the
@@ -62,11 +62,11 @@ class BSL:
         
         #msg should already include header bytes.
         for char in msg:
-            byte=ord(char)
+            byte=char
             x=((crc>>8)^byte)&0xFF;
             x^=x>>4;
             crc=(crc<<8)^(x<<12)^(x<<5)^x;
-        return chr(crc&0xFF)+""+chr((crc>>8)&0xFF);
+        return bytes({crc&0xFF})+bytes({(crc>>8)&0xFF});
 
     def transact(self,msg):
         """Sends a message, wrapped with a prefix and checksum.
@@ -74,31 +74,33 @@ class BSL:
 
         #Send the message.
         length=len(msg);
-        ll=chr(length&0xFF);
-        lh=chr((length>>8)&0xFF);
+        ll=length&0xFF;
+        lh=(length>>8)&0xFF;
         crc=self.crc(msg);
-        self.serial.write("\x80"+ll+lh+msg+crc);
+        message=b'\x80'+bytes({ll})+bytes({lh})+msg+crc
+        self.serial.write(message);
 
         #Get the reply.
         reply=self.serial.read(1);
         if len(reply)!=1:
             print("Error, missing reply.");
             sys.exit(1);
-        elif msg[0]=='\x52':
+        elif msg[0]==0x52:
             #Change baud rate command has a briefer reply.
             pass;
-        elif ord(reply[0])==0x00:
+        elif reply[0]==0x00:
             #Success
-            eighty=ord(self.serial.read(1));
-            ll=ord(self.serial.read(1)[0]);
-            lh=ord(self.serial.read(1)[0]);
+            eighty=self.serial.read(1);
+            assert(eighty==b'\x80');
+            ll=self.serial.read(1)[0];
+            lh=self.serial.read(1)[0];
             length=ll|(lh<<8);
             rep=self.serial.read(length);
             crc=self.serial.read(2);
             assert(crc==self.crc(rep));
             return rep;
         else:
-            print("Error 0x%02x." % ord(reply[0]));
+            print(("Error 0x%02x." % reply[0]));
             #Not sure whether data is coming, so grab a chunk just in case.
             self.serial.read(10);
     
@@ -109,17 +111,17 @@ class BSL:
 
         #Password must be 32 bytes; read from a file otherwise.
         if password==None:
-            password="\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff"
+            password=b'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff'
         if len(password)!=32:
             password=self.passwordfromfile(password);
 
         assert(len(password)==32);
 
-        resp=self.transact("\x11"+password);
+        resp=self.transact(b'\x11'+password);
         assert(len(resp)==2);
-        assert(resp[0]=='\x3b');
+        assert(resp[0]==0x3b);
 
-        code=ord(resp[1]);
+        code=resp[1];
     
         if code==0x05:
             print("Incorrect password.  Flash was erased.");
@@ -128,83 +130,87 @@ class BSL:
             #success
             return True;
         else:
-            print("Unexpected password core message 0x%02x."%code);
+            print(("Unexpected password core message 0x%02x."%code));
             return False;
         
     def version(self):
         """Gets the BSL version and related bytes."""
-        resp=self.transact("\x19");
+        resp=self.transact(b'\x19');
         assert(len(resp)==5);
         
-        vendor=ord(resp[1]); # 0 for TI
-        interpreter=ord(resp[2]);
-        api=ord(resp[3]); # 0 for flash, 30 for sram, 80 for restricted cmd set
-        peripheral=ord(resp[4]);
+        vendor=resp[1]; # 0 for TI
+        interpreter=resp[2];
+        api=resp[3]; # 0 for flash, 30 for sram, 80 for restricted cmd set
+        peripheral=resp[4];
         return vendor, interpreter, api, peripheral;
 
     def masserase(self):
         """Bulk erases the device."""
-        resp=self.transact("\x15");
-        assert resp=="\x3b\x00"
+        resp=self.transact(b'\x15');
+        assert resp==b'\x3b\x00'
 
     def read(self,adr,length=32):
         """Dumps memory from the given address."""
-        al=chr(adr&0xFF)
-        am=chr((adr>>8)&0xFF)
-        ah=chr((adr>>16)&0xFF)
-        ll=chr(length&0xFF)
-        lh=chr((length>>8)&0xFF)
-        resp=self.transact("\x18"+al+am+ah+ll+lh)
-        if resp[0]=="\x3b":
+
+        al=bytes({adr&0xFF})
+        am=bytes({(adr>>8)&0xFF})
+        ah=bytes({(adr>>16)&0xFF})
+        
+        ll=bytes({length&0xFF})
+        lh=bytes({(length>>8)&0xFF})
+
+        
+        resp=self.transact(b'\x18'+al+am+ah+ll+lh)
+        if resp[0]==0x3b:
             print("Error: You need to unlock before reading.");
-        assert(resp[0]=="\x3a");
+        assert(resp[0]==0x3a);
         
         return resp[1:]
     def write(self,adr,data=""):
         """Writes memory to the given address."""
-        al=chr(adr&0xFF)
-        am=chr((adr>>8)&0xFF)
-        ah=chr((adr>>16)&0xFF)
-        resp=self.transact("\x10"+al+am+ah+data)
+        al=bytes({adr&0xFF})
+        am=bytes({(adr>>8)&0xFF})
+        ah=bytes({(adr>>16)&0xFF})
+        resp=self.transact(b'\x10'+al+am+ah+data)
         return resp[1:]
 
     def erasesegment(self,adr):
         """Erases one segment of Flash at a given address."""
-        al=chr(adr&0xFF)
-        am=chr((adr>>8)&0xFF)
-        ah=chr((adr>>16)&0xFF)
-        resp=self.transact("\x12"+al+am+ah)
+        al=bytes({adr&0xFF})
+        am=bytes({(adr>>8)&0xFF})
+        ah=bytes({(adr>>16)&0xFF})
+        resp=self.transact(b'\x12'+al+am+ah)
         return resp[1:]
     
     def unlocklockinfo(self):
         """Unlocks or locks Info FLash."""
-        resp=self.transact("\x13")
+        resp=self.transact(b'\x13')
         return resp[1:]
 
     def loadpc(self,adr):
         """Begins execution at a given address."""
-        al=chr(adr&0xFF)
-        am=chr((adr>>8)&0xFF)
-        ah=chr((adr>>16)&0xFF)
-        resp=self.transact("\x17"+al+am+ah)
+        al=bytes({adr&0xFF})
+        am=bytes({(adr>>8)&0xFF})
+        ah=bytes({(adr>>16)&0xFF})
+        resp=self.transact(b'\x17'+al+am+ah)
         return resp[1:]
     
     def setbaud(self,rate=9600):
         """Sets the baud rate."""
         #First we inform the BSL of the rate.
         if rate==9600:
-            ratebyte='\x02';
+            ratebyte=b'\x02';
         elif rate==19200:
-            ratebyte='\x03';
+            ratebyte=b'\x03';
         elif rate==38400:
-            ratebyte='\x04';
+            ratebyte=b'\x04';
         elif rate==57600:
-            ratebyte='\x05';
+            ratebyte=b'\x05';
         elif rate==115200:
-            ratebyte='\x06';
+            ratebyte=b'\x06';
 
         #Command the rate change.
-        resp=self.transact("\x52"+ratebyte);
+        resp=self.transact(b'\x52'+ratebyte);
         
         #Then we jump the port to the new rate.
         #self.serial.setBaudrate(rate); #Old convention.
@@ -214,7 +220,7 @@ class BSL:
     def readbulk(self,adr,length):
         """Reads a large volume from the target, in multiple transactions."""
         i=adr;
-        buf="";
+        buf=b'';
         while i<adr+length:
             buf=buf+self.read(i,min(self.MAXLEN,adr+length-i));
             i=adr+len(buf);
@@ -239,7 +245,8 @@ class BSL:
         adr=int(line[3:7],16);
         verb=int(line[7:9],16);
         
-        data=line[9:(9+length*2)].decode('hex');
+        #data=line[9:(9+length*2)].decode('hex');  #Python2
+        data=bytes.fromhex(line[9:(9+length*2)])
         if verb==0: #Data
             self.write(adr,data);
 
@@ -283,31 +290,31 @@ def coredump(bsl):
     
     ##Dump the BSL
     bulk=bsl.readbulk(0x1000,2048)
-    print("Got %d bytes of the BSL." % len(bulk));
-    print(bulk.encode('hex'));
+    print(("Got %d bytes of the BSL." % len(bulk)));
+    print(bulk.hex());
 
     ##Dump Info
     bulk=bsl.readbulk(0x1800,512)
-    print("Got %d bytes of Info Flash." % len(bulk));
-    print(bulk.encode('hex'));
+    print(("Got %d bytes of Info Flash." % len(bulk)));
+    print(bulk.hex());
 
     ##Dump RAM
     bulk=bsl.readbulk(0x1C00,4096)
-    print("Got %d bytes of RAM." % len(bulk));
-    print(bulk.encode('hex'));
+    print(("Got %d bytes of RAM." % len(bulk)));
+    print(bulk.hex());
 
     ##Dump ROM
     print("Dumping Flash ROM.  Please be patient.")
     bulk=bsl.readbulk(0x8000,32*1024)
-    print("Got %d bytes of Flash ROM." % len(bulk));
-    print(bulk.encode('hex'));
+    print(("Got %d bytes of Flash ROM." % len(bulk)));
+    print(bulk.hex());
 
 def dmesg(bsl):
     """Prints the dmesg buffer."""
 
     ##Dump RAM
     bulk=bsl.readbulk(0x2400,2048)
-    print(bulk);
+    print(bulk.decode('UTF-8'));
 
 def writetest(bsl):
     """Tests writing an image to Flash."""
@@ -318,8 +325,8 @@ def writetest(bsl):
     msg="Hello world!  Hogy vagy?  Jo vagyok!"*35
     bsl.writebulk(0x8000,msg);
     readmsg=bsl.readbulk(0x8000,len(msg));
-    print("Wrote: %s" % msg.encode('hex'));
-    print("Read:  %s" % readmsg.encode('hex'));
+    print(("Wrote: %s" % msg.encode('hex')));
+    print(("Read:  %s" % readmsg.encode('hex')));
     assert(readmsg==msg);
 
 if __name__=='__main__':
@@ -345,7 +352,7 @@ if __name__=='__main__':
     bsl.enter_bsl();
     
     if int(args.rate)!=9600:
-        print("Setting baud rate to %d"% int(args.rate));
+        print(("Setting baud rate to %d"% int(args.rate)));
         bsl.setbaud(int(args.rate));
 
     if args.erase!=None:
@@ -367,7 +374,7 @@ if __name__=='__main__':
         #print "Unlocking."
         bsl.unlock(args.password);
     if args.file!=None:
-        print("Writing %s as Intel hex." % args.file)
+        print(("Writing %s as Intel hex." % args.file))
         bsl.writeihexfile(args.file);
 
     ## Peviously, we manually wrote the time to 0xFF00.  This is now
