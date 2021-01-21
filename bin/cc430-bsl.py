@@ -245,7 +245,6 @@ class BSL:
         adr=int(line[3:7],16);
         verb=int(line[7:9],16);
         
-        #data=line[9:(9+length*2)].decode('hex');  #Python2
         data=bytes.fromhex(line[9:(9+length*2)])
         if verb==0: #Data
             self.write(adr,data);
@@ -266,21 +265,24 @@ class BSL:
         adr=int(line[3:7],16);
         verb=int(line[7:9],16);
         
-        data=line[9:(9+length*2)].decode('hex');
+        #data=line[9:(9+length*2)];
+        data=bytes.fromhex(line[9:(9+length*2)])
         if verb==0 and adr>=0xFFE0:
             #Return the password bytes from this line.
             return data;
 
         #Empty string by default.
-        return "";
+        return b'';
 
     def passwordfromfile(self,filename):
         """Returns the password from an ihex file, for unlocking."""
         f=open(filename,'r');
         lines=f.readlines();
-        password="";
+        password=b'';
         for l in lines:
             password+=self.handlepasswordline(l);
+        print(password);
+        print(len(password));
         return password;
     
 def coredump(bsl):
