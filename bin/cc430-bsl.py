@@ -258,32 +258,36 @@ class BSL:
             self.writeihexline(l.strip());
 
 
-    def handlepasswordline(self,line):
+    def handlepasswordline(self, password, line):
         """Returns a password fragment from the line, if available."""
-        assert(line[0]==':');
-        length=int(line[1:3],16);
-        adr=int(line[3:7],16);
-        verb=int(line[7:9],16);
+        assert(line[0]==':')
+        length=int(line[1:3],16)
+        adr=int(line[3:7],16)
+        verb=int(line[7:9],16)
         
-        #data=line[9:(9+length*2)];
-        data=bytes.fromhex(line[9:(9+length*2)])
         if verb==0 and adr>=0xFFE0:
-            #Return the password bytes from this line.
-            return data;
+            data=bytes.fromhex(line[9:(9+length*2)])
+            start = adr - 0xffe0
+            for i, d in enumerate(data):
+                password[start + i] = d
 
-        #Empty string by default.
-        return b'';
+        return password
 
     def passwordfromfile(self,filename):
         """Returns the password from an ihex file, for unlocking."""
-        f=open(filename,'r');
-        lines=f.readlines();
-        password=b'';
+
+        password = bytearray(b'\xff' * 32)
+
+        f=open(filename,'r')
+        lines=f.readlines()
+
         for l in lines:
-            password+=self.handlepasswordline(l);
-        print(password);
-        print(len(password));
-        return password;
+            password = self.handlepasswordline(password, l)
+
+        print(password)
+        print(len(password))
+
+        return password
     
 def coredump(bsl):
     """Prints all of memory."""
