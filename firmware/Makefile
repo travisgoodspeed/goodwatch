@@ -17,7 +17,7 @@ COUNTER_APP = 1
 DMESG_APP = 0
 PAGER_APP = 0
 JUKEBOX_APP = 1
-
+OTAUPDATE_APP = 0
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT ?= /dev/ttyUSB0
@@ -97,7 +97,10 @@ ifeq ($(JUKEBOX_APP),1)
 APPS_OBJ += apps/jukebox.o
 APPS_DEFINES += JUKEBOX_APP 
 endif
-
+ifeq ($(OTAUPDATE_APP),1)
+APPS_OBJ += apps/ota_update.o
+APPS_DEFINES += OTAUPDATE_APP
+endif
 
 #GCC8 from Texas Instruments, not the GCC4 that ships with Debian.
 CC = msp430-elf-gcc -minrt -msmall -mmcu=cc430f6137 -Wall -I. -I/opt/msp430-gcc-support-files/include -Os  $(addprefix -D, $(APPS_DEFINES)) -Wl,--gc-sections,--print-gc-sections -fdata-sections -ffunction-sections -fno-asynchronous-unwind-tables -flto
