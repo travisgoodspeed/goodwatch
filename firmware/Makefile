@@ -1,5 +1,6 @@
 
 ALARM_APP = 1
+COUNTDOWN_APP = 0
 CALIBRATE_APP = 1
 RPN_APP = 1
 HEX_APP = 1
@@ -19,6 +20,10 @@ PAGER_APP = 0
 JUKEBOX_APP = 1
 OTAUPDATE_APP = 0
 
+
+#Don't forget to set your timezone for Beats in config.h.
+BEATS_APP = 0
+
 #set default flashing serial port, dont override if passed in as an argument
 PORT ?= /dev/ttyUSB0
 #Mandatory applets.
@@ -28,6 +33,10 @@ APPS_OBJ += apps/clock.o apps/settime.o apps/submenu.o
 ifeq ($(ALARM_APP),1)
 APPS_OBJ += apps/alarm.o 
 APPS_DEFINES += ALARM_APP
+endif
+ifeq ($(COUNTDOWN_APP),1)
+APPS_OBJ += apps/countdown.o 
+APPS_DEFINES += COUNTDOWN_APP
 endif
 ifeq ($(SHABBAT_APP),1)
 APPS_OBJ += apps/shabbat.o 
@@ -101,6 +110,12 @@ ifeq ($(OTAUPDATE_APP),1)
 APPS_OBJ += apps/ota_update.o
 APPS_DEFINES += OTAUPDATE_APP
 endif
+ifeq ($(BEATS_APP),1)
+APPS_OBJ += apps/beats.o
+APPS_DEFINES += BEATS_APP
+endif
+
+
 
 #GCC8 from Texas Instruments, not the GCC4 that ships with Debian.
 CC = msp430-elf-gcc -minrt -msmall -mmcu=cc430f6137 -Wall -I. -I/opt/msp430-gcc-support-files/include -Os  $(addprefix -D, $(APPS_DEFINES)) -Wl,--gc-sections,--print-gc-sections -fdata-sections -ffunction-sections -fno-asynchronous-unwind-tables -flto
@@ -111,7 +126,7 @@ modules=rtcasm-r12.o main.o lcd.o lcdtext.o rtc.o  keypad.o bcd.o apps.o\
 	applist.o adc.o ref.o codeplugstr.o \
 	sidebutton.o power.o uart.o monitor.o ucs.o buzz.o \
 	radio.o packet.o dmesg.o codeplug.o rng.o descriptor.o \
-	optim.o libs/assembler.o libs/morse.o libs/pocsag.o \
+	optim.o libs/assembler.o libs/morse.o libs/pocsag.o libs/beats.o \
 	printf.o
 
 apps= $(APPS_OBJ)

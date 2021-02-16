@@ -45,6 +45,8 @@ const struct app apps[]={
    the main menu once selected.
  */
 const struct app subapps[]={
+
+
 #ifdef RPN_APP
   //RPN Calculator
   {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit,
@@ -57,6 +59,12 @@ const struct app subapps[]={
   //Alarm
   {.name="alarm", .init=alarm_init, .draw=alarm_draw, .exit=alarm_exit,
    .keypress=alarm_keypress
+  },
+#endif
+
+#ifdef COUNTDOWN_APP
+  {.name="cntdown", .init=countdown_init, .draw=countdown_draw, .exit=countdown_exit,
+   .keypress=countdown_keypress
   },
 #endif
 
@@ -173,6 +181,7 @@ const struct app subapps[]={
    .keypress=calibrate_keypress
   },
 #endif
+
  
 #ifdef OTAUPDATE_APP
   {.name="update", .init=ota_update_init, .draw=ota_update_draw, .exit=ota_update_exit,
@@ -180,8 +189,15 @@ const struct app subapps[]={
    .packetrx=ota_update_packetrx, .packettx=ota_update_packettx, 
   },
 #endif
+  
+#ifdef BEATS_APP
+  {
+    .name="beats",
+    .draw=beats_draw, .init=beats_init, .exit=beats_exit,
+    .keypress=beats_keypress, .fallthrough=beats_fallthrough_keypress
+  },
+#endif
 
   //End on null entry.
   {.name=0, .init=0, .draw=0, .exit=0} 
 };
-
