@@ -8,7 +8,9 @@
 #include "libs/beats.h"
 #include <stdio.h>
 
-#define CURRENT_UTC_OFFSET 4
+#ifndef CURRENT_UTC_OFFSET
+#error "CURRENT_UTC_OFFSET is undefined in config.h"
+#endif
 
 static int ticks;
 static int setting_offet=0;
