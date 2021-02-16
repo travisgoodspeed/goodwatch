@@ -45,6 +45,8 @@ const struct app apps[]={
    the main menu once selected.
  */
 const struct app subapps[]={
+
+
 #ifdef RPN_APP
   //RPN Calculator
   {.name="rpn calc", .init=rpn_init, .draw=rpn_draw, .exit=rpn_exit,
@@ -57,6 +59,12 @@ const struct app subapps[]={
   //Alarm
   {.name="alarm", .init=alarm_init, .draw=alarm_draw, .exit=alarm_exit,
    .keypress=alarm_keypress
+  },
+#endif
+
+#ifdef COUNTDOWN_APP
+  {.name="cntdown", .init=countdown_init, .draw=countdown_draw, .exit=countdown_exit,
+   .keypress=countdown_keypress
   },
 #endif
 

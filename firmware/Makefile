@@ -1,5 +1,6 @@
 
 ALARM_APP = 1
+COUNTDOWN_APP = 0
 CALIBRATE_APP = 1
 RPN_APP = 1
 HEX_APP = 1
@@ -28,6 +29,10 @@ APPS_OBJ += apps/clock.o apps/settime.o apps/submenu.o
 ifeq ($(ALARM_APP),1)
 APPS_OBJ += apps/alarm.o 
 APPS_DEFINES += ALARM_APP
+endif
+ifeq ($(COUNTDOWN_APP),1)
+APPS_OBJ += apps/countdown.o 
+APPS_DEFINES += COUNTDOWN_APP
 endif
 ifeq ($(SHABBAT_APP),1)
 APPS_OBJ += apps/shabbat.o 

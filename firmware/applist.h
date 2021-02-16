@@ -12,6 +12,7 @@ extern const struct app clock_applet;
 #include "apps/settime.h"
 #include "apps/alarm.h"
 #include "apps/stopwatch.h"
+#include "apps/countdown.h"
 #include "apps/calibrate.h"
 #include "apps/rpn.h"
 #include "apps/hex.h"
