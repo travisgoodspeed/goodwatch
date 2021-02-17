@@ -5,7 +5,9 @@ CC = msp430-elf-gcc -minrt -msmall -mmcu=cc430f6137 -Wall -I. -I/opt/msp430-gcc-
 modules=main.o radio.o packet.o debug.o flash.o
 
 all: ccode
-	
+
+dbg: CC += -DDEBUG
+dbg: ccode
 
 blob.elf: $(modules)  
 	$(CC) -T cc430f6137.ld -o blob.elf $(modules) $(apps)
@@ -15,10 +17,8 @@ blob.hex: blob.elf
 	msp430-elf-objcopy -O ihex blob.elf blob.hex
 
 ccode: blob.hex
-	python convert.py blob.hex -i -c
-	
-debug: CC += -DDEBUG
-debug: ccode
-	
+	./convert.py blob.hex -i -c
+
+
 clean:
 	rm -rf *~ */*~ *.hex *.elf *.o */*.o blob.hex blob.elf

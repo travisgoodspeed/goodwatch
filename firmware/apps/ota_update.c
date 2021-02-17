@@ -14,6 +14,7 @@
 
 #define LOADING_ADDRESS     0x2400
 
+//! Radio config: GFSK, 250k baud, crc, crc auto flush, vlen
 static const uint8_t ota_update_rf_settings[]={
 	FIFOTHR,   0x47,           //RX FIFO and TX FIFO Thresholds
 	PKTCTRL1,  0x0c,           //No address check.
@@ -47,7 +48,7 @@ static const uint8_t ota_update_rf_settings[]={
 	0,0,
 };
 
-
+//! Updater blob, generated from firmware/ota-updater/
 static const uint8_t updater_blob[] = {
 	0x31, 0x40, 0xFF, 0x1D, 0x3C, 0x40, 0x8A, 0x28, 0x0D, 0x43, 0x3E, 0x40, 0x8C, 0x00, 0xB0, 0x12,
 	0x70, 0x28, 0x3C, 0x40, 0x88, 0x28, 0x3D, 0x40, 0x88, 0x28, 0x0D, 0x9C, 0x04, 0x24, 0x3E, 0x40,
@@ -127,17 +128,16 @@ static const uint8_t updater_blob[] = {
 
 //! Enter the OTA Update application.
 void ota_update_init(){
-  if(!has_radio){
-    app_next();
-    return;
-  }
-
-  lcd_string("PRESS S");
+	if(!has_radio){
+		app_next();
+		return;
+	}
+	lcd_string("PRESS S");
 }
 
 //! Exit the OTA Update application.
 int ota_update_exit(){
-  return 0;
+	return 0;
 }
 
 //! Dummy functions for RX/TX
@@ -149,11 +149,11 @@ void ota_update_packettx(){
 
 //! Start radio
 static void radio_start(){
-  radio_on();
-  radio_writesettings(ota_update_rf_settings);
-  radio_writepower(0x25);
-  codeplug_setfreq();
-  packet_rxon();
+	radio_on();
+	radio_writesettings(ota_update_rf_settings);
+	radio_writepower(0x25);
+	codeplug_setfreq();
+	packet_rxon();
 }
 
 //! Copy updater to ram and execute it
@@ -167,6 +167,7 @@ static void launch_updater(){
 	fn();
 }
 
+//! Use this to launch updater after display has been updated
 static bool button_pressed = false;
 
 //! Draw the OTA Update screen.
@@ -184,5 +185,5 @@ void ota_update_draw(char forced){
 
 //! Keypress handler for the beacon applet.
 int ota_update_keypress(char ch){
-  return 0;
+	return 0;
 }
