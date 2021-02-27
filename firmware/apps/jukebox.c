@@ -70,7 +70,7 @@ static char lastch = 0;
 
 // PIN
 char pinChar[8] = "PIN     ";
-int pinFlag = 1;
+int pinFlag = 0;
 int pin = 0;
 
 // Commands
@@ -126,23 +126,29 @@ static const uint8_t jukebox_settings[] = {
 
 /*================================ M A I N ================================*/
 
+//Begin to enter the new pin.
+static void pinmode_init(){
+  pinChar[5] = ' ';
+  pinChar[6] = ' ';
+  pinChar[7] = ' ';
+  pinFlag = 1;
+  pin = 0;
+  radio_off();
+  lcd_string(pinChar); // Draw screen
+}
+
 // Start
 void jukebox_init() {
-	if (!has_radio) {
-		app_next();
-	}
-	lcd_string(pinChar); // Draw screen
+  if (!has_radio) {
+    app_next();
+  }
+  lcd_string("ready   ");
 }
 
 // Exit
 int jukebox_exit() {
-	pinChar[5] = ' ';
-	pinChar[6] = ' ';
-	pinChar[7] = ' ';
-	pinFlag = 1;
-	pin = 0;
-	radio_off();
-	return 0;
+  radio_off();
+  return 0;
 }
 
 /*================================= T X =================================*/
@@ -279,9 +285,8 @@ void jukebox_packetrx(uint8_t *packet, int len) {
 /*================================= U I =================================*/
 
 // PIN Input
-void pinInput() {
+static void pinInput() {
 	if (pinChar[5] == ' ') {
-		printf("char: %c\n", lastch);
 		pinChar[5] = lastch;
 		pin = (lastch - '0') * 100;
 	} else if (pinChar[6] == ' ') {
@@ -346,7 +351,6 @@ int jukebox_fallthrough(char ch) {
     lastch=0;
     break;
   }
-
   
   if(lastch){
     jukebox_configradio();
@@ -410,20 +414,30 @@ void jukebox_packettx() {
 
 // Draw Screen
 void jukebox_draw() {
-	int state = radio_getstate();
+  int state = radio_getstate();
+  
+  switch (state) {
+  case 0: //Skip
+  case 1:
+    break;
+  case 19: //RX IDLE between transmit packets.
+    break;
+  case 22: // TX OVERFLOW
+    printf("TX Overflow.\n");
+    radio_strobe(RF_SIDLE);
+    break;
+  default:
+    lcd_hex(state);
+    break;
+  }
+  
+  
+  //Use the SET button to reconfigure the pin code.
+  if(sidebutton_set()){
+    //Wait for the button to be released.
+    while(sidebutton_set());
 
-	switch (state) {
-		case 0: //Skip
-		case 1:
-			break;
-		case 19: //RX IDLE between transmit packets.
-			break;
-		case 22: // TX OVERFLOW
-			printf("TX Overflow.\n");
-			radio_strobe(RF_SIDLE);
-			break;
-		default:
-			lcd_hex(state);
-			break;
-	}
+    //Enter the mode where we enter the pincode.
+    pinmode_init();
+  } 
 }
