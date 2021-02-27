@@ -131,7 +131,6 @@ void jukebox_init() {
 	if (!has_radio) {
 		app_next();
 	}
-	printf("10 button entries are available for Jukebox.\n");
 	lcd_string(pinChar); // Draw screen
 }
 
@@ -274,7 +273,7 @@ uint8_t* build_jukebox_packet(int cmd, int pin) {
  */
 
 void jukebox_packetrx(uint8_t *packet, int len) {
-	printf("Not yet supported.\n");
+  //printf("Not yet supported.\n");
 }
 
 /*================================= U I =================================*/
@@ -303,17 +302,21 @@ void pinInput() {
 	lcd_string(pinChar); // Update screen
 }
 
+//Quick little function to set up for a transmission.
+static void jukebox_configradio(){
+  // Radio Settings
+  radio_on();
+  radio_writesettings(jukebox_settings);
+  radio_writepower(0xB0);
+  radio_setfreq(433920000); // 433.92MHz
+}
+
 // Keypress Handler
 int jukebox_keypress(char ch) {
 	if (pinFlag && (lastch = ch) && ch >= '0' && ch <= '9') {
 		pinInput();
 	} else if (!pinFlag && (lastch = ch) && ch >= '0' && ch <= '9') {
-		// Radio Settings
-		radio_on();
-		radio_writesettings(jukebox_settings);
-		radio_writepower(0xB0);
-		radio_setfreq(433920000); // 433.92MHz
-
+	        jukebox_configradio();
 		//This handler will be called back as the packet finished transmission.
 		jukebox_packettx();
 	} else if (!pinFlag) {
@@ -325,8 +328,39 @@ int jukebox_keypress(char ch) {
 	return 0;
 }
 
-// Button Mapping
+// Fallthrough keypress Handler
+int jukebox_fallthrough(char ch) {
+  //Here we substitute characters so that the fallthrough row sends
+  //useful commands.
+  switch(ch){
+  case '1': //Pause
+    lastch='1';
+    break;
+  case '3': //Power
+    lastch='7';
+    break;
+  case '-': //Skip
+    lastch='0';
+    break;
+  default:
+    lastch=0;
+    break;
+  }
 
+  
+  if(lastch){
+    jukebox_configradio();
+    jukebox_packettx();
+  }else{
+    //On a keyup, make sure the radio is off.
+    radio_off();
+  }
+  
+  return 0;
+}
+
+
+// Button Mapping
 void jukebox_packettx() {
 	if (lastch <= '9' && lastch >= '0') {
 		switch (lastch - '0') {

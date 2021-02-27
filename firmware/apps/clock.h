@@ -19,3 +19,6 @@ void clock_playtime(int hold);
 void draw_time(int redraw);
 //! Draw the date.
 void draw_date();
+
+//! Callback after transmission.
+void clock_packettx();

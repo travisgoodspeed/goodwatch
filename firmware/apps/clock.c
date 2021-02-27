@@ -313,3 +313,9 @@ int clock_keypress(char ch){
   }
   return 1;
 }
+
+//Forwards a packet to the submenu app.
+void clock_packettx(){
+  submenu_packettx();
+}
+
