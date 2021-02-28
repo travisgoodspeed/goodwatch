@@ -1,6 +1,3 @@
-
-
-
 //! Given a pointer, this goes back to the beginning of the line.
 const char* pb_firstword(const char* word);
 

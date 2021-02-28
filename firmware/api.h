@@ -38,6 +38,7 @@
 #include "libs/assembler.h"
 #include "libs/morse.h"
 #include "libs/pocsag.h"
+#include "libs/phonebook.h"
 
 //Standalone functions.
 

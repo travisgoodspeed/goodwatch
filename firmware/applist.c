@@ -82,6 +82,12 @@ const struct app subapps[]={
   },
 #endif
 
+#ifdef PHONEBOOK_APP
+  {.name="phonbook", .init=phonebook_init, .draw=phonebook_draw, .exit=phonebook_exit,
+   .keypress=phonebook_keypress
+  },
+#endif
+
 
 #ifdef SHABBAT_APP
   //Kosher applet for Shabbat that disables all inputs except the SET button.

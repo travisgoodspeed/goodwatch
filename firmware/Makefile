@@ -3,6 +3,7 @@ ALARM_APP = 1
 COUNTDOWN_APP = 0
 CALIBRATE_APP = 1
 RPN_APP = 1
+PHONEBOOK_APP = 1
 HEX_APP = 1
 STOPWATCH_APP = 1
 PHRASE_APP = 0
@@ -52,6 +53,10 @@ endif
 ifeq ($(RPN_APP),1)
 APPS_OBJ += apps/rpn.o 
 APPS_DEFINES += RPN_APP
+endif
+ifeq ($(PHONEBOOK_APP),1)
+APPS_OBJ += apps/phonebook.o libs/phonebook.o
+APPS_DEFINES += PHONEBOOK_APP
 endif
 ifeq ($(HEX_APP),1)
 APPS_OBJ += apps/hex.o 

@@ -1,5 +1,8 @@
 #include "phonebook.h"
 
+#ifndef STANDALONE
+#include "api.h"
+#endif
 
 //Fake phonebook only in standalone mode.
 #ifdef STANDALONE
@@ -41,15 +44,13 @@ const char phonebook[] = PHONEBOOK;
 
 //! Given a pointer, this goes back to the beginning of the line.
 const char* pb_firstword(const char* word){
-  while(word--){
-    //Stop at the beginning.
-    if(word<phonebook)
-      return phonebook;
-
+  while(word-->phonebook){
     //One step forward from a newline.
     if(*word=='\n')
       return word+1;
   }
+
+  return phonebook;
 }
 
 
@@ -79,11 +80,7 @@ const char* pb_nextword(const char* word){
 
 //! Given a pointer, this finds the next line.
 const char* pb_nextline(const char* word){
-  while(word++){
-    //First line if we go too far.
-    if(word>phonebook+sizeof(phonebook))
-      return phonebook;
-
+  while(phonebook < ++word +sizeof(phonebook)){
     //Revert to the first line on a null.
     if(!*word)
       return phonebook;
@@ -99,4 +96,7 @@ const char* pb_nextline(const char* word){
 	return phonebook;
     }
   }
+
+  //Jump back to the beginning when we go too far.
+  return phonebook;
 }

@@ -41,3 +41,14 @@
     "\x86\xd9" "\x00\x00\xe8\xe8\xee\x88\xe8\x8e\xe8\x88\xee\xe8\x8e\x88\x80\x00", \
     "\x86\xd9" "\x00\x00\xe8\xe8\xee\x88\xe8\x8e\xe8\x88\xee\xe8\xe8\x88\x80\x00"
 
+/* This array holds the phonebook.  Each line is one record, with the
+   0 button jumping to the next line and the +/- keys cycling between
+   the 8-byte words of the line.
+ */
+
+
+#define PHONEBOOK \
+  "Travis  " "555-3811" "\n" \
+  "Bob  555" "555-0321" "\n" \
+  "AAA  800" "222-4357" "\n" \
+  "Last    " "555-2358" "\n"
