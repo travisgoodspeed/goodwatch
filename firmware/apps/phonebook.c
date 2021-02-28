@@ -26,16 +26,36 @@ int phonebook_exit(){
   return 0;
 }
 
+
 //! A button has been pressed for the phonebook.
 int phonebook_keypress(char ch){
   switch(ch){
-  case '+':
+    //Third (fallthrough) row shows one word each of the current row.
+  case '1':
+    pbptr=pb_firstword(pbptr);
+    break;
+  case '2':
+    pbptr=pb_firstword(pbptr);
+    pbptr=pb_nextword(pbptr);
+    break;
+  case '3':
+    pbptr=pb_firstword(pbptr);
+    pbptr=pb_nextword(pbptr);
     pbptr=pb_nextword(pbptr);
     break;
   case '-':
     pbptr=pb_firstword(pbptr);
+    pbptr=pb_nextword(pbptr);
+    pbptr=pb_nextword(pbptr);
+    pbptr=pb_nextword(pbptr);
     break;
+
+    
+    //Bottom row moves the line or entry.
   case '0':
+    pbptr=pb_nextword(pbptr);
+    break;
+  case '+':
     pbptr=pb_nextline(pbptr);
     break;
   default:
@@ -45,3 +65,9 @@ int phonebook_keypress(char ch){
 }
 
 
+
+//! A fallthrough button in the third row for the phonebook.
+int phonebook_fallthrough(char ch){
+  phonebook_draw(phonebook_keypress(ch));
+  return 0;
+}

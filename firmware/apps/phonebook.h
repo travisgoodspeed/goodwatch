@@ -16,3 +16,6 @@ int phonebook_exit();
 
 //! A button has been pressed for the phonebook.
 int phonebook_keypress(char ch);
+
+//! A fallthrough button in the third row for the phonebook.
+int phonebook_fallthrough(char ch);

@@ -84,7 +84,7 @@ const struct app subapps[]={
 
 #ifdef PHONEBOOK_APP
   {.name="phonbook", .init=phonebook_init, .draw=phonebook_draw, .exit=phonebook_exit,
-   .keypress=phonebook_keypress
+   .keypress=phonebook_keypress, .fallthrough=phonebook_fallthrough
   },
 #endif
 
@@ -100,9 +100,6 @@ const struct app subapps[]={
 #ifdef HEBREW_APP
   //Hebrew Calendar applet.  Falls through so that it can run from the clock.
   {.name="hebrew", .fallthrough=hebrew_keypress
-   //.init=hebrew_init, .draw=hebrew_draw, .exit=hebrew_exit,
-   //.keypress=hebrew_keypress,
-   
   },
 #endif
 
