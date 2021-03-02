@@ -87,7 +87,7 @@ int main(void) {
   ucs_init();
   
   //Recognize the CPU model.
-  descriptor_dump();
+  //descriptor_dump();
   
 
   lcd_zero();
