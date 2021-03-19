@@ -62,6 +62,7 @@ class Updater:
         # d.setRFRegister(DEVIATN, (5 << 4) | 4)
         d.setMdmSyncMode(SYNCM_30_of_32)
         d.setMdmNumPreamble(MFMCFG1_NUM_PREAMBLE_24)
+        d.setMaxPower()
 
         d.makePktVLEN(255)
         # print(d.reprRadioConfig())
@@ -129,13 +130,28 @@ class Updater:
                 # print('ok')
                 continue
             if ret[0] == PKT_TYPE_OOO:
-                # print('ooo')
-                continue
+                print('Out of Order received: Trying to fix it')
+
+                last_pkt = self.make_data_packet(nr, writes[nr-1][0], writes[nr-1][1])
+
+                if self.send_raw(last_pkt):
+                    if self.send_raw(pkt):
+                        print('Fixed')
+                        continue
+
+                print('{RED}Failed{RESET}')
+
+                return False
             elif ret[0] == PKT_TYPE_ERR:
-                print('write failed')
+                print('write failed, try again')
+
+                if self.send_raw(pkt):
+                    print('Fixed')
+                    continue
+
                 return False
 
-        bar.finish()
+        # bar.finish()
 
         print(f'{GREEN}Flashing complete{RESET}')
         return True
@@ -182,7 +198,7 @@ class Updater:
             self.dongle.setModeRX()
 
             try:
-                data, ts = self.dongle.RFrecv(200)
+                data, ts = self.dongle.RFrecv(1000)
             except:
                 # print('Timeout')
                 continue
