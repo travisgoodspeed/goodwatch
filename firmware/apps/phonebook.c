@@ -59,7 +59,7 @@ int phonebook_keypress(char ch){
     pbptr=pb_nextline(pbptr);
     break;
   default:
-    return 0; //no need to redraw
+    return 1; //redraw
   }
   return 1; //redraw
 }
