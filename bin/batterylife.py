@@ -14,6 +14,7 @@ capacity=100 #mAH
 
 ampsum=0.0;
 ampcount=0;
+lastamp=0;
 
 #Ugly shotgun parser to ignore comments and early records.
 for line in sys.stdin:
@@ -22,7 +23,7 @@ for line in sys.stdin:
     else:
         words=line.split();
         time=float(words[0]);
-        amps=float(words[1]);
+        lastamp=amps=float(words[1]);
         milliamps=amps*1000.0;
 
         #We only count after the first 20 seconds, as booting takes 5 to 10 seconds.
@@ -31,6 +32,8 @@ for line in sys.stdin:
             ampsum=ampsum+amps;
 
 if ampcount>0:
+    microamp=lastamp*1000000.0;
+    print("%f µA final consumption"%microamp);
     ampavg=ampsum/(ampcount*1.0);
     milliamp=ampavg*1000.0;
     microamp=ampavg*1000000.0;

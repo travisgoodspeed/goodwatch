@@ -84,3 +84,12 @@ int submenu_fallthrough(char ch){
   //Return 1 if there is no handler, so tha the screen is redrawn.
   return 1;
 }
+
+
+//! Lets a keypress fall through from the clock to the select submenu applet.
+void submenu_packettx(){
+  /* Call the fallthrough function if it exists.
+   */
+  if(subapps[subindex].packettx)
+    subapps[subindex].packettx();
+}
