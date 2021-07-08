@@ -62,10 +62,8 @@
    no preamble, no CRC, and 341µs symbol times.
  */
 static const uint8_t ook_settings[]={
-  //Change these to change the rate.
-  //MDMCFG4, OOKMDMCFG4,      // Modem Configuration
-  //MDMCFG3, OOKMDMCFG3,      // Modem Configuration
-  //These rest are consistent for all OOK emulation.
+  // The symbol rate (MDMCFG4 and MDMCFG3) is set with the packet's data.
+  // These rest are consistent for all OOK emulation.
   MDMCFG2, 0x30,      // Modem Configuration, no sync
   FREND0 , 0x11,      // Front End TX Configuration
   FSCAL3 , 0xE9,      // Frequency Synthesizer Calibration
@@ -77,27 +75,19 @@ static const uint8_t ook_settings[]={
   0,0
 };
 
+struct ook_packet
+{
+  char *name; // Name to display when transmitting
+  float frequency;
+  uint8_t mdmcfg4, mdmcfg3;
+  const char *tx_data;
+};
+
 //! Array of keys for button pressing.
-static const char * const button_array[] = {
-  /* These were recorded with Universal Radio Hacker (URH).  You might
-     need to adjust both these packets and the symbol periods defined
-     above. */
+static const struct ook_packet button_array[] = {
   OOKBUTTONS
 };
 
-
-/*
-//! Local function that returns an OOK array index from a button.  -1 on failure.
-static int button2index(char c){
-  //For now, only numbers.  Might change this later to have even rows of four buttons.
-  if(c<='9' && c>='0'){
-    return c-'0';
-  }
-
-  //Otherwise failure.
-  return -1;
-}
-*/
 
 //! Handle an incoming packet.
 void ook_packetrx(uint8_t *packet, int len){
@@ -110,14 +100,13 @@ static char lastch=0;
 //! Send a packet.
 static void transmit(int index){
   //Packet begins on the third byte.
-  packet_tx((uint8_t*) button_array[index]+2,
-	    LEN);
+  packet_tx((uint8_t*) button_array[index].tx_data, LEN);
 }
 //! Set the rate.
 static void setrate(int index){
   //First two bytes are the rate.
-  radio_writereg(MDMCFG4, ((uint8_t*) button_array[index])[0]);
-  radio_writereg(MDMCFG3, ((uint8_t*) button_array[index])[1]);
+  radio_writereg(MDMCFG4, button_array[index].mdmcfg4);
+  radio_writereg(MDMCFG3, button_array[index].mdmcfg3);
 }
 
 //! Called after a transmission, or on a button press.
@@ -126,7 +115,7 @@ void ook_packettx(){
      the bitrate in the keypress handler.
   */
   if(lastch<='9' && lastch>='0'){
-    transmit(lastch-'0');
+    transmit(lastch - '0');
   }
 }
 
@@ -162,7 +151,8 @@ void ook_draw(){
     //lcd_string("     OOK");
     break;
   case 19: //RX IDLE between transmit packets.
-    lcd_string("TRANSMIT");
+    lcd_zero();
+    lcd_string(button_array[lastch - '0'].name);
     break;
   case 22: //TX_OVERFLOW
     printf("TX Overflow.\n");
@@ -185,10 +175,10 @@ int ook_keypress(char ch){
     //Radio settings.
     radio_on();
     radio_writesettings(ook_settings);
-    setrate(ch-'0'); //First two bytes are the packet rate.
+    setrate(ch - '0'); //First two bytes are the packet rate.
     radio_writepower(0x25);
     //Set a frequency manually rather than using the codeplug.
-    radio_setfreq(433960000);
+    radio_setfreq(button_array[ch - '0'].frequency);
 
     //This handler will be called back as the packet finished transmission.
     ook_packettx();
