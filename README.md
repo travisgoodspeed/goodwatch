@@ -76,6 +76,19 @@ use that project's [energy
 monitor](https://github.com/carrotIndustries/energytrace-util)
 utility for measuring our power budget.
 
+[Sensor Watch](https://github.com/joeycastillo/Sensor-Watch/) is Joey
+Castillo's ATSAML22 replacement board for the Casio F-91W.  He adds a
+backlight, and a 9-pin flex PCB allows you to add a custom sensor to
+the watch, rather than have one built into the board.
+
+The [CharlieWatch](https://github.com/osresearch/charliewatch) from
+Trammell Hudson is a nice little fork of the GoodWatch that uses a
+charlieplexed array of LEDs instead of a Casio watchcase.
+
+[iceSIO](https://github.com/icelord75/icesio) matches the same Casio
+3208 casings as the GoodWatch, but uses a PIC16 platform with
+accelerometer, compass and environmental sensors.
+
 [FaradayRF](https://faradayrf.com/) is a CC430 radio board intended
 for amateur use, with a 500mW amplifier and GPS receiver.  Their radio
 chain is far more carefully designed than ours, but in time, we hope
@@ -87,13 +100,4 @@ devkit, which uses the CC430F6137.  See Adam Laurie's
 [ChronIC](http://adamsblog.rfidiot.org/2013/03/you-can-ring-my-bell-adventures-in-sub.html)
 project for an early example of sniffing OOK traffic and replaying it
 from a watch.
-
-
-The [CharlieWatch](https://github.com/osresearch/charliewatch) from
-Trammell Hudson is a nice little fork of the GoodWatch that uses a
-charlieplexed array of LEDs instead of a Casio watchcase.
-
-[iceSIO](https://github.com/icelord75/icesio) matches the same Casio
-3208 casings as the GoodWatch, but uses a PIC16 platform with
-accelerometer, compass and environmental sensors.
 
