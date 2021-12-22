@@ -3,13 +3,13 @@
  * Author: NotPike
  */
 
-//! Enter the OOK application.
+//! Enter the Jukebox application.
 void jukebox_init();
 
-//! Exit the OOK application.
+//! Exit the Jukebox application.
 int jukebox_exit();
 
-//! Draw the OOK screen.
+//! Draw the Jukebox screen.
 void jukebox_draw();
 
 //! Handle an incoming packet.
@@ -18,8 +18,10 @@ void jukebox_packetrx(uint8_t *packet, int len);
 //! Callback after transmission.
 void jukebox_packettx();
 
-//! Keypress handler for the OOK applet.
+//! Keypress handler for the Jukebox applet.
 int jukebox_keypress(char ch);
+//! Fallthrough handler for the Jukebox applet.
+int jukebox_fallthrough(char ch);
 
 //! NEC Encoder
 void encode(uint8_t *out, uint8_t command, int pin);

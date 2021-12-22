@@ -17,3 +17,10 @@ int submenu_exit();
 
 //! Enter the submenu.
 void submenu_init();
+
+
+//! Fall through to the submenu for the third row.
+int submenu_fallthrough(char ch);
+
+//! Fall through to the submenu app for a transmission.
+void submenu_packettx();

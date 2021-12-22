@@ -22,7 +22,7 @@ const struct app setting_applet=
 const struct app apps[]={
   //Clock
   {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
-   .keypress=clock_keypress
+   .keypress=clock_keypress, .packettx=clock_packettx
   },
 
 #ifdef STOPWATCH_APP
@@ -45,7 +45,6 @@ const struct app apps[]={
    the main menu once selected.
  */
 const struct app subapps[]={
-
 
 #ifdef RPN_APP
   //RPN Calculator
@@ -163,7 +162,8 @@ const struct app subapps[]={
   {.name="JUKEBOX",
    .init=jukebox_init, .draw=jukebox_draw, .exit=jukebox_exit,
    .packetrx=jukebox_packetrx, .packettx=jukebox_packettx,
-   .keypress=jukebox_keypress
+   .keypress=jukebox_keypress,
+   .fallthrough=jukebox_fallthrough
   },
 #endif
 
