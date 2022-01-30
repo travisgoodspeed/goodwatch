@@ -140,10 +140,10 @@ githash.h:
 buildtime.h:
 	../bin/buildtime.py >buildtime.h
 
-goodwatch.elf: $(modules) $(apps) *.h  
+goodwatch.elf: $(modules) $(apps) *.h main.c
 	$(CC)  -T cc430f6137.ld -o goodwatch.elf main.c $(modules) $(apps)
 	../bin/printsizes.py goodwatch.elf || echo "Please install python-pyelftools."
-rftest.elf: $(modules) $(apps) *.h  
+rftest.elf: $(modules) $(apps) *.h main.c
 	$(CC) -DRFTEST  -T cc430f6137.ld -o rftest.elf main.c $(modules) $(apps)
 	../bin/printsizes.py rftest.elf || echo "Please install python-pyelftools."
 
