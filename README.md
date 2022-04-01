@@ -76,6 +76,10 @@ use that project's [energy
 monitor](https://github.com/carrotIndustries/energytrace-util)
 utility for measuring our power budget.
 
+[Elektronika-1](https://github.com/BenjaminSoelberg/elektronika-1) is
+Benjamin Sølberg's replacement board for the Soviet Электроника-1
+watch, based on an MSP430FR2433.
+
 [Sensor Watch](https://github.com/joeycastillo/Sensor-Watch/) is Joey
 Castillo's ATSAML22 replacement board for the Casio F-91W.  He adds a
 backlight, and a 9-pin flex PCB allows you to add a custom sensor to
