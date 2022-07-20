@@ -105,3 +105,7 @@ devkit, which uses the CC430F6137.  See Adam Laurie's
 project for an early example of sniffing OOK traffic and replaying it
 from a watch.
 
+[F91 Kepler](https://gitlab.com/_Pegor/kepler_fw) is an OLED and BTLE
+replacement for the Casio F91W module.  It uses a CC2640 and has some
+rather good documentation.
+
