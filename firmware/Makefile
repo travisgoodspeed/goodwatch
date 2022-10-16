@@ -157,10 +157,14 @@ clean:
 	cd libs && make clean
 erase:
 	$(BSL) -e
+sbwerase: 
+	mspdebug tilib "erase"
 sbwflash: goodwatch.hex codeplug.hex
 	mspdebug tilib "prog goodwatch.elf" "load codeplug.hex"
 sbwrftest: rftest.hex codeplug.hex
 	mspdebug tilib "prog rftest.elf" "load codeplug.hex"
+sbwdump:
+	mspdebug tilib "save_raw 0x8000 0x8000 dump.bin"
 
 flash: goodwatch.hex
 	$(BSL) -ef goodwatch.hex
