@@ -87,7 +87,7 @@ int main(void) {
   ucs_init();
   
   //Recognize the CPU model.
-  descriptor_dump();
+  //descriptor_dump();
   
 
   lcd_zero();
@@ -139,6 +139,22 @@ int main(void) {
   // Setup and enable WDT 250ms, ACLK, interval timer
   WDTCTL = WDT_ADLY_250;
   SFRIE1 |= WDTIE;
+
+
+  //'make sbwrftest' will flash an image that beacons repeatedly in
+  //Morse, to test the RF chain.
+#ifdef RFTEST
+  lcd_string("RFTEST");
+  radio_on();
+  radio_writesettings(0);
+  radio_writepower(0x25);
+  //codeplug_setfreq();
+  radio_setfreq(433920000);
+  radio_strobe(RF_SCAL);
+  while(1)
+    radio_morse("      GOODWATCH  RFTEST " CALLSIGN " " CALLSIGN);
+#endif
+  
 
   printf("Booted.\n");
   __bis_SR_register(LPM3_bits + GIE);        // Enter LPM3

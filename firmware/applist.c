@@ -22,7 +22,7 @@ const struct app setting_applet=
 const struct app apps[]={
   //Clock
   {.name="clock", .init=clock_init, .draw=clock_draw, .exit=clock_exit,
-   .keypress=clock_keypress
+   .keypress=clock_keypress, .packettx=clock_packettx
   },
 
 #ifdef STOPWATCH_APP
@@ -45,7 +45,6 @@ const struct app apps[]={
    the main menu once selected.
  */
 const struct app subapps[]={
-
 
 #ifdef RPN_APP
   //RPN Calculator
@@ -82,6 +81,12 @@ const struct app subapps[]={
   },
 #endif
 
+#ifdef PHONEBOOK_APP
+  {.name="phonbook", .init=phonebook_init, .draw=phonebook_draw, .exit=phonebook_exit,
+   .keypress=phonebook_keypress, .fallthrough=phonebook_fallthrough
+  },
+#endif
+
 
 #ifdef SHABBAT_APP
   //Kosher applet for Shabbat that disables all inputs except the SET button.
@@ -94,9 +99,6 @@ const struct app subapps[]={
 #ifdef HEBREW_APP
   //Hebrew Calendar applet.  Falls through so that it can run from the clock.
   {.name="hebrew", .fallthrough=hebrew_keypress
-   //.init=hebrew_init, .draw=hebrew_draw, .exit=hebrew_exit,
-   //.keypress=hebrew_keypress,
-   
   },
 #endif
 
@@ -160,7 +162,8 @@ const struct app subapps[]={
   {.name="JUKEBOX",
    .init=jukebox_init, .draw=jukebox_draw, .exit=jukebox_exit,
    .packetrx=jukebox_packetrx, .packettx=jukebox_packettx,
-   .keypress=jukebox_keypress
+   .keypress=jukebox_keypress,
+   .fallthrough=jukebox_fallthrough
   },
 #endif
 

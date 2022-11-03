@@ -45,17 +45,11 @@ CC430F6147
 
 #include "descriptor.h"
 
+
+/*
+
 //! Dumps the CPU descriptor.
 void descriptor_dump(){
-  /*  Raw dumping is wasteful, but sometimes handy.
-  uint16_t *tlv = (uint16_t*) 0x1a00;
-  while(tlv < (uint16_t*) TLV_END){
-    printf("%04x: %04x\n",(uint16_t) tlv, (uint16_t) tlv[0]);
-    tlv++;
-  }
-  printf("\n");
-  */
-  
 
   switch(DEVICEID){
   case DEVICEID6137:
@@ -68,3 +62,18 @@ void descriptor_dump(){
     printf("Unknown ChipID %04x\n", DEVICEID);
   }
 }
+
+
+void descriptor_rawdump(){
+//  Raw dumping is wasteful, but sometimes handy.
+  uint16_t *tlv = (uint16_t*) 0x1a00;
+  while(tlv < (uint16_t*) TLV_END){
+    printf("%04x: %04x\n",(uint16_t) tlv, (uint16_t) tlv[0]);
+    tlv++;
+  }
+  printf("\n");
+}
+
+*/
+
+

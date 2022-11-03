@@ -2,9 +2,9 @@
   \brief Reads MSP430 TLV Descriptors.
 */
 
-//! Dumps the CPU descriptor.
-void descriptor_dump();
 
+//Some functions were deprecated on 2021.03.01.
+//Uncomment them in descriptor.c if you need them.
 
 //! Model number of the chip.  Bytes probably swapped for endian reasons.
 #define DEVICEID (*((uint16_t*)0x1a04))

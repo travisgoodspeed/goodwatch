@@ -1,7 +1,7 @@
 # This is just for testing the libraries.  They are build with
 # firmware/Makefile when running in the watch.
 
-EXECS= assembler pocsag jukebox hebrew beats
+EXECS= assembler pocsag jukebox hebrew beats phonebook
 
 run: all
 	./assembler
@@ -9,6 +9,7 @@ run: all
 	./jukebox
 	./hebrew
 	./beats
+	./phonebook
 
 clean:
 	rm -rf *.o $(EXECS)
@@ -29,3 +30,6 @@ hebrew: hebrew.c hebrew.h
 
 beats: beats.c beats.h
 	$(CC) -Werror -DSTANDALONE -o beats $<
+
+phonebook: phonebook.c phonebook.h
+	$(CC) -Werror -DSTANDALONE -o phonebook $<

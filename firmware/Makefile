@@ -3,19 +3,20 @@ ALARM_APP = 1
 COUNTDOWN_APP = 0
 CALIBRATE_APP = 1
 RPN_APP = 1
+PHONEBOOK_APP = 1
 HEX_APP = 1
 STOPWATCH_APP = 1
 PHRASE_APP = 0
 HEBREW_APP = 1
-SHABBAT_APP = 1
-RNG_APP = 1
+SHABBAT_APP = 0
+RNG_APP = 0
 TUNER_APP = 0
 MORSE_APP = 0
 BEACON_APP = 0
 OOK_APP = 1
-SHADERS_APP = 1
+SHADERS_APP = 0
 COUNTER_APP = 1
-DMESG_APP = 0
+DMESG_APP = 1
 PAGER_APP = 0
 JUKEBOX_APP = 1
 OTAUPDATE_APP = 0
@@ -53,6 +54,10 @@ endif
 ifeq ($(RPN_APP),1)
 APPS_OBJ += apps/rpn.o 
 APPS_DEFINES += RPN_APP
+endif
+ifeq ($(PHONEBOOK_APP),1)
+APPS_OBJ += apps/phonebook.o libs/phonebook.o
+APPS_DEFINES += PHONEBOOK_APP
 endif
 ifeq ($(HEX_APP),1)
 APPS_OBJ += apps/hex.o 
@@ -122,7 +127,7 @@ CC = msp430-elf-gcc -minrt -msmall -mmcu=cc430f6137 -Wall -I. -I/opt/msp430-gcc-
 
 BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
-modules=rtcasm-r12.o main.o lcd.o lcdtext.o rtc.o  keypad.o bcd.o apps.o\
+modules=rtcasm-r12.o lcd.o lcdtext.o rtc.o  keypad.o bcd.o apps.o\
 	applist.o adc.o ref.o codeplugstr.o \
 	sidebutton.o power.o uart.o monitor.o ucs.o buzz.o \
 	radio.o packet.o dmesg.o codeplug.o rng.o descriptor.o \
@@ -140,21 +145,31 @@ githash.h:
 buildtime.h:
 	../bin/buildtime.py >buildtime.h
 
-goodwatch.elf: $(modules) $(apps) *.h  
-	#$(CC) -T msp430.x -o goodwatch.elf $(modules) $(apps)
-	$(CC)  -T cc430f6137.ld -o goodwatch.elf $(modules) $(apps)
+goodwatch.elf: $(modules) $(apps) *.h main.c
+	$(CC)  -T cc430f6137.ld -o goodwatch.elf main.c $(modules) $(apps)
 	../bin/printsizes.py goodwatch.elf || echo "Please install python-pyelftools."
+rftest.elf: $(modules) $(apps) *.h main.c
+	$(CC) -DRFTEST  -T cc430f6137.ld -o rftest.elf main.c $(modules) $(apps)
+	../bin/printsizes.py rftest.elf || echo "Please install python-pyelftools."
 
 goodwatch.hex: goodwatch.elf
 	msp430-elf-objcopy -O ihex goodwatch.elf goodwatch.hex
+rftest.hex: rftest.elf
+	msp430-elf-objcopy -O ihex rftest.elf rftest.hex
 
 clean:
 	rm -rf *~ */*~ *.hex *.elf *.o */*.o goodwatch githash.h buildtime.h html latex goodwatch.elf energytrace.png energytrace.txt codeplugstr.c dmesg.bin
 	cd libs && make clean
 erase:
 	$(BSL) -e
+sbwerase: 
+	mspdebug tilib "erase"
 sbwflash: goodwatch.hex codeplug.hex
 	mspdebug tilib "prog goodwatch.elf" "load codeplug.hex"
+sbwrftest: rftest.hex codeplug.hex
+	mspdebug tilib "prog rftest.elf" "load codeplug.hex"
+sbwdump:
+	mspdebug tilib "save_raw 0x8000 0x8000 dump.bin"
 
 flash: goodwatch.hex
 	$(BSL) -ef goodwatch.hex

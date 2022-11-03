@@ -13,7 +13,7 @@ revoked if you try to pass off a pilsner instead.
 
 In addition to the source code, there is handy documentation in the
 [wiki](https://github.com/travisgoodspeed/goodwatch/wiki) and a
-general interest website at [goodwatch.org](https://goodwatch.org/).
+general interest website at [www.goodwatch.org](https://www.goodwatch.org/).
 The wiki's
 [DeveloperGuide](https://github.com/travisgoodspeed/goodwatch/wiki/DeveloperGuide)
 page might be particularly handy.
@@ -50,9 +50,6 @@ Loader (BSL).  You might find it handy for other projects involving
 that chip, or other MSP430F5 and MSP430F6 chips without USB.  You will
 need to be a member of the `dialout` group to flash the firmware.
 
-[Firmware documentation](http://goodwatch.org/doxygen/) can be built
-with Doxygen.
-
 ## Hardware Status
 
 Our replacement board is based around the CC430F6147, which combines
@@ -79,6 +76,23 @@ use that project's [energy
 monitor](https://github.com/carrotIndustries/energytrace-util)
 utility for measuring our power budget.
 
+[Elektronika-1](https://github.com/BenjaminSoelberg/elektronika-1) is
+Benjamin Sølberg's replacement board for the Soviet Электроника-1
+watch, based on an MSP430FR2433.
+
+[Sensor Watch](https://github.com/joeycastillo/Sensor-Watch/) is Joey
+Castillo's ATSAML22 replacement board for the Casio F-91W.  He adds a
+backlight, and a 9-pin flex PCB allows you to add a custom sensor to
+the watch, rather than have one built into the board.
+
+The [CharlieWatch](https://github.com/osresearch/charliewatch) from
+Trammell Hudson is a nice little fork of the GoodWatch that uses a
+charlieplexed array of LEDs instead of a Casio watchcase.
+
+[iceSIO](https://github.com/icelord75/icesio) matches the same Casio
+3208 casings as the GoodWatch, but uses a PIC16 platform with
+accelerometer, compass and environmental sensors.
+
 [FaradayRF](https://faradayrf.com/) is a CC430 radio board intended
 for amateur use, with a 500mW amplifier and GPS receiver.  Their radio
 chain is far more carefully designed than ours, but in time, we hope
@@ -91,12 +105,7 @@ devkit, which uses the CC430F6137.  See Adam Laurie's
 project for an early example of sniffing OOK traffic and replaying it
 from a watch.
 
-
-The [CharlieWatch](https://github.com/osresearch/charliewatch) from
-Trammell Hudson is a nice little fork of the GoodWatch that uses a
-charlieplexed array of LEDs instead of a Casio watchcase.
-
-[iceSIO](https://github.com/icelord75/icesio) matches the same Casio
-3208 casings as the GoodWatch, but uses a PIC16 platform with
-accelerometer, compass and environmental sensors.
+[F91 Kepler](https://gitlab.com/_Pegor/kepler_fw) is an OLED and BTLE
+replacement for the Casio F91W module.  It uses a CC2640 and has some
+rather good documentation.
 

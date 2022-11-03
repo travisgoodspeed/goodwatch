@@ -22,6 +22,7 @@ extern const struct app clock_applet;
 #include "apps/hebrew.h"
 #include "apps/dmesg.h"
 #include "apps/beats.h"
+#include "apps/phonebook.h"
 
 //Then radio apps.
 #include "apps/morse.h"
