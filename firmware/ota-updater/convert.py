@@ -29,7 +29,7 @@ def parse_ihex(filename, ignore_isr=False):
     segments = []
 
 
-    for line in open(sys.argv[1]):
+    for line in open(filename):
         line = line.strip()
 
         if not line.startswith(':'):
