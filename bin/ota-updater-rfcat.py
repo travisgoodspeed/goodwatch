@@ -129,6 +129,7 @@ class Updater:
             if ret[0] == PKT_TYPE_OK:
                 # print('ok')
                 continue
+
             if ret[0] == PKT_TYPE_OOO:
                 print('Out of Order received: Trying to fix it')
 
@@ -142,6 +143,7 @@ class Updater:
                 print('{RED}Failed{RESET}')
 
                 return False
+
             elif ret[0] == PKT_TYPE_ERR:
                 print('write failed, try again')
 
