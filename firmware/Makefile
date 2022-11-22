@@ -19,10 +19,11 @@ COUNTER_APP = 1
 DMESG_APP = 1
 PAGER_APP = 0
 JUKEBOX_APP = 1
+OTAUPDATE_APP = 0
+
 
 #Don't forget to set your timezone for Beats in config.h.
 BEATS_APP = 0
-
 
 #set default flashing serial port, dont override if passed in as an argument
 PORT ?= /dev/ttyUSB0
@@ -109,6 +110,10 @@ endif
 ifeq ($(JUKEBOX_APP),1)
 APPS_OBJ += apps/jukebox.o
 APPS_DEFINES += JUKEBOX_APP 
+endif
+ifeq ($(OTAUPDATE_APP),1)
+APPS_OBJ += apps/ota_update.o
+APPS_DEFINES += OTAUPDATE_APP
 endif
 ifeq ($(BEATS_APP),1)
 APPS_OBJ += apps/beats.o
