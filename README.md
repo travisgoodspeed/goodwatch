@@ -13,7 +13,7 @@ revoked if you try to pass off a pilsner instead.
 
 In addition to the source code, there is handy documentation in the
 [wiki](https://github.com/travisgoodspeed/goodwatch/wiki) and a
-general interest website at [www.goodwatch.org](https://www.goodwatch.org/).
+general interest website at [goodwatch.org](http://goodwatch.org/).
 The wiki's
 [DeveloperGuide](https://github.com/travisgoodspeed/goodwatch/wiki/DeveloperGuide)
 page might be particularly handy.
