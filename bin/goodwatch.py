@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 ## This is a quick and dirty python client for communicating with a
 ## GoodWatch over its UART.  I mostly use it to quickly prototype
@@ -266,7 +266,7 @@ class GoodWatch:
         time.sleep(1);
 
     def crc(self,msg):
-        """Returns a two-byte string of the checksum of a message."""
+        """Returns a two-byte list of the checksum of a message."""
         crc=0xFFFF
         
         #msg should already include header bytes.
@@ -275,7 +275,7 @@ class GoodWatch:
             x=((crc>>8)^byte)&0xFF;
             x^=x>>4;
             crc=(crc<<8)^(x<<12)^(x<<5)^x;
-        return chr(crc&0xFF)+""+chr((crc>>8)&0xFF);
+        return [(crc&0xFF), ((crc>>8)&0xFF)];
 
     def transact(self,msg):
         """Sends a message, wrapped with a prefix and checksum.
@@ -283,15 +283,14 @@ class GoodWatch:
 
         #Send the message.
         length=len(msg);
-        ll=chr(length&0xFF);
-        lh=chr((length>>8)&0xFF);
         crc=self.crc(msg);
-        self.serial.write("\x80"+ll+lh+msg+crc);
+        frame = b"\x80"+length.to_bytes(2, byteorder='little')+msg.encode()+bytes(crc);
+        self.serial.write(frame);
 
         #Get the reply.
         reply=self.serial.read(1);
         if len(reply)!=1:
-            print "Error, missing reply.";
+            print("Error, missing reply.");
             sys.exit(1);
         elif ord(reply[0])==0x00:
             #Success
@@ -304,30 +303,30 @@ class GoodWatch:
             #assert(crc==self.crc(rep));
             return rep;
         else:
-            print "Error 0x%02x in reply to 0x%02x." % (
-                ord(reply[0]), ord(msg[0]));
+            print("Error 0x%02x in reply to 0x%02x." % (
+                ord(reply[0]), ord(msg[0])));
             #Not sure whether data is coming, so grab a chunk just in case.
             self.serial.read(10);
     def turbomode(self,enable=1):
         """Enable turbo mode.  We have to do this slowly because the
         chip is running slowly."""
         #self.transact("\x00"+chr(enable));
-        self.serial.write("\x00");
+        self.serial.write(b"\x00");
         time.sleep(0.2);
-        self.serial.write("\x80");
+        self.serial.write(b"\x80");
         time.sleep(0.2);
-        self.serial.write("\x02");
+        self.serial.write(b"\x02");
         time.sleep(0.2);
         #Command packet.
-        self.serial.write("\x00");
+        self.serial.write(b"\x00");
         time.sleep(0.2);
-        self.serial.write("\x00");
+        self.serial.write(b"\x00");
         time.sleep(0.2);
-        self.serial.write(chr(enable));
+        self.serial.write(chr(enable).encode());
         time.sleep(0.2);
-        self.serial.write("\xde");  #TODO Fix this checksum.
+        self.serial.write(b"\xde");  #TODO Fix this checksum.
         time.sleep(0.2);
-        self.serial.write("\xad");
+        self.serial.write(b"\xad");
         time.sleep(0.2);
         
         reply=self.serial.read(9);
@@ -344,13 +343,13 @@ class GoodWatch:
         """Returns the DMESG buffer."""
         return self.transact("\x04");
     def randint(self,count):
-	"""Returns count random 16bit integers. """
-	import struct
-	
-	samples=();
+        """Returns count random 16bit integers. """
+        import struct
+
+        samples=();
         while count>0:
             n=min(4,count);
-	    samples=samples+struct.unpack("<"+"H"*n,self.transact("\x05\x00"+chr16(n)));
+            samples=samples+struct.unpack("<"+"H"*n,self.transact("\x05\x00"+chr16(n)));
             count=count-n;
         return samples;
     
@@ -429,71 +428,71 @@ if __name__=='__main__':
     try:
         goodwatch.turbomode();
     except:
-        print "turbo error."
+        print( "turbo error.");
 
     if args.peek!=None:
         adr=int(args.peek,16);
         val=goodwatch.peek(adr);
-        print "0x%04x: %04x\n" % (adr,val);
+        print("0x%04x: %04x\n" % (adr,val));
 
     if args.lcd!=None:
         goodwatch.lcdstring(args.lcd);
 
     if args.dmesg>0:
-        print goodwatch.dmesg();
+        print(goodwatch.dmesg());
     if args.randint != None:
         samples=goodwatch.randint(int(args.randint));
-        print "%04x "*len(samples)%samples
+        print("%04x "*len(samples)%samples);
     if args.randdump != None:
-        print "Fetching samples."
+        print("Fetching samples.");
         samples=goodwatch.randint(1024);
         f=open(args.randdump,'w');
         for s in samples:
             f.write("%d, %d\n" % (s>>8, s&0xFF));
 
     if args.beacon!=None:
-        print "Turning radio on.";
+        print("Turning radio on.");
         goodwatch.radioonoff(1);
-        print "Configuring radio.";
+        print("Configuring radio.");
         goodwatch.radioconfig(beaconconfig);
         goodwatch.radiofreq(433.0);
         while 1:
-            print "Transmitting: %s" % args.beacon;
+            print("Transmitting: %s" % args.beacon);
             goodwatch.radiotx(args.beacon+"\x00");
             time.sleep(1);
 
     if args.ook!=None:
-        print "Turning radio on.";
+        print("Turning radio on.");
         goodwatch.radioonoff(1);
         time.sleep(1);
-        print "Configuring radio.";
+        print("Configuring radio.");
         goodwatch.radioconfig(beaconconfig);
         goodwatch.radioconfig(ookconfig);
         #Docs say 433.920, but there's a lot of drift.
         goodwatch.radiofreq(433.920);
         while 1:
-            print "Transmitting packet %d" % int(args.ook);
+            print("Transmitting packet %d" % int(args.ook));
             goodwatch.radiotx(ookpackets[int(args.ook)].decode('hex'));
             time.sleep(0.1);
             
     if args.pocsagtx!=None:
-        print "WARNING: POCSAG DOESN'T WORK YET";
+        print("WARNING: POCSAG DOESN'T WORK YET");
         time.sleep(1);
         goodwatch.radioonoff(1);
-        print "Configuring radio.";
+        print("Configuring radio.");
         goodwatch.radioconfig(beaconconfig);
         goodwatch.radioconfig(pocsagconfig);
         #Standard DAPNET frequency.
         goodwatch.radiofreq(439.988);
         while 1:
-            print "Transmitting packet.";
+            print("Transmitting packet.");
             goodwatch.radiotx(pocsagpacket.decode('hex'),32);
             time.sleep(1);
     if args.pocsag!=None:
         #print "WARNING: POCSAG DOESN'T WORK YET";
         time.sleep(1);
         goodwatch.radioonoff(1);
-        print "Configuring radio.";
+        print("Configuring radio.");
         #goodwatch.radioconfig(beaconconfig);
         goodwatch.radioconfig(pocsagconfig);
         #Standard DAPNET frequency.
@@ -501,20 +500,20 @@ if __name__=='__main__':
         while 1:
             pkt=goodwatch.radiorx();
             if len(pkt)>1: # and pkt[0]=='\xea' and pkt[1]=='\x27':
-                print pkt.encode('hex');
+                print(pkt.encode('hex'));
             time.sleep(0.1);
     
     if args.beaconsniff!=None:
-        print "Turning radio on.";
+        print("Turning radio on.");
         goodwatch.radioonoff(1);
-        print "Configuring radio.";
+        print("Configuring radio.");
         goodwatch.radioconfig(beaconconfig);
         goodwatch.radiofreq(433.0);
         while 1:
             packet=goodwatch.radiorx();
             p=stripnulls(packet);
             if len(p)>1:
-                print p;
+                print(p);
             time.sleep(1);
             
         
