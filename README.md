@@ -27,8 +27,8 @@ page might be particularly handy.
 ## Software Status
 
 Our firmware is freely available in this repository, compiling with
-the standard MSP430 compiler packages that ship with Debian.  It
-consists of a
+the MSP430 GCC compiler packages from Texas Instruments.  It consists
+of a
 [Clock](https://github.com/travisgoodspeed/goodwatch/wiki/ClockApplet),
 a Stopwatch, an RPN Calculator, and a [Hex Memory
 Viewer](https://github.com/travisgoodspeed/goodwatch/wiki/HexApplet)
