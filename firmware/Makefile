@@ -118,7 +118,7 @@ endif
 
 
 #GCC8 from Texas Instruments, not the GCC4 that ships with Debian.
-CC = msp430-elf-gcc -minrt -msmall -mmcu=cc430f6137 -Wall -I. -I/opt/msp430-gcc-support-files/include -Os  $(addprefix -D, $(APPS_DEFINES)) -Wl,--gc-sections,--print-gc-sections -fdata-sections -ffunction-sections -fno-asynchronous-unwind-tables -flto
+CC = msp430-elf-gcc -msmall -mmcu=cc430f6137 -Wall -I. -I/opt/msp430-gcc-support-files/include -Os  $(addprefix -D, $(APPS_DEFINES)) -Wl,--gc-sections,--print-gc-sections -fdata-sections -ffunction-sections -fno-asynchronous-unwind-tables -flto
 
 BSL = ../bin/cc430-bsl.py -r 38400 -p $(PORT)
 
