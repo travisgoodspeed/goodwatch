@@ -85,6 +85,12 @@ Castillo's ATSAML22 replacement board for the Casio F-91W.  He adds a
 backlight, and a 9-pin flex PCB allows you to add a custom sensor to
 the watch, rather than have one built into the board.
 
+[Outatime Pro](https://github.com/evyd13/outatime-pro) from Evelien
+Dekkers is a replacement board that matches the same Casio
+3208 casings as the GoodWatch, but is based on the Sensor Watch Pro.
+It adds backlight, a 9-pin FPC connector for custom sensors or boards,
+and a PAM8904 for a louder buzzer without the large inductor.
+
 The [CharlieWatch](https://github.com/osresearch/charliewatch) from
 Trammell Hudson is a nice little fork of the GoodWatch that uses a
 charlieplexed array of LEDs instead of a Casio watchcase.
