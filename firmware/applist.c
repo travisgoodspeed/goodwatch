@@ -176,6 +176,12 @@ const struct app subapps[]={
   },
 #endif
 
+#ifdef MUSIC_APP
+  //MUSIC
+  {.name="music", .init=music_init, .draw=music_draw, .exit=music_exit,
+   .keypress=music_keypress, .fallthrough=music_fallthrough,
+  },
+#endif
 
 #ifdef CALIBRATE_APP
   //CALIBRATE

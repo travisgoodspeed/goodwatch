@@ -19,6 +19,7 @@ COUNTER_APP = 1
 DMESG_APP = 1
 PAGER_APP = 0
 JUKEBOX_APP = 1
+MUSIC_APP = 0
 
 #Don't forget to set your timezone for Beats in config.h.
 BEATS_APP = 0
@@ -114,7 +115,10 @@ ifeq ($(BEATS_APP),1)
 APPS_OBJ += apps/beats.o
 APPS_DEFINES += BEATS_APP
 endif
-
+ifeq ($(MUSIC_APP),1)
+APPS_OBJ += apps/music.o
+APPS_DEFINES += MUSIC_APP
+endif
 
 
 #GCC8 from Texas Instruments, not the GCC4 that ships with Debian.

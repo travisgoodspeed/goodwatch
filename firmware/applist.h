@@ -33,7 +33,7 @@ extern const struct app clock_applet;
 #include "apps/counter.h"
 #include "apps/pager.h"
 #include "apps/jukebox.h"
-
+#include "apps/music.h"
 
 /* For each application, the init() function is called at entry.  The
    draw() function is called four times per second.  The exit()
