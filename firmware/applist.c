@@ -184,6 +184,14 @@ const struct app subapps[]={
    .keypress=calibrate_keypress
   },
 #endif
+
+ 
+#ifdef OTAUPDATE_APP
+  {.name="update", .init=ota_update_init, .draw=ota_update_draw, .exit=ota_update_exit,
+   .keypress=ota_update_keypress,
+   .packetrx=ota_update_packetrx, .packettx=ota_update_packettx, 
+  },
+#endif
   
 #ifdef BEATS_APP
   {
